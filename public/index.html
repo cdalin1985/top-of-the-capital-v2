@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top of the Capital - Pool League</title>
+    <link rel="stylesheet" href="green-gray-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class="background-pattern"></div>
+    
+    <div class="container">
+        <header class="header">
+            <h1 class="main-title">TOP OF THE CAPITAL</h1>
+            <p class="subtitle">Valley Hub • Eagles 4040</p>
+        </header>
+
+        <!-- Authentication Section -->
+        <div id="authSection" class="auth-section">
+            <div class="auth-container">
+                <h2 class="auth-title">MEMBER AUTHENTICATION</h2>
+                
+                <div class="form-group">
+                    <label for="playerSelect">Select Your Name:</label>
+                    <select id="playerSelect" class="player-dropdown">
+                        <option value="">Choose your name...</option>
+                    </select>
+                </div>
+
+                <div id="authForm" class="auth-form hidden">
+                    <div id="welcomeMessage" class="welcome-message"></div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
+
+                    <div id="avatarSection" class="form-group">
+                        <label for="avatar">Avatar (Optional ):</label>
+                        <input type="file" id="avatar" accept="image/*">
+                        <div id="avatarPreview" class="avatar-preview"></div>
+                    </div>
+
+                    <div class="auth-buttons">
+                        <button id="authButton" class="auth-btn">Login</button>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <button id="adminSeed" class="admin-btn">Admin Seed</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="dashboard hidden">
+            <div class="dashboard-grid">
+                <!-- Rankings Panel -->
+                <div class="panel rankings-panel">
+                    <h3 class="panel-title">🏆 League Rankings</h3>
+                    <div id="rankingsContent" class="panel-content">
+                        <div class="loading-message">Loading distinguished members...</div>
+                    </div>
+                </div>
+
+                <!-- Notifications Panel -->
+                <div class="panel notifications-panel">
+                    <h3 class="panel-title">📜 Notifications</h3>
+                    <div id="notificationsContent" class="panel-content">
+                        <div class="empty-state">No new correspondence</div>
+                    </div>
+                </div>
+
+                <!-- Community Feed Panel -->
+                <div class="panel activity-panel">
+                    <h3 class="panel-title">🎱 League Activity</h3>
+                    <div id="activityContent" class="panel-content">
+                        <div class="empty-state">Activity feed quiet</div>
+                    </div>
+                </div>
+
+                <!-- Challenge System Panel -->
+                <div class="panel challenge-panel">
+                    <h3 class="panel-title">⚔️ Challenge System</h3>
+                    <div id="challengeContent" class="panel-content">
+                        <div id="userStatus" class="user-status">
+                            <div class="status-info">
+                                <span class="status-label">OPERATOR STATUS:</span>
+                                <span id="currentUser" class="current-user">Not authenticated</span>
+                                <span id="userRating" class="user-rating"></span>
+                            </div>
+                        </div>
+
+                        <div id="challengeForm" class="challenge-form hidden">
+                            <div class="form-group">
+                                <label for="targetPlayer">Select Target:</label>
+                                <select id="targetPlayer" class="target-dropdown">
+                                    <option value="">Choose opponent...</option>
+                                </select>
+                                <div id="targetInfo" class="target-info"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="discipline">Discipline:</label>
+                                <select id="discipline">
+                                    <option value="8-Ball">8-Ball</option>
+                                    <option value="9-Ball">9-Ball</option>
+                                    <option value="10-Ball">10-Ball</option>
+                                    <option value="Straight Pool">Straight Pool</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="gamesToWin">Games to Win:</label>
+                                <select id="gamesToWin">
+                                    <option value="3">3 Games</option>
+                                    <option value="5">5 Games</option>
+                                    <option value="7" selected>7 Games</option>
+                                    <option value="9">9 Games</option>
+                                </select>
+                            </div>
+
+                            <button id="sendChallenge" class="challenge-btn">INITIATE COMBAT</button>
+                        </div>
+
+                        <div class="challenge-instructions">
+                            <p>Select opponents within ±5 rank positions for fair competition.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="logout-section">
+                <button id="logoutBtn" class="logout-btn">Disconnect</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
