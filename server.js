@@ -147,29 +147,37 @@ app.post('/api/register', async (req, res) => {
             return res.status(400).json({ error: 'User already exists' });
         }
 
-        // Find player in leaderboard
-        const player = db.leaderboard.find(p => p.displayName === displayName);
-        if (!player) {
-            return res.status(400).json({ error: 'Player not found in rankings' });
-        }
-
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
         
+        const startingRating = 1000;
+        const startingWins = 0;
+        const startingLosses = 0;
+
         // Create user
         const newUser = {
             id: Date.now().toString(),
             displayName,
             email: `${displayName.toLowerCase().replace(/\s+/g, '.')}.${Math.random().toString(36).substr(2, 4)}@topofthecapital.local`,
             password: hashedPassword,
-            rating: player.rating,
-            wins: player.wins,
-            losses: player.losses,
+            rating: startingRating,
+            wins: startingWins,
+            losses: startingLosses,
             avatar: avatar || null,
             createdAt: new Date().toISOString()
         };
 
         db.users.push(newUser);
+
+        // Add user to leaderboard
+        const newLeaderboardEntry = {
+            rank: db.leaderboard.length + 1,
+            displayName: newUser.displayName,
+            rating: newUser.rating,
+            wins: newUser.wins,
+            losses: newUser.losses,
+        };
+        db.leaderboard.push(newLeaderboardEntry);
         writeDatabase(db);
 
         // Generate JWT token
