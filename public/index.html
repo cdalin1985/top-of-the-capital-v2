@@ -21,53 +21,110 @@
         <div id="authSection" class="auth-section">
             <div class="auth-container">
                 <div class="auth-tabs">
-                    <button id="loginTab" class="auth-tab active">Login</button>
-                    <button id="registerTab" class="auth-tab">Sign Up</button>
+                    <button id="loginTab" class="auth-tab active" aria-selected="true" role="tab">
+                        <span class="tab-icon">🎱</span>
+                        <span class="tab-text">Login</span>
+                    </button>
+                    <button id="registerTab" class="auth-tab" aria-selected="false" role="tab">
+                        <span class="tab-icon">📝</span>
+                        <span class="tab-text">Sign Up</span>
+                    </button>
                 </div>
 
                 <!-- Login Form -->
-                <form id="loginForm" class="auth-form">
+                <form id="loginForm" class="auth-form" role="main" aria-label="Member Login Form">
                     <h2 class="auth-title">MEMBER LOGIN</h2>
+                    <p class="auth-subtitle">Welcome back to the league! Select your name and enter your password to continue.</p>
+                    
                     <div class="form-group">
                         <label for="loginPlayerSelect">Select Your Name:</label>
-                        <select id="loginPlayerSelect" class="player-dropdown">
+                        <select id="loginPlayerSelect" class="player-dropdown" aria-describedby="loginPlayerHelp">
                             <option value="">Choose your name...</option>
                         </select>
+                        <div id="loginPlayerHelp" class="form-help">Select your registered name from the dropdown</div>
                     </div>
                     <div class="form-group">
                         <label for="loginPassword">Password:</label>
                         <div class="password-wrapper">
-                            <input type="password" id="loginPassword" placeholder="Enter your password" required>
-                            <span id="toggleLoginPassword" class="toggle-password">👁️</span>
+                            <input type="password" id="loginPassword" placeholder="Enter your password" required 
+                                   aria-describedby="loginPasswordHelp" autocomplete="current-password">
+                            <span id="toggleLoginPassword" class="toggle-password" role="button" 
+                                  aria-label="Toggle password visibility" tabindex="0">👁️</span>
                         </div>
+                        <div id="loginPasswordHelp" class="form-help">Enter the password for your account</div>
                     </div>
+                    
+                    <div class="form-options">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="rememberMe" class="checkbox-input">
+                            <label for="rememberMe" class="checkbox-label">
+                                <span class="checkbox-custom"></span>
+                                Remember me for 30 days
+                            </label>
+                        </div>
+                        <a href="#" id="forgotPassword" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    
                     <div class="auth-buttons">
-                        <button id="loginButton" type="button" class="auth-btn">Login</button>
+                        <button id="loginButton" type="button" class="auth-btn" aria-describedby="loginStatus">
+                            <span class="btn-text">Login</span>
+                            <span class="btn-loader hidden">🎱</span>
+                        </button>
                     </div>
+                    <div id="loginStatus" class="auth-status" aria-live="polite"></div>
                 </form>
 
                 <!-- Registration Form -->
-                <form id="registerForm" class="auth-form hidden">
+                <form id="registerForm" class="auth-form hidden" role="main" aria-label="Account Registration Form">
                     <h2 class="auth-title">CREATE ACCOUNT</h2>
+                    <p class="auth-subtitle">Join the league! Create your account to start challenging other players.</p>
+                    
                     <div class="form-group">
                         <label for="registerDisplayName">Display Name:</label>
-                        <input type="text" id="registerDisplayName" placeholder="Enter your desired name" required>
+                        <input type="text" id="registerDisplayName" placeholder="Enter your desired name" required 
+                               aria-describedby="registerNameHelp" autocomplete="username">
+                        <div id="registerNameHelp" class="form-help">Choose a unique name (3-20 characters)</div>
+                        <div id="nameValidation" class="validation-message" aria-live="polite"></div>
                     </div>
+                    
                     <div class="form-group">
                         <label for="registerPassword">Password:</label>
                         <div class="password-wrapper">
-                            <input type="password" id="registerPassword" placeholder="Create a password" required>
-                            <span id="toggleRegisterPassword" class="toggle-password">👁️</span>
+                            <input type="password" id="registerPassword" placeholder="Create a secure password" required 
+                                   aria-describedby="registerPasswordHelp" autocomplete="new-password">
+                            <span id="toggleRegisterPassword" class="toggle-password" role="button" 
+                                  aria-label="Toggle password visibility" tabindex="0">👁️</span>
                         </div>
+                        <div id="registerPasswordHelp" class="form-help">Password must be at least 6 characters</div>
+                        <div class="password-strength">
+                            <div class="strength-meter">
+                                <div class="strength-bar" id="strengthBar"></div>
+                            </div>
+                            <div class="strength-text" id="strengthText">Password strength: Weak</div>
+                        </div>
+                        <div id="passwordValidation" class="validation-message" aria-live="polite"></div>
                     </div>
+                    
                     <div class="form-group">
                         <label for="registerAvatar">Avatar (Optional):</label>
-                        <input type="file" id="registerAvatar" accept="image/*">
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="registerAvatar" accept="image/*" aria-describedby="avatarHelp">
+                            <label for="registerAvatar" class="file-upload-label">
+                                <span class="upload-icon">📷</span>
+                                <span class="upload-text">Choose profile picture</span>
+                            </label>
+                        </div>
+                        <div id="avatarHelp" class="form-help">Upload a profile picture (JPG, PNG, max 2MB)</div>
                         <div id="registerAvatarPreview" class="avatar-preview"></div>
                     </div>
+                    
                     <div class="auth-buttons">
-                        <button id="registerButton" type="button" class="auth-btn">Create Account</button>
+                        <button id="registerButton" type="button" class="auth-btn" aria-describedby="registerStatus">
+                            <span class="btn-text">Create Account</span>
+                            <span class="btn-loader hidden">🎱</span>
+                        </button>
                     </div>
+                    <div id="registerStatus" class="auth-status" aria-live="polite"></div>
                 </form>
 
                 <div class="admin-section">

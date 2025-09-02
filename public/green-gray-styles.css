@@ -72,10 +72,52 @@ body {
     border: 2px solid #87a96b;
     border-radius: 15px;
     padding: 40px;
-    max-width: 500px;
+    max-width: 550px;
     width: 100%;
     backdrop-filter: blur(10px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced Auth Tabs */
+.auth-tabs {
+    display: flex;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    background: rgba(44, 44, 44, 0.5);
+    padding: 5px;
+}
+
+.auth-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 15px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    color: #a8c090;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.auth-tab:hover {
+    background: rgba(135, 169, 107, 0.1);
+    color: #f5f5dc;
+}
+
+.auth-tab.active {
+    background: linear-gradient(135deg, #2d5016 0%, #87a96b 100%);
+    color: #f5f5dc;
+    font-weight: 600;
+}
+
+.tab-icon {
+    font-size: 1.2rem;
 }
 
 .auth-title {
@@ -83,8 +125,17 @@ body {
     font-size: 1.8rem;
     color: #87a96b;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     letter-spacing: 2px;
+}
+
+.auth-subtitle {
+    color: #a8c090;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-style: italic;
 }
 
 .form-group {
@@ -97,6 +148,239 @@ body {
     color: #a8c090;
     font-weight: 500;
     font-size: 1.1rem;
+}
+
+/* Form Help Text */
+.form-help {
+    font-size: 0.9rem;
+    color: #999;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+/* Validation Messages */
+.validation-message {
+    font-size: 0.9rem;
+    margin-top: 5px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.validation-message.show {
+    opacity: 1;
+}
+
+.validation-message.success {
+    background: rgba(46, 125, 50, 0.2);
+    color: #4caf50;
+    border: 1px solid #4caf50;
+}
+
+.validation-message.error {
+    background: rgba(211, 47, 47, 0.2);
+    color: #f44336;
+    border: 1px solid #f44336;
+}
+
+/* Form Options */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Remember Me Checkbox */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-input {
+    display: none;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #a8c090;
+    font-size: 0.95rem;
+    user-select: none;
+}
+
+.checkbox-custom {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #87a96b;
+    border-radius: 3px;
+    margin-right: 8px;
+    position: relative;
+    transition: all 0.3s ease;
+    background: rgba(44, 44, 44, 0.8);
+}
+
+.checkbox-input:checked + .checkbox-label .checkbox-custom {
+    background: linear-gradient(135deg, #2d5016 0%, #87a96b 100%);
+    border-color: #a8c090;
+}
+
+.checkbox-input:checked + .checkbox-label .checkbox-custom::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #f5f5dc;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Forgot Password Link */
+.forgot-password {
+    color: #87a96b;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+    color: #a8c090;
+    text-decoration: underline;
+}
+
+/* Password Strength Indicator */
+.password-strength {
+    margin-top: 8px;
+}
+
+.strength-meter {
+    height: 4px;
+    background: rgba(135, 169, 107, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.strength-bar {
+    height: 100%;
+    width: 0%;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.strength-bar.weak {
+    width: 25%;
+    background: #f44336;
+}
+
+.strength-bar.fair {
+    width: 50%;
+    background: #ff9800;
+}
+
+.strength-bar.good {
+    width: 75%;
+    background: #2196f3;
+}
+
+.strength-bar.strong {
+    width: 100%;
+    background: #4caf50;
+}
+
+.strength-text {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+/* File Upload */
+.file-upload-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 100%;
+}
+
+.file-upload-wrapper input[type="file"] {
+    position: absolute;
+    left: -9999px;
+}
+
+.file-upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 15px;
+    background: rgba(44, 44, 44, 0.8);
+    border: 2px dashed #87a96b;
+    border-radius: 8px;
+    color: #a8c090;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+}
+
+.file-upload-label:hover {
+    border-color: #a8c090;
+    background: rgba(135, 169, 107, 0.1);
+    color: #f5f5dc;
+}
+
+.upload-icon {
+    font-size: 1.2rem;
+}
+
+/* Enhanced Button Loading State */
+.auth-btn {
+    background: linear-gradient(135deg, #2d5016 0%, #87a96b 100%);
+    color: #f5f5dc;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Cormorant Garamond', serif;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    min-width: 120px;
+}
+
+.auth-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #87a96b 0%, #a8c090 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(135, 169, 107, 0.4);
+}
+
+.auth-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.auth-btn .btn-loader {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Auth Status */
+.auth-status {
+    margin-top: 15px;
+    text-align: center;
+    min-height: 20px;
 }
 
 .player-dropdown,
@@ -123,6 +407,7 @@ select:focus {
     outline: none;
     border-color: #a8c090;
     box-shadow: 0 0 15px rgba(168, 192, 144, 0.3);
+    background: rgba(44, 44, 44, 0.9);
 }
 
 .player-dropdown option,
@@ -151,6 +436,16 @@ select option {
     font-size: 1.2rem;
     color: #a8c090;
     user-select: none;
+    transition: color 0.3s ease;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.toggle-password:hover,
+.toggle-password:focus {
+    color: #f5f5dc;
+    background: rgba(135, 169, 107, 0.2);
+    outline: none;
 }
 
 /* Avatar Section */
@@ -167,7 +462,6 @@ select option {
 }
 
 /* Buttons */
-.auth-btn,
 .challenge-btn,
 .admin-btn,
 .logout-btn {
@@ -184,7 +478,6 @@ select option {
     letter-spacing: 1px;
 }
 
-.auth-btn:hover,
 .challenge-btn:hover,
 .admin-btn:hover,
 .logout-btn:hover {
