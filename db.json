@@ -1,0 +1,575 @@
+{
+  "users": [
+    {
+      "id": "uv0xjcnp9",
+      "email": "player1@capital.local",
+      "password": "$2a$10$mcKup3JUvx6tfvKWGsGaLOvFambMOWs20i8PMZ6uAmrd7FW2PlIh2",
+      "displayName": "ADMIN",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:15.307Z"
+    },
+    {
+      "id": "uasszrsgw",
+      "email": "player2@capital.local",
+      "password": "$2a$10$7qNNFe71EzeLP0CDZ25OgOqT.Wp1O3.W7xCFJjNf9vwshSBOC32u6",
+      "displayName": "Dan Hamper",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:15.374Z"
+    },
+    {
+      "id": "uz2hcvyz9",
+      "email": "player3@capital.local",
+      "password": "$2a$10$tJVGQ4Q4yVnX4NJhvKbalO39GKxGWpa/vWKPLTBHApAI7MALu7D5m",
+      "displayName": "David Smith",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:15.440Z"
+    },
+    {
+      "id": "uw3po7anj",
+      "email": "player4@capital.local",
+      "password": "$2a$10$JDFkT9a6B/DjozLBP.A9ru/OqHbUer3u4A4fjtHnfMOeoSWlFem.i",
+      "displayName": "Chase Dalin",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:15.508Z"
+    },
+    {
+      "id": "ulj8dol2b",
+      "email": "player5@capital.local",
+      "password": "$2a$10$5RpZi9xa/CmwvQ5K8cXo6OQcRz19zX8ovHFk4wJ7uLV7T2RrWmRLi",
+      "displayName": "Frank Kincl",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:15.574Z"
+    },
+    {
+      "id": "u4fqgke4i",
+      "email": "player6@capital.local",
+      "password": "$2a$10$WJryGJVm3PHfxxTRFBJNW.L4mAAUJL3feQAfQCmYkhVzH1tRX72ZW",
+      "displayName": "Dave Alderman",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:15.640Z"
+    },
+    {
+      "id": "u89yzatz6",
+      "email": "player7@capital.local",
+      "password": "$2a$10$6LvkiKtbjoQ8KPkG47igKuhkL.fllqzvAkjwgDa3R3cRapL7YZiMO",
+      "displayName": "Mike Zahn",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:15.707Z"
+    },
+    {
+      "id": "uex77wile",
+      "email": "player8@capital.local",
+      "password": "$2a$10$K5peXskty0VttR866Kaxu.CETfznYPqruBduEqeD.y5c829Dl5w.i",
+      "displayName": "Mike Paliga",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:15.773Z"
+    },
+    {
+      "id": "uytodv738",
+      "email": "player9@capital.local",
+      "password": "$2a$10$cUXbOKR/Ng45U/efea9Ftu/ixiKiKby9doCVn3rUHuygMZPSUgEgC",
+      "displayName": "Tim Webster",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:15.840Z"
+    },
+    {
+      "id": "un7liv0fq",
+      "email": "player10@capital.local",
+      "password": "$2a$10$EVQ7iqfmBM92SW9aS0uofOW/ePZE3azXrOKyAjHaDhrwenvBICFoy",
+      "displayName": "Jerry Sabol",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:15.906Z"
+    },
+    {
+      "id": "uchz9yfkh",
+      "email": "player11@capital.local",
+      "password": "$2a$10$2/d1Kv1kf4tTvE.2un2M7uyOuqHMBRTLqPYDe/YcHhpd/fNyv5Y/G",
+      "displayName": "Thomas E. Kingston",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:15.972Z"
+    },
+    {
+      "id": "u55tel083",
+      "email": "player12@capital.local",
+      "password": "$2a$10$Rys8cyTX2sXebXf2G3gZ2Os8GdR4kcO2dYPhyigpjNAlVHQH1xnR2",
+      "displayName": "Timmy Squires",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.038Z"
+    },
+    {
+      "id": "ucp32yqec",
+      "email": "player13@capital.local",
+      "password": "$2a$10$DxZP6Ktc4xcWeJZ1iX0ru.uuQazct/8uynAvBy2fQ36cHM620GGC2",
+      "displayName": "Joel Selzer",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.104Z"
+    },
+    {
+      "id": "uc74mx2ce",
+      "email": "player14@capital.local",
+      "password": "$2a$10$5RdaHBCJVe6uHeGZjDiE2up7TTDKUqn6pIfcj14XEuTzlzKne9rBi",
+      "displayName": "Josh Fava",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.172Z"
+    },
+    {
+      "id": "uykcmwbo7",
+      "email": "player15@capital.local",
+      "password": "$2a$10$69MZOsu8tq6ltsRs4naxq.wuUFtmGKlLtNbbbmsP3w2K1lEF1D7Ea",
+      "displayName": "Eric Croft",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.239Z"
+    },
+    {
+      "id": "uj1b4ypxq",
+      "email": "player16@capital.local",
+      "password": "$2a$10$/3BdjB5uaStOANOHlHlB1.yvws65E/HeJuzJJLkEB.6N5Kmy0Q2bS",
+      "displayName": "Louise Broksle",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.306Z"
+    },
+    {
+      "id": "u8limhqd5",
+      "email": "player17@capital.local",
+      "password": "$2a$10$ZE/hDCVi7wC83CK5XzNus./mF.2IA0mPcB0B/U4.5lB/7XHrW65Fa",
+      "displayName": "Kurt Kubicka",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.373Z"
+    },
+    {
+      "id": "useqs27vt",
+      "email": "player18@capital.local",
+      "password": "$2a$10$oxvFmZ0nzPyPPy.52Z0Zhu05d7vcTqvwapL4Aa7ijS1JVyL/UlXq2",
+      "displayName": "George Cotton",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.440Z"
+    },
+    {
+      "id": "uf8nbw94b",
+      "email": "player19@capital.local",
+      "password": "$2a$10$8WGH4iOyttxVLg9jxy0DZeUmznK0R5az4KTQDOKGH1oj5O8NouRQu",
+      "displayName": "Vern Carpenter",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.507Z"
+    },
+    {
+      "id": "uny2cwxxw",
+      "email": "player20@capital.local",
+      "password": "$2a$10$hk21jhThAfOaWUrlB4Yzu.FNBxdBNLjScrHoirTuLYl.si0rIwe0O",
+      "displayName": "Mike Churchill",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.574Z"
+    },
+    {
+      "id": "updtxv2rd",
+      "email": "player21@capital.local",
+      "password": "$2a$10$f3Lld1bfN5xtncHN20LepeGvTnxDM5P.S0bzJROz1UFHWBDZCiHPC",
+      "displayName": "Chris Gomez",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.641Z"
+    },
+    {
+      "id": "umxfpwuk4",
+      "email": "player22@capital.local",
+      "password": "$2a$10$Orbdb/Y9Lk5Q7E13MqrXj.oab5NRYMZDWfTs1KgPu7NjfOnGaVwIW",
+      "displayName": "Matt Gilbert",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.708Z"
+    },
+    {
+      "id": "uj3vu7o38",
+      "email": "player23@capital.local",
+      "password": "$2a$10$SGK/SZZRFxod.kTvNJ93LeqgUhlGAtHFxZUIGnmgrpE09lZa5PiAe",
+      "displayName": "Gurn Blanston",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.775Z"
+    },
+    {
+      "id": "uk6c41gp7",
+      "email": "player24@capital.local",
+      "password": "$2a$10$7jP74kQwNKR2C5Y/wvDcXejF8tAMjnmUgDFFoEfSiph2GaU0zDFLu",
+      "displayName": "Rob Millions",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.842Z"
+    },
+    {
+      "id": "uwr3foxnl",
+      "email": "player25@capital.local",
+      "password": "$2a$10$t8.yg55i.FsPRk7gfqYY3eEf45VBsV.e3tW3ANuXrX47fexcbHzC6",
+      "displayName": "Walker Hopkins",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.909Z"
+    },
+    {
+      "id": "u5j8thqhl",
+      "email": "player26@capital.local",
+      "password": "$2a$10$shYp.X6E5F1VpubXQP1S/O43hSI24Vj46l9PLGECJwMlQ5mfdSHDq",
+      "displayName": "Janice Osborne",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:16.976Z"
+    },
+    {
+      "id": "utq8jf2jy",
+      "email": "player27@capital.local",
+      "password": "$2a$10$INLtQykxWvl.Ik3Bs6aoRORL/6ERxf48/JFoLK0TiAepNe5Itd5h.",
+      "displayName": "Anthony Jacobs",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.044Z"
+    },
+    {
+      "id": "u6qjvbeky",
+      "email": "player28@capital.local",
+      "password": "$2a$10$gBq30d4J8jNMuudfZ84jbO6eKwT48eqD.mwGOpf8EMLgHGpdSJiA2",
+      "displayName": "Patrick Donald",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.112Z"
+    },
+    {
+      "id": "uyt0tsd4l",
+      "email": "player29@capital.local",
+      "password": "$2a$10$3QtlNHcMgXKizF2e7.SaDO6.3Bqo.r9ybPOb1AeGZA3T1wLEaE/N6",
+      "displayName": "Tim Gregor",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.179Z"
+    },
+    {
+      "id": "uni2t8ho0",
+      "email": "player30@capital.local",
+      "password": "$2a$10$pB.t8hNOJmOkOyqaSEMAHObC6NjaV9kBzKzqUwny36cdI3e9bW3ha",
+      "displayName": "James McMasters",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.247Z"
+    },
+    {
+      "id": "u2fucnjyl",
+      "email": "player31@capital.local",
+      "password": "$2a$10$mNGYq59ixN5jAmbE0dVr7utFx1MkNi253W3M0rPDrH2LygiHWHMlW",
+      "displayName": "Joe Mackay",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.314Z"
+    },
+    {
+      "id": "ulv1gh347",
+      "email": "player32@capital.local",
+      "password": "$2a$10$R33WjHW23WuyzL9gzhePP.kzRSLHh.Pnq/.i2XvQ/yRhvC2.q./ny",
+      "displayName": "Steve Adsem",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.381Z"
+    },
+    {
+      "id": "u2a9ukynp",
+      "email": "player33@capital.local",
+      "password": "$2a$10$p.qzAJaSB5Q2m50UUrZtTu9JcCsYNydZ9UpuV8N9uWyrGYHBjvu6S",
+      "displayName": "Samantha Chase",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.448Z"
+    },
+    {
+      "id": "uc65o1gcn",
+      "email": "player34@capital.local",
+      "password": "$2a$10$ndlE69p0K.9h2ZN1oFROY.iip.NQy.NFLYO7mlnGifXvRK6xVZNuK",
+      "displayName": "Lea Hightshoe",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.515Z"
+    },
+    {
+      "id": "urvugun13",
+      "email": "player35@capital.local",
+      "password": "$2a$10$tYZHtYyVsWPyN670J6vDHegXCtyiaGbKmvviO1d4j65zRBncvPqO.",
+      "displayName": "Courtney Norman",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.582Z"
+    },
+    {
+      "id": "ucxqpjovt",
+      "email": "player36@capital.local",
+      "password": "$2a$10$/7AqB1rAaEBDNgtMw08GgOHy0TW5KAyXTv2RSEE5vdib5coYxS2NW",
+      "displayName": "Marc Sanche",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.649Z"
+    },
+    {
+      "id": "udyvg2afm",
+      "email": "player37@capital.local",
+      "password": "$2a$10$X2eiaeNKpyUCl6I/zwvWL.pFzFX.QqFXUMSKS9AIO4oGSB3W/J3b2",
+      "displayName": "Kenny Thurman",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.715Z"
+    },
+    {
+      "id": "ule9o8yss",
+      "email": "player38@capital.local",
+      "password": "$2a$10$vVG8pHv9JUHkIkqh9UZcE.QbnqF8YsZfSM3VjwEpiGOjh5TeE2no2",
+      "displayName": "Roger Simmons",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.783Z"
+    },
+    {
+      "id": "ulnwjhf3o",
+      "email": "player39@capital.local",
+      "password": "$2a$10$6QVmUq624z30o0zS5pRuGuruCMzF0lpoTG8HzwUzh9D8gLqWcLbJ6",
+      "displayName": "Christina Talbot",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.850Z"
+    },
+    {
+      "id": "ul1lmiw8r",
+      "email": "player40@capital.local",
+      "password": "$2a$10$tRWvx51JU34bG01VrWh..O232.Rgza8BBT8Wh7Khour4aUloyBBRi",
+      "displayName": "Jon Nash",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.917Z"
+    },
+    {
+      "id": "uugt77hj0",
+      "email": "player41@capital.local",
+      "password": "$2a$10$vW93n4JGvPafE.xPAQOUiO8s0jgCHdTxKhHTNm0IobYU.7AmDpWkC",
+      "displayName": "Sady Garrison",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:17.986Z"
+    },
+    {
+      "id": "ub83bh3we",
+      "email": "player42@capital.local",
+      "password": "$2a$10$RBMjyMMp0IB5ruthkpFnpOJ4WUiF10mc35KDMa3kM/hkXaXx73Hxa",
+      "displayName": "Justin Cavazos",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.053Z"
+    },
+    {
+      "id": "ujq4qfv2h",
+      "email": "player43@capital.local",
+      "password": "$2a$10$AMhjqEN1EDR7/HXEijKiHu59gk7s7sO4jEc8qjU1aVz0nwXqKtGZa",
+      "displayName": "Sean Royston",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.120Z"
+    },
+    {
+      "id": "uk227bfpw",
+      "email": "player44@capital.local",
+      "password": "$2a$10$2Ekx4VU5h6gYw0R5jgMNRek05DT0OyPPBLfpvFvlV2KWOAm0NiqgG",
+      "displayName": "James Smith",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.187Z"
+    },
+    {
+      "id": "u3d3y8utk",
+      "email": "player45@capital.local",
+      "password": "$2a$10$tv.i1H0myl/MviS//PTlQOttTkJF73nyAC.Q8YmD37BRYb5yqTIUe",
+      "displayName": "Zach Ledesma",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.254Z"
+    },
+    {
+      "id": "uyz5gewos",
+      "email": "player46@capital.local",
+      "password": "$2a$10$zXnSiKaJezSOjL9bkLfo5unuKMLw26y4m.AD8NArZnDRtf63Y0ub.",
+      "displayName": "Clayton Carter",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.322Z"
+    },
+    {
+      "id": "u1ybi5y5b",
+      "email": "player47@capital.local",
+      "password": "$2a$10$5HHnv.oLcKBm8emvIkAimOuz50xSbqXq.tOk4gSeSe0H9SuSrE62i",
+      "displayName": "Ryan Fields",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.389Z"
+    },
+    {
+      "id": "uit6dqjez",
+      "email": "player48@capital.local",
+      "password": "$2a$10$WDw6S0K4vSZKvY7v.mhNNuHFOXtUNN7ZAVLkyhlRQ0Samki6Gt9p2",
+      "displayName": "Kris Vladic",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.456Z"
+    },
+    {
+      "id": "uqo21dtgd",
+      "email": "player49@capital.local",
+      "password": "$2a$10$Pe1/DuoyciX6ojbfQmTILOZ.x19LCpQXz03V42XeeIbPpzPU0XcV2",
+      "displayName": "Nate Welch",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.523Z"
+    },
+    {
+      "id": "uga2ojgwh",
+      "email": "player50@capital.local",
+      "password": "$2a$10$SeGCdRi7AU7pI18Bw1lISuElGOqZ.CWubRkb7dhaedwgcS2a8Knnq",
+      "displayName": "Josh Hill",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.590Z"
+    },
+    {
+      "id": "uesl9mtd4",
+      "email": "player51@capital.local",
+      "password": "$2a$10$pcP4dJeGu9ApUy5K167EO.rJ1q1bvCV6PSSHs8VwdvMQd4m9O1gG6",
+      "displayName": "Josh Waples",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.657Z"
+    },
+    {
+      "id": "uzy0nhd0m",
+      "email": "player52@capital.local",
+      "password": "$2a$10$lQwJ/NvAUMzyi2Ys3R6ay.qXNp3RgoMxjdp4FYMhQP/DIi/nXoKwO",
+      "displayName": "Steven Ross Brandenburg",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.724Z"
+    },
+    {
+      "id": "u4fqj76ay",
+      "email": "player53@capital.local",
+      "password": "$2a$10$U0XdYk78fYxb/t6.EQIRDuWytMtrb1GJHdTqzvhmGE9hoW9A1Dxay",
+      "displayName": "Troy Jacobs",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.791Z"
+    },
+    {
+      "id": "utcw1q32c",
+      "email": "player54@capital.local",
+      "password": "$2a$10$GV123Ew4Mx5BCYsauHHUmeQKAaNfUut.rdz0CJ9iMU8oXy5fxmVyi",
+      "displayName": "Makayla Ledford",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.858Z"
+    },
+    {
+      "id": "ugavwtdgi",
+      "email": "player55@capital.local",
+      "password": "$2a$10$pIEvvELazaTNjJ3pZXmBROYoYUMP0.z.aVCZvHMOxWS8fodEmP3o.",
+      "displayName": "Sarah Urbaniak VanCleave",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.925Z"
+    },
+    {
+      "id": "uqt6c8xyu",
+      "email": "player56@capital.local",
+      "password": "$2a$10$s4E9JIvNZ4X3s.6iiDPMD.2kLaobtIlDNB/PxkQUZQLHYLpX9.hOS",
+      "displayName": "Jennifer Lynn",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:18.992Z"
+    },
+    {
+      "id": "ud1eb8uiv",
+      "email": "player57@capital.local",
+      "password": "$2a$10$TuQXHHjiN.kIU/WcfFYzEuW1fO77PxVRO.CebTczvKmSzZJ3TfT0K",
+      "displayName": "Walter Ryan Isenhour",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:19.059Z"
+    },
+    {
+      "id": "uw42kv8hj",
+      "email": "player58@capital.local",
+      "password": "$2a$10$Ty/cocpD28oUv1ow298VueSbNcAE1fkkN4g.zBvMudZqLsk1GQ7Au",
+      "displayName": "Craig Rogers",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:19.127Z"
+    },
+    {
+      "id": "u2uvjwugr",
+      "email": "player59@capital.local",
+      "password": "$2a$10$FNFx7jDsercGVlesYFC.DOEiE1cHHzaSSdGRQGH9zfJBynVZ4kmKy",
+      "displayName": "Jesse Chandler",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:19.194Z"
+    },
+    {
+      "id": "uat1zu9td",
+      "email": "player60@capital.local",
+      "password": "$2a$10$S49RRhm.cGYNASy1bWZs4.s9DIumGK07UH0e5QjSt90STPltKj29K",
+      "displayName": "Tizer Rushford",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:19.261Z"
+    },
+    {
+      "id": "uuk4me1t2",
+      "email": "player61@capital.local",
+      "password": "$2a$10$UNObXQcWBQBlHdUODksinOi8RQBZOJfw.nrCn7By/xQaNiykqZBGq",
+      "displayName": "Randy Hoag",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:19.328Z"
+    },
+    {
+      "id": "uenrvv0dt",
+      "email": "player62@capital.local",
+      "password": "$2a$10$Wcu8lRCStl09sW98ApmBIOInQp0yNtBNaSMeVBnyr47zYd43np6iG",
+      "displayName": "Justin Whittenberg",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:19.395Z"
+    },
+    {
+      "id": "u1zsl3c69",
+      "email": "player63@capital.local",
+      "password": "$2a$10$4Yr4rAMs2KB5DxfGcbGXn.yLmtyAfUDFTc3Q1lWB1YiEF7FBIECvK",
+      "displayName": "Kenrick Leistiko",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:19.462Z"
+    },
+    {
+      "id": "u7j2ehoz0",
+      "email": "player64@capital.local",
+      "password": "$2a$10$iLvnVnSMFcKIxR4.IuhJOuuNzecbZNC.8x0pDBlOui61hDDK2S/mK",
+      "displayName": "Richard Frankforter",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:19.529Z"
+    },
+    {
+      "id": "u790s9qn1",
+      "email": "player65@capital.local",
+      "password": "$2a$10$xn7z/EmCQBZ39tth1W8Z0.gynLhXIp5dKki7h9V4/8Q3tFh9zAMm.",
+      "displayName": "Brandon Lucas Parker",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:19.596Z"
+    },
+    {
+      "id": "upbf4x4gy",
+      "email": "player66@capital.local",
+      "password": "$2a$10$0bfxsgod.hocKuVrXX/Ab.mQotY.sgvWyTXFXpUlLyhPtD0ae3zZ.",
+      "displayName": "James Ellington",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:19.663Z"
+    },
+    {
+      "id": "uyw518gkf",
+      "email": "player67@capital.local",
+      "password": "$2a$10$IHj2YP4jd6S3OlfSbKRuhOQ0TJfKs8GOIS9UACgynLMt1Dg/T7AF.",
+      "displayName": "Anita Scharf",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:19.730Z"
+    },
+    {
+      "id": "unhrwh6ft",
+      "email": "player68@capital.local",
+      "password": "$2a$10$NWYSW21NreMfXyfFo4egDuML3INMkh9nasmBJS9dLH31Yudqgxnki",
+      "displayName": "Ileana Hernandez",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:19.797Z"
+    },
+    {
+      "id": "uocbs53kr",
+      "email": "player69@capital.local",
+      "password": "$2a$10$.YncLowAG77pzBwQ20gJWOWHs/XRPgg52liHh/321JrIMsLDUiMOm",
+      "displayName": "Heather Jarvis",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:19.864Z"
+    },
+    {
+      "id": "u0ap5n7zs",
+      "email": "player70@capital.local",
+      "password": "$2a$10$yYvnJ1OUJphMzCnsTXyCQuVFNstIMZCYHsWdroTebpHk/v/Yo2Nqq",
+      "displayName": "Keenen Blackbird",
+      "avatar": null,
+      "createdAt": "2025-09-02T17:44:19.931Z"
+    },
+    {
+      "id": "1756997704542",
+      "email": "chase.dalin@gmail.com",
+      "password": "$2a$10$.MX23pnwawDfGdPsjtPeUOPb0G.doR6j36TS7cvP2pcjgvIqXaqcC",
+      "displayName": "Chase",
+      "avatar": null,
+      "createdAt": "2025-09-04T14:55:04.542Z"
+    }
+  ],
+  "challenges": [],
+  "notifications": [],
+  "matches": []
+}

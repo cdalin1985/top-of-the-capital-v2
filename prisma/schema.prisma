@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  displayName String
+  avatar      String?  // avatar url can be null
+  createdAt   DateTime @default(now())
+  rank        Int?     // player's ranking number (1 = top)
+
+  challengesCreated Challenge[] @relation("UserChallengesCreated")
+  challengesTargeted Challenge[] @relation("UserChallengesTargeted")
+}
+
+model Challenge {
+  id           String   @id @default(cuid())
+  creatorId    String
+  creator      User     @relation("UserChallengesCreated", fields: [creatorId], references: [id])
+  targetUserId String
+  targetUser   User     @relation("UserChallengesTargeted", fields: [targetUserId], references: [id])
+  discipline   String
+  gamesToWin   Int
+  status       String   // pending, proposed, scheduled, completed, cancelled
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  venue        String?
+  scheduledAt  DateTime?
+  confirmedAt  DateTime?
+}
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}

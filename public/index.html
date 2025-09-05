@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Top of the Capital</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="god-rays-container"></div>
+
+  <div id="auth-container" class="auth-container">
+    <div class="auth-form">
+        <h1 class="main-title">Top of the Capital</h1>
+        <p class="subtitle">Helena's King of the Hill</p>
+        <div class="input-group">
+            <input id="email" type="email" placeholder="Email Address">
+            <input id="password" type="password" placeholder="Password">
+            <input id="displayName" placeholder="Display Name (Optional)">
+        </div>
+        <div class="button-group">
+            <button id="btnRegister" class="btn">Register</button>
+            <button id="btnLogin" class="btn">Login</button>
+        </div>
+        <p id="authMsg"></p>
+    </div>
+  </div>
+
+  <main id="app-container" class="app-container hidden">
+    
+    <aside class="plinth plinth-left">
+      <div id="profile-card" class="card marble-card">
+        <h2 id="myName"></h2>
+        <p id="myRating"></p>
+      </div>
+      <div id="challenge-card" class="card marble-card">
+        <h3>Challenge</h3>
+        <div id="selectedTarget"></div>
+        <div id="challengeForm" class="hidden">
+          <div class="custom-select-wrapper">
+            <select id="discipline"></select>
+          </div>
+          <div class="custom-select-wrapper">
+            <select id="gamesToWin"></select>
+          </div>
+          <button id="sendChallenge" class="btn">Send</button>
+          <button id="cancelTarget" class="btn btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </aside>
+
+    <section id="ziggurat-container" class="ziggurat-container">
+        <div id="leaderboard" class="ziggurat">
+            <!-- Leaderboard items will be injected here -->
+        </div>
+    </section>
+
+    <aside class="plinth plinth-right">
+        <div id="matches-card" class="card marble-card">
+            <h3>Live Matches</h3>
+            <div class="custom-select-wrapper">
+                <select id="opponentSelect"></select>
+            </div>
+            <div class="custom-select-wrapper">
+                <select id="liveGamesToWin"></select>
+            </div>
+            <button id="createMatch" class="btn">Create</button>
+            <div id="activeMatches"></div>
+        </div>
+        <div id="feed-card" class="card marble-card">
+            <h3>Feed & Notifications</h3>
+            <div id="feed"></div>
+            <hr/>
+            <div id="notifications"></div>
+        </div>
+    </aside>
+
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
+
