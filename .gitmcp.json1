@@ -1,0 +1,76 @@
+{
+  "version": "1.0",
+  "name": "top-of-the-capital",
+  "description": "Pool league management system with real-time features and elegant green/gray UI design",
+  "main_branch": "main",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/[username]/top-of-the-capital-v2",
+    "clone_url": "git clone https://github.com/[username]/top-of-the-capital-v2.git"
+  },
+  "features": {
+    "ai_assistance": true,
+    "code_review": true,
+    "documentation": true,
+    "issue_management": true,
+    "automated_testing": true,
+    "deployment_assistance": true
+  },
+  "file_patterns": {
+    "source": [
+      "*.js",
+      "*.html", 
+      "*.css",
+      "public/**/*",
+      "server.js"
+    ],
+    "config": [
+      "*.json",
+      "*.md",
+      ".env.example",
+      ".gitignore"
+    ],
+    "docs": [
+      "README.md",
+      "CHANGELOG.md", 
+      "CONTRIBUTING.md",
+      "SETUP_GUIDE.md",
+      "GITMCP_INTEGRATION.md"
+    ]
+  },
+  "ignore_patterns": [
+    "node_modules/",
+    "*.log",
+    ".env*",
+    "!.env.example",
+    "db_backup.json",
+    "screenshots/",
+    "*.zip",
+    "*.bundle"
+  ],
+  "ai_context": {
+    "application_type": "Pool League Management System",
+    "key_features": [
+      "User authentication with dropdown player selection",
+      "Real-time leaderboard and rankings",
+      "Challenge system between players",
+      "Notification system",
+      "Community activity feed",
+      "Avatar upload functionality",
+      "Elegant green and gray UI theme"
+    ],
+    "tech_stack": {
+      "backend": "Node.js + Express + Socket.IO",
+      "frontend": "HTML5 + CSS3 + Vanilla JavaScript",
+      "database": "JSON file storage",
+      "authentication": "JWT + bcrypt",
+      "fonts": "Cinzel Decorative + Cormorant Garamond"
+    },
+    "current_status": "Production-ready with 70 real player database"
+  },
+  "ai_instructions": {
+    "code_style": "Follow existing patterns in server.js and app.js. Maintain elegant green/gray theme consistency.",
+    "ui_guidelines": "Preserve the sophisticated green and gray color scheme with Cinzel Decorative titles and Cormorant Garamond body text.",
+    "security_focus": "Pay special attention to authentication flows, password handling, and user data protection."
+  }
+}
