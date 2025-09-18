@@ -1,0 +1,4 @@
+C:\Users\cdali\AppData\Roaming\npm
++-- npm@11.6.0
+`-- vercel@44.5.4
+

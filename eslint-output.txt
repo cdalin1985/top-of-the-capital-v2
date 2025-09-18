@@ -1,0 +1,397 @@
+
+C:\Users\cdali\Downloads\capital-ladder-app\create_test_user.js
+   6:5  warning  Unexpected console statement  no-console
+  20:5  warning  Unexpected console statement  no-console
+  23:7  warning  Unexpected console statement  no-console
+  24:7  warning  Unexpected console statement  no-console
+  25:7  warning  Unexpected console statement  no-console
+  28:7  warning  Unexpected console statement  no-console
+  39:7  warning  Unexpected console statement  no-console
+  42:5  warning  Unexpected console statement  no-console
+
+C:\Users\cdali\Downloads\capital-ladder-app\demo-setup.js
+   26:1   warning  Async function 'setupDemoData' has too many lines (113). Maximum allowed is 50  max-lines-per-function
+   27:3   warning  Unexpected console statement                                                    no-console
+   31:5   warning  Unexpected console statement                                                    no-console
+   37:5   warning  Unexpected console statement                                                    no-console
+   41:30  warning  Unexpected `await` inside a loop                                                no-await-in-loop
+   42:20  warning  Unexpected `await` inside a loop                                                no-await-in-loop
+   51:7   warning  Unexpected console statement                                                    no-console
+   55:5   warning  Unexpected console statement                                                    no-console
+   67:5   warning  Unexpected console statement                                                    no-console
+   81:5   warning  Unexpected console statement                                                    no-console
+   84:5   warning  Unexpected console statement                                                    no-console
+  108:5   warning  Unexpected console statement                                                    no-console
+  110:5   warning  Unexpected console statement                                                    no-console
+  111:5   warning  Unexpected console statement                                                    no-console
+  112:5   warning  Unexpected console statement                                                    no-console
+  113:5   warning  Unexpected console statement                                                    no-console
+  114:5   warning  Unexpected console statement                                                    no-console
+  117:7   warning  Unexpected console statement                                                    no-console
+  122:5   warning  Unexpected console statement                                                    no-console
+  124:5   warning  Unexpected console statement                                                    no-console
+  125:5   warning  Unexpected console statement                                                    no-console
+  126:5   warning  Unexpected console statement                                                    no-console
+  127:5   warning  Unexpected console statement                                                    no-console
+  128:5   warning  Unexpected console statement                                                    no-console
+  129:5   warning  Unexpected console statement                                                    no-console
+  131:5   warning  Unexpected console statement                                                    no-console
+  133:5   warning  Unexpected console statement                                                    no-console
+
+C:\Users\cdali\Downloads\capital-ladder-app\lib\analytics-service-simple.js
+  165:3  warning  Async method 'getPlayerSegments' has too many lines (82). Maximum allowed is 50  max-lines-per-function
+
+C:\Users\cdali\Downloads\capital-ladder-app\lib\analytics-service.js
+  116:3   warning  Async method 'getBaseHealthMetrics' has too many lines (75). Maximum allowed is 50  max-lines-per-function
+  195:3   warning  Async method 'getPlayerSegments' has too many lines (137). Maximum allowed is 50    max-lines-per-function
+  476:32  error    'period' is defined but never used. Allowed unused args must match /^_/u            no-unused-vars
+  497:34  error    'period' is defined but never used. Allowed unused args must match /^_/u            no-unused-vars
+
+C:\Users\cdali\Downloads\capital-ladder-app\lib\notification-service.js
+  222:45  error  'results' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+
+C:\Users\cdali\Downloads\capital-ladder-app\middleware\auth.js
+   17:3   warning  Static method 'authenticate' has too many lines (53). Maximum allowed is 50             max-lines-per-function
+   74:3   warning  Static async method 'authenticateAdmin' has too many lines (60). Maximum allowed is 50  max-lines-per-function
+  152:14  error    'error' is defined but never used                                                       no-unused-vars
+  315:14  error    'error' is defined but never used                                                       no-unused-vars
+
+C:\Users\cdali\Downloads\capital-ladder-app\middleware\error-handler.js
+  41:3   warning  Static method 'categorizeError' has too many lines (93). Maximum allowed is 50  max-lines-per-function
+  41:25  warning  Static method 'categorizeError' has a complexity of 20. Maximum allowed is 10   complexity
+
+C:\Users\cdali\Downloads\capital-ladder-app\middleware\response-formatter.js
+  91:49  error  'message' is assigned a value but never used. Allowed unused args must match /^_/u  no-unused-vars
+
+C:\Users\cdali\Downloads\capital-ladder-app\middleware\validation.js
+   30:3   warning  Static method 'validateData' has too many lines (111). Maximum allowed is 50  max-lines-per-function
+   30:22  warning  Static method 'validateData' has a complexity of 47. Maximum allowed is 10    complexity
+   95:17  error    'itemErrors' is assigned a value but never used                               no-unused-vars
+  145:22  warning  Static method 'validateType' has a complexity of 14. Maximum allowed is 10    complexity
+  191:3   warning  Static getter 'schemas' has too many lines (199). Maximum allowed is 50       max-lines-per-function
+  399:13  error    'password' is assigned a value but never used                                 no-unused-vars
+
+C:\Users\cdali\Downloads\capital-ladder-app\prisma\seed.js
+  12:5  warning  Unexpected console statement  no-console
+  30:3  warning  Unexpected console statement  no-console
+  35:5  warning  Unexpected console statement  no-console
+
+C:\Users\cdali\Downloads\capital-ladder-app\public\analytics.js
+    10:5   error    'currentUser' is assigned a value but never used                                         no-unused-vars
+    33:3   warning  Unexpected console statement                                                             no-console
+    37:1   warning  Function 'setupAnalyticsEventListeners' has too many lines (84). Maximum allowed is 50   max-lines-per-function
+   161:5   warning  Unexpected console statement                                                             no-console
+   163:5   warning  Unexpected console statement                                                             no-console
+   195:5   warning  Unexpected console statement                                                             no-console
+   201:1   warning  Function 'updateOverviewMetrics' has too many lines (59). Maximum allowed is 50          max-lines-per-function
+   201:1   warning  Function 'updateOverviewMetrics' has a complexity of 29. Maximum allowed is 10           complexity
+   285:5   warning  Unexpected console statement                                                             no-console
+   302:1   warning  Async function 'loadPlayerList' has a complexity of 13. Maximum allowed is 10            complexity
+   334:5   warning  Unexpected console statement                                                             no-console
+   404:5   warning  Unexpected console statement                                                             no-console
+   410:1   warning  Function 'updateChallengeFlow' has a complexity of 18. Maximum allowed is 10             complexity
+   466:5   warning  Unexpected console statement                                                             no-console
+   524:5   warning  Unexpected console statement                                                             no-console
+   568:1   warning  Function 'createActivityChart' has too many lines (60). Maximum allowed is 50            max-lines-per-function
+   676:34  error    'data' is defined but never used. Allowed unused args must match /^_/u                   no-unused-vars
+   682:1   warning  Function 'createMatchTrendsChart' has too many lines (55). Maximum allowed is 50         max-lines-per-function
+   780:1   warning  Function 'createGrowthChart' has too many lines (66). Maximum allowed is 50              max-lines-per-function
+   849:9   error    'params' is assigned a value but never used                                              no-unused-vars
+   866:3   warning  Unexpected console statement                                                             no-console
+   872:3   warning  Unexpected console statement                                                             no-console
+   963:3   warning  Unexpected console statement                                                             no-console
+  1016:44  error    'duration' is assigned a value but never used. Allowed unused args must match /^_/u      no-unused-vars
+  1018:3   warning  Unexpected console statement                                                             no-console
+  1022:1   warning  Function 'setupAnalyticsSocket' has too many lines (59). Maximum allowed is 50           max-lines-per-function
+  1024:5   warning  Unexpected console statement                                                             no-console
+  1045:5   warning  Unexpected console statement                                                             no-console
+  1053:5   warning  Unexpected console statement                                                             no-console
+  1058:5   warning  Unexpected console statement                                                             no-console
+  1063:5   warning  Unexpected console statement                                                             no-console
+  1083:1   warning  Function 'setupAnalyticsSocketListeners' has too many lines (65). Maximum allowed is 50  max-lines-per-function
+  1157:5   warning  Unexpected console statement                                                             no-console
+  1174:7   warning  Unexpected console statement                                                             no-console
+  1178:9   warning  Unexpected console statement                                                             no-console
+  1181:7   warning  Unexpected console statement                                                             no-console
+  1261:3   warning  Unexpected console statement                                                             no-console
+  1277:3   warning  Unexpected console statement                                                             no-console
+  1308:3   warning  Unexpected console statement                                                             no-console
+  1355:3   warning  Unexpected console statement                                                             no-console
+  1406:3   warning  Unexpected console statement                                                             no-console
+  1411:3   warning  Unexpected console statement                                                             no-console
+  1435:1   warning  Async function 'updatePlayerMetricsOnly' has a complexity of 16. Maximum allowed is 10   complexity
+  1474:5   warning  Unexpected console statement                                                             no-console
+  1503:5   warning  Unexpected console statement                                                             no-console
+  1537:5   warning  Unexpected console statement                                                             no-console
+  1544:3   warning  Unexpected console statement                                                             no-console
+
+C:\Users\cdali\Downloads\capital-ladder-app\public\app.js
+     1:47  warning  Arrow function has too many lines (1787). Maximum allowed is 50                            max-lines-per-function
+   246:3   warning  Function 'connectSocket' has too many lines (92). Maximum allowed is 50                    max-lines-per-function
+   254:7   warning  Unexpected console statement                                                               no-console
+   261:9   warning  Unexpected console statement                                                               no-console
+   266:7   warning  Unexpected console statement                                                               no-console
+   356:7   warning  Unexpected console statement                                                               no-console
+   387:3   warning  Function 'renderLeaderboard' has too many lines (65). Maximum allowed is 50                max-lines-per-function
+   392:20  warning  Arrow function has too many lines (59). Maximum allowed is 50                              max-lines-per-function
+   495:3   warning  Function 'populateOpponentSelect' has too many lines (53). Maximum allowed is 50           max-lines-per-function
+   560:14  error    'err' is defined but never used                                                            no-unused-vars
+   603:17  error    'liveMatch' is assigned a value but never used                                             no-unused-vars
+   616:3   warning  Function 'renderActiveMatches' has too many lines (172). Maximum allowed is 50             max-lines-per-function
+   646:22  warning  Arrow function has too many lines (141). Maximum allowed is 50                             max-lines-per-function
+   646:22  warning  Arrow function has a complexity of 18. Maximum allowed is 10                               complexity
+   727:52  warning  Arrow function has too many lines (58). Maximum allowed is 50                              max-lines-per-function
+   728:41  warning  Async arrow function has too many lines (56). Maximum allowed is 50                        max-lines-per-function
+   793:14  error    'e' is defined but never used                                                              no-unused-vars
+   869:14  error    'err' is defined but never used                                                            no-unused-vars
+   878:14  error    'err' is defined but never used                                                            no-unused-vars
+   934:3   warning  Function 'renderAwaitingConfirmation' has too many lines (66). Maximum allowed is 50       max-lines-per-function
+   947:24  warning  Arrow function has too many lines (52). Maximum allowed is 50                              max-lines-per-function
+  1014:16  error    'e' is defined but never used                                                              no-unused-vars
+  1110:3   warning  Function 'setupChallengeCreateHandlers' has too many lines (87). Maximum allowed is 50     max-lines-per-function
+  1117:37  warning  Async arrow function has too many lines (68). Maximum allowed is 50                        max-lines-per-function
+  1117:37  warning  Async arrow function has a complexity of 15. Maximum allowed is 10                         complexity
+  1198:3   warning  Function 'setupChallengeProposalUI' has too many lines (74). Maximum allowed is 50         max-lines-per-function
+  1211:35  warning  Async arrow function has a complexity of 19. Maximum allowed is 10                         complexity
+  1337:3   warning  Function 'showMatchCompletionCelebration' has too many lines (101). Maximum allowed is 50  max-lines-per-function
+  1337:3   warning  Function 'showMatchCompletionCelebration' has a complexity of 18. Maximum allowed is 10    complexity
+  1490:3   warning  Function 'setupCounterProposalUI' has too many lines (75). Maximum allowed is 50           max-lines-per-function
+  1503:35  warning  Async arrow function has too many lines (51). Maximum allowed is 50                        max-lines-per-function
+  1503:35  warning  Async arrow function has a complexity of 19. Maximum allowed is 10                         complexity
+  1581:3   warning  Function 'refreshTips' has too many lines (119). Maximum allowed is 50                     max-lines-per-function
+
+C:\Users\cdali\Downloads\capital-ladder-app\public\audio-manager.js
+   21:14  error    'e' is defined but never used                                               no-unused-vars
+   22:7   warning  Unexpected console statement                                                no-console
+  285:46  error    'duration' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+  336:9   warning  Unexpected console statement                                                no-console
+  400:3   warning  Method 'addAudioStyles' has too many lines (181). Maximum allowed is 50     max-lines-per-function
+
+C:\Users\cdali\Downloads\capital-ladder-app\public\chat-system.js
+   21:5   warning  Unexpected console statement                                                    no-console
+   95:3   warning  Method 'setupChatInputBehavior' has too many lines (60). Maximum allowed is 50  max-lines-per-function
+  442:11  error    'colors' is assigned a value but never used                                     no-unused-vars
+  486:3   warning  Method 'loadMockMessages' has too many lines (65). Maximum allowed is 50        max-lines-per-function
+  556:7   warning  Unexpected console statement                                                    no-console
+
+C:\Users\cdali\Downloads\capital-ladder-app\public\data-analytics.js
+   18:5   warning  Unexpected console statement                                                          no-console
+   58:14  error    'error' is defined but never used                                                     no-unused-vars
+   59:7   warning  Unexpected console statement                                                          no-console
+   65:3   warning  Method 'generateMockAnalyticsData' has too many lines (112). Maximum allowed is 50    max-lines-per-function
+   65:29  error    'userId' is defined but never used. Allowed unused args must match /^_/u              no-unused-vars
+  178:3   warning  Method 'generatePerformanceInsights' has too many lines (104). Maximum allowed is 50  max-lines-per-function
+  283:3   warning  Method 'generateAchievements' has too many lines (63). Maximum allowed is 50          max-lines-per-function
+  349:11  error    'avgRecentPerformance' is assigned a value but never used                             no-unused-vars
+  418:14  error    'error' is defined but never used                                                     no-unused-vars
+  419:7   warning  Unexpected console statement                                                          no-console
+  432:81  error    'i' is defined but never used. Allowed unused args must match /^_/u                   no-unused-vars
+  778:3   warning  Method 'populateHeadToHeadModal' has too many lines (87). Maximum allowed is 50       max-lines-per-function
+  917:5   warning  Unexpected console statement                                                          no-console
+
+C:\Users\cdali\Downloads\capital-ladder-app\public\dynamic-themes.js
+   17:5   warning  Unexpected console statement                                         no-console
+   29:3   warning  Method 'loadThemes' has too many lines (137). Maximum allowed is 50  max-lines-per-function
+  189:11  warning  Unexpected console statement                                         no-console
+  200:9   warning  Unexpected console statement                                         no-console
+  209:11  warning  Unexpected console statement                                         no-console
+  271:3   warning  Method 'switchTheme' has too many lines (54). Maximum allowed is 50  max-lines-per-function
+  273:7   warning  Unexpected console statement                                         no-console
+  300:20  error    'e' is defined but never used                                        no-unused-vars
+  309:7   warning  Unexpected console statement                                         no-console
+  419:3   warning  Method 'createModal' has too many lines (52). Maximum allowed is 50  max-lines-per-function
+
+C:\Users\cdali\Downloads\capital-ladder-app\public\notification-manager.js
+   30:7   warning  Unexpected console statement                                                 no-console
+   37:7   warning  Unexpected console statement                                                 no-console
+   50:7   warning  Unexpected console statement                                                 no-console
+   66:13  warning  Unexpected console statement                                                 no-console
+   70:13  warning  Unexpected console statement                                                 no-console
+   85:7   warning  Unexpected console statement                                                 no-console
+  103:7   warning  Unexpected console statement                                                 no-console
+  137:7   warning  Unexpected console statement                                                 no-console
+  164:9   warning  Unexpected console statement                                                 no-console
+  178:9   warning  Unexpected console statement                                                 no-console
+  184:7   warning  Unexpected console statement                                                 no-console
+  211:7   warning  Unexpected console statement                                                 no-console
+  232:7   warning  Unexpected console statement                                                 no-console
+  235:7   warning  Unexpected console statement                                                 no-console
+  256:7   warning  Unexpected console statement                                                 no-console
+  317:7   warning  Unexpected console statement                                                 no-console
+  341:3   warning  Method 'showPermissionModal' has too many lines (51). Maximum allowed is 50  max-lines-per-function
+  410:3   warning  Unexpected console statement                                                 no-console
+
+C:\Users\cdali\Downloads\capital-ladder-app\public\player-stats.js
+   44:14  error    'error' is defined but never used                                             no-unused-vars
+   45:7   warning  Unexpected console statement                                                  no-console
+   55:3   warning  Method 'generateMockStats' has too many lines (59). Maximum allowed is 50     max-lines-per-function
+  127:3   warning  Method 'createStatsModal' has too many lines (165). Maximum allowed is 50     max-lines-per-function
+  464:3   warning  Method 'renderRankingHistory' has too many lines (65). Maximum allowed is 50  max-lines-per-function
+
+C:\Users\cdali\Downloads\capital-ladder-app\public\pool-table-viz.js
+    7:3  warning  Constructor has too many lines (62). Maximum allowed is 50                   max-lines-per-function
+   71:5  warning  Unexpected console statement                                                 no-console
+  140:3  warning  Method 'getPoolTableContent' has too many lines (59). Maximum allowed is 50  max-lines-per-function
+  211:3  warning  Method 'setupCanvasEvents' has too many lines (88). Maximum allowed is 50    max-lines-per-function
+  328:3  warning  Method 'drawTable' has too many lines (51). Maximum allowed is 50            max-lines-per-function
+  380:3  warning  Method 'drawBall' has too many lines (61). Maximum allowed is 50             max-lines-per-function
+  706:3  warning  Method 'createModal' has too many lines (52). Maximum allowed is 50          max-lines-per-function
+
+C:\Users\cdali\Downloads\capital-ladder-app\public\sw.js
+    9:3   warning  Unexpected console statement                            no-console
+   24:13  warning  Unexpected console statement                            no-console
+   28:9   warning  Unexpected console statement                            no-console
+   35:3   warning  Unexpected console statement                            no-console
+   42:13  warning  Unexpected console statement                            no-console
+   53:3   warning  Unexpected console statement                            no-console
+   59:5   warning  Unexpected console statement                            no-console
+   68:3   warning  Unexpected console statement                            no-console
+   98:5   warning  Unexpected console statement                            no-console
+  100:5   warning  Unexpected console statement                            no-console
+  106:3   warning  Unexpected console statement                            no-console
+  124:9   warning  Unexpected console statement                            no-console
+  134:9   warning  Unexpected console statement                            no-console
+  139:7   warning  Unexpected console statement                            no-console
+  167:5   warning  Unexpected console statement                            no-console
+  173:3   warning  Unexpected console statement                            no-console
+  184:9   warning  Unexpected console statement                            no-console
+  187:9   warning  Unexpected `await` inside a loop                        no-await-in-loop
+  191:11  warning  Blocks are nested too deeply (5). Maximum allowed is 4  max-depth
+  192:13  warning  Unexpected `await` inside a loop                        no-await-in-loop
+  194:13  warning  Unexpected console statement                            no-console
+  203:5   warning  Unexpected console statement                            no-console
+  207:5   warning  Unexpected console statement                            no-console
+  215:3   warning  Unexpected console statement                            no-console
+  224:3   warning  Unexpected console statement                            no-console
+  229:5   warning  Unexpected console statement                            no-console
+  231:5   warning  Unexpected console statement                            no-console
+  237:3   warning  Unexpected console statement                            no-console
+  246:3   warning  Unexpected console statement                            no-console
+  250:3   warning  Unexpected console statement                            no-console
+  253:1   warning  Unexpected console statement                            no-console
+
+C:\Users\cdali\Downloads\capital-ladder-app\public\visual-effects.js
+   23:5   warning  Unexpected console statement                                              no-console
+  124:3   warning  Method 'animateParticles' has too many lines (52). Maximum allowed is 50  max-lines-per-function
+  124:19  warning  Method 'animateParticles' has a complexity of 11. Maximum allowed is 10   complexity
+  177:3   warning  Method 'drawParticle' has too many lines (59). Maximum allowed is 50      max-lines-per-function
+  290:5   warning  Unexpected console statement                                              no-console
+  624:7   warning  Unexpected console statement                                              no-console
+  768:11  error    'avatarsToggle' is assigned a value but never used                        no-unused-vars
+  769:11  error    'spectatorToggle' is assigned a value but never used                      no-unused-vars
+  820:5   warning  Unexpected console statement                                              no-console
+
+C:\Users\cdali\Downloads\capital-ladder-app\routes\analytics.js
+   42:12  error    'error' is defined but never used                                    no-unused-vars
+   75:5   warning  Unexpected console statement                                         no-console
+   96:5   warning  Unexpected console statement                                         no-console
+  108:50  warning  Async arrow function has too many lines (76). Maximum allowed is 50  max-lines-per-function
+  177:5   warning  Unexpected console statement                                         no-console
+  211:5   warning  Unexpected console statement                                         no-console
+  223:51  warning  Async arrow function has too many lines (71). Maximum allowed is 50  max-lines-per-function
+  287:5   warning  Unexpected console statement                                         no-console
+  310:5   warning  Unexpected console statement                                         no-console
+
+C:\Users\cdali\Downloads\capital-ladder-app\routes\notifications.js
+   55:5  warning  Unexpected console statement  no-console
+   87:5  warning  Unexpected console statement  no-console
+  124:5  warning  Unexpected console statement  no-console
+  153:5  warning  Unexpected console statement  no-console
+  206:5  warning  Unexpected console statement  no-console
+  230:5  warning  Unexpected console statement  no-console
+  267:5  warning  Unexpected console statement  no-console
+  313:5  warning  Unexpected console statement  no-console
+  342:5  warning  Unexpected console statement  no-console
+
+C:\Users\cdali\Downloads\capital-ladder-app\routes\users.js
+    2:40  error    'param' is assigned a value but never used                            no-unused-vars
+   48:4   warning  Async arrow function has too many lines (68). Maximum allowed is 50   max-lines-per-function
+  151:48  warning  Async arrow function has too many lines (94). Maximum allowed is 50   max-lines-per-function
+  309:3   warning  Async arrow function has too many lines (68). Maximum allowed is 50   max-lines-per-function
+  545:46  warning  Async arrow function has too many lines (53). Maximum allowed is 50   max-lines-per-function
+  612:3   warning  Async arrow function has too many lines (105). Maximum allowed is 50  max-lines-per-function
+
+C:\Users\cdali\Downloads\capital-ladder-app\scripts\seed-achievements.js
+  201:1  warning  Async function 'seedAchievements' has too many lines (63). Maximum allowed is 50  max-lines-per-function
+  218:9  warning  Unexpected `await` inside a loop                                                  no-await-in-loop
+
+C:\Users\cdali\Downloads\capital-ladder-app\scripts\test-analytics.js
+  11:1  warning  Async function 'testAnalyticsAPI' has too many lines (247). Maximum allowed is 50  max-lines-per-function
+  11:1  warning  Async function 'testAnalyticsAPI' has a complexity of 88. Maximum allowed is 10    complexity
+
+C:\Users\cdali\Downloads\capital-ladder-app\scripts\test-notifications.js
+  11:1  warning  Async function 'testNotificationAPI' has too many lines (138). Maximum allowed is 50  max-lines-per-function
+  11:1  warning  Async function 'testNotificationAPI' has a complexity of 23. Maximum allowed is 10    complexity
+
+C:\Users\cdali\Downloads\capital-ladder-app\server.js
+   11:7   error    'fs' is assigned a value but never used                              no-unused-vars
+  103:12  error    'e' is defined but never used                                        no-unused-vars
+  263:3   warning  Async arrow function has too many lines (73). Maximum allowed is 50  max-lines-per-function
+  343:3   warning  Async arrow function has too many lines (59). Maximum allowed is 50  max-lines-per-function
+  372:11  error    'creator' is assigned a value but never used                         no-unused-vars
+  404:70  warning  Async arrow function has too many lines (53). Maximum allowed is 50  max-lines-per-function
+  463:3   warning  Async arrow function has too many lines (59). Maximum allowed is 50  max-lines-per-function
+  492:11  error    'target' is assigned a value but never used                          no-unused-vars
+  575:3   warning  Async arrow function has too many lines (85). Maximum allowed is 50  max-lines-per-function
+  575:3   warning  Async arrow function has a complexity of 12. Maximum allowed is 10   complexity
+  601:14  error    'e' is defined but never used                                        no-unused-vars
+  601:17  error    Empty block statement                                                no-empty
+  666:3   warning  Async arrow function has too many lines (57). Maximum allowed is 50  max-lines-per-function
+  752:12  error    'e' is defined but never used                                        no-unused-vars
+  784:29  warning  Arrow function has too many lines (54). Maximum allowed is 50        max-lines-per-function
+  807:14  error    'e' is defined but never used                                        no-unused-vars
+
+C:\Users\cdali\Downloads\capital-ladder-app\start-demo.js
+  13:3  warning  Unexpected console statement  no-console
+  19:5  warning  Unexpected console statement  no-console
+  29:7  warning  Unexpected console statement  no-console
+  40:7  warning  Unexpected console statement  no-console
+  44:5  warning  Unexpected console statement  no-console
+
+C:\Users\cdali\Downloads\capital-ladder-app\test_analytics_api.js
+   7:5  warning  Unexpected console statement  no-console
+  20:5  warning  Unexpected console statement  no-console
+  24:7  warning  Unexpected console statement  no-console
+  35:7  warning  Unexpected console statement  no-console
+  38:5  warning  Unexpected console statement  no-console
+
+C:\Users\cdali\Downloads\capital-ladder-app\test_realtime_analytics.js
+   34:3  warning  Unexpected console statement                                                 no-console
+  355:9  error    'startTime' is assigned a value but never used                               no-unused-vars
+  391:1  warning  Async function 'runAllTests' has too many lines (69). Maximum allowed is 50  max-lines-per-function
+
+C:\Users\cdali\Downloads\capital-ladder-app\tests\global-teardown.js
+  30:11  warning  Blocks are nested too deeply (5). Maximum allowed is 4  max-depth
+  32:13  warning  Unexpected `await` inside a loop                        no-await-in-loop
+
+C:\Users\cdali\Downloads\capital-ladder-app\tests\integration\api.test.js
+  38:27  error  'next' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+
+C:\Users\cdali\Downloads\capital-ladder-app\tests\setup.js
+   37:11  warning  Unexpected `await` inside a loop                                                           no-await-in-loop
+  133:3   warning  Async method 'makeAuthenticatedRequest' has too many parameters (5). Maximum allowed is 4  max-params
+  232:14  error    'error' is defined but never used                                                          no-unused-vars
+
+C:\Users\cdali\Downloads\capital-ladder-app\tests\test-utils.js
+  150:11  warning  Unexpected `await` inside a loop  no-await-in-loop
+  188:9   warning  Unexpected `await` inside a loop  no-await-in-loop
+
+C:\Users\cdali\Downloads\capital-ladder-app\tests\unit\middleware\auth.test.js
+   38:7   error  'AuthMiddleware' is assigned a value but never used  no-unused-vars
+  138:14  error  'error' is defined but never used                    no-unused-vars
+  160:14  error  'error' is defined but never used                    no-unused-vars
+  217:7   error  'mockUser' is assigned a value but never used        no-unused-vars
+
+C:\Users\cdali\Downloads\capital-ladder-app\tests\unit\middleware\error-handler.test.js
+  241:35  error  'req' is defined but never used. Allowed unused args must match /^_/u   no-unused-vars
+  241:40  error  'res' is defined but never used. Allowed unused args must match /^_/u   no-unused-vars
+  241:45  error  'next' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+  252:45  error  'next' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+
+C:\Users\cdali\Downloads\capital-ladder-app\tests\unit\middleware\validation-simple.test.js
+  10:7   error  'req' is assigned a value but never used   no-unused-vars
+  10:12  error  'res' is assigned a value but never used   no-unused-vars
+  10:17  error  'next' is assigned a value but never used  no-unused-vars
+
+Γ£û 318 problems (54 errors, 264 warnings)
+

@@ -13,10 +13,41 @@ model User {
   displayName String
   avatar      String?  // avatar url can be null
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt @default(now())
   rank        Int?     // player's ranking number (1 = top)
+  isAdmin     Boolean  @default(false) // Admin role flag
+  
+  // Enhanced Profile Fields
+  bio         String?  // Player biography/description
+  location    String?  // City/State location
+  favoriteGame String? // Preferred pool discipline
+  playingSince DateTime? // When they started playing pool
+  homeVenue   String?  // Primary playing venue
+  isActive    Boolean  @default(true) // Account status
+  lastActiveAt DateTime @default(now()) // Last activity timestamp
+  
+  // Privacy Settings
+  profileVisibility String @default("public") // public, friends, private
+  showStats         Boolean @default(true)
+  showLocation      Boolean @default(false)
+  showLastActive    Boolean @default(true)
 
   challengesCreated Challenge[] @relation("UserChallengesCreated")
   challengesTargeted Challenge[] @relation("UserChallengesTargeted")
+
+  matchesAsPlayer1 Match[] @relation("MatchPlayer1")
+  matchesAsPlayer2 Match[] @relation("MatchPlayer2")
+  matchesWon       Match[] @relation("MatchWinner")
+  
+  // Push notification relations
+  pushSubscriptions        PushSubscription[]
+  notificationPreferences  NotificationPreferences?
+  notificationHistory      NotificationHistory[]
+  
+  // Enhanced Profile Relations
+  achievements            PlayerAchievement[]
+  statistics              PlayerStatistics?
+  profileViews            ProfileView[]
 }
 
 model Challenge {
@@ -27,13 +58,220 @@ model Challenge {
   targetUser   User     @relation("UserChallengesTargeted", fields: [targetUserId], references: [id])
   discipline   String
   gamesToWin   Int
-  status       String   // pending, proposed, scheduled, completed, cancelled
+  status       String   // pending, proposed, scheduled, in-progress, completed, cancelled
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   venue        String?
   scheduledAt  DateTime?
   confirmedAt  DateTime?
+
+  matches      Match[]
 }
+
+model Match {
+  id           String   @id @default(cuid())
+  challengeId  String?
+  challenge    Challenge? @relation(fields: [challengeId], references: [id])
+
+  player1Id    String
+  player1      User     @relation("MatchPlayer1", fields: [player1Id], references: [id])
+  player2Id    String
+  player2      User     @relation("MatchPlayer2", fields: [player2Id], references: [id])
+
+  discipline   String?
+  gamesToWin   Int
+  venue        String?
+  scores       Json
+  status       String   // active, completed
+  winnerId     String?
+  winner       User?    @relation("MatchWinner", fields: [winnerId], references: [id])
+
+  createdAt    DateTime @default(now())
+  completedAt  DateTime?
+}
+model PushSubscription {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint    String   @unique
+  p256dh      String   // keys.p256dh
+  auth        String   // keys.auth
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("push_subscriptions")
+}
+
+model NotificationPreferences {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challengesEnabled Boolean  @default(true)
+  matchesEnabled    Boolean  @default(true)
+  systemEnabled     Boolean  @default(true)
+  quietHoursStart   String?  // HH:MM format
+  quietHoursEnd     String?  // HH:MM format
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("notification_preferences")
+}
+
+model NotificationHistory {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String    // challenge, match, system
+  title     String
+  body      String
+  data      String?   // JSON string for additional payload data
+  sentAt    DateTime  @default(now())
+  readAt    DateTime?
+  clickedAt DateTime?
+
+  @@map("notification_history")
+}
+
+// Analytics Models
+model AnalyticsMetrics {
+  id           String   @id @default(cuid())
+  metricType   String   // 'player_activity', 'challenge_flow', 'match_completion'
+  metricName   String   // 'weekly_active_users', 'challenge_acceptance_rate'
+  value        Float    // The calculated metric value
+  metadata     String?  // JSON string for additional context data
+  periodStart  DateTime // Start of measurement period
+  periodEnd    DateTime // End of measurement period
+  calculatedAt DateTime @default(now())
+
+  @@unique([metricType, metricName, periodStart])
+  @@index([metricType, periodStart])
+  @@map("analytics_metrics")
+}
+
+model AnalyticsAlerts {
+  id             String    @id @default(cuid())
+  alertType      String    // 'player_inactivity', 'low_engagement', 'system_issue'
+  severity       String    // 'info', 'warning', 'critical'
+  title          String    // Alert display title
+  message        String    // Detailed alert message
+  data           String?   // JSON string for alert-specific data
+  triggeredAt    DateTime  @default(now())
+  acknowledgedAt DateTime? // When admin acknowledged the alert
+  acknowledgedBy String?   // User ID who acknowledged
+  resolvedAt     DateTime? // When alert was resolved
+
+  @@index([alertType, severity, triggeredAt])
+  @@map("analytics_alerts")
+}
+
+model AnalyticsCache {
+  id          String   @id @default(cuid())
+  cacheKey    String   @unique // Unique identifier for cached data
+  data        String   // JSON string for cached analytics data
+  expiresAt   DateTime // Cache expiration time
+  lastUpdated DateTime @default(now())
+
+  @@index([cacheKey, expiresAt])
+  @@map("analytics_cache")
+}
+
+// Player Achievement System
+model Achievement {
+  id          String   @id @default(cuid())
+  name        String   @unique // "First Win", "Win Streak 5", "Challenge Master"
+  description String   // Detailed achievement description
+  icon        String   // Icon/emoji for the achievement
+  category    String   // "wins", "streaks", "social", "milestones"
+  rarity      String   @default("common") // common, rare, epic, legendary
+  points      Int      @default(10) // Achievement points value
+  
+  // Achievement unlock criteria (JSON)
+  criteria    String   // JSON string defining unlock conditions
+  
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  
+  // Players who have earned this achievement
+  playerAchievements PlayerAchievement[]
+  
+  @@map("achievements")
+}
+
+model PlayerAchievement {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  
+  earnedAt      DateTime    @default(now())
+  isVisible     Boolean     @default(true) // Player can hide achievements
+  progress      Json?       // Progress data if achievement has multiple steps
+  
+  @@unique([userId, achievementId])
+  @@index([userId, earnedAt])
+  @@map("player_achievements")
+}
+
+model PlayerStatistics {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Match Statistics
+  totalMatches    Int      @default(0)
+  matchesWon      Int      @default(0)
+  matchesLost     Int      @default(0)
+  winPercentage   Float    @default(0.0)
+  
+  // Game Statistics
+  totalGames      Int      @default(0)
+  gamesWon        Int      @default(0)
+  gamesLost       Int      @default(0)
+  gameWinPercentage Float  @default(0.0)
+  
+  // Streak Statistics
+  currentWinStreak   Int   @default(0)
+  longestWinStreak   Int   @default(0)
+  currentLossStreak  Int   @default(0)
+  longestLossStreak  Int   @default(0)
+  
+  // Challenge Statistics
+  challengesSent     Int   @default(0)
+  challengesReceived Int   @default(0)
+  challengesAccepted Int   @default(0)
+  challengesDeclined Int   @default(0)
+  
+  // Activity Statistics
+  totalPlayTime      Int   @default(0) // in minutes
+  averageMatchTime   Int   @default(0) // in minutes
+  favoriteVenue      String?
+  favoriteOpponent   String? // Most played against user ID
+  
+  // Ranking Statistics
+  highestRank        Int?
+  lowestRank         Int?
+  rankingPoints      Int   @default(0)
+  
+  lastCalculated     DateTime @default(now())
+  
+  @@map("player_statistics")
+}
+
+model ProfileView {
+  id         String   @id @default(cuid())
+  viewerId   String   // User who viewed the profile
+  profileId  String   // User whose profile was viewed
+  profile    User     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  viewedAt   DateTime @default(now())
+  ipAddress  String?  // Optional IP tracking
+  userAgent  String?  // Optional user agent tracking
+  
+  @@index([profileId, viewedAt])
+  @@map("profile_views")
+}
+
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")

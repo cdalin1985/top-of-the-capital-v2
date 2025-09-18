@@ -1,0 +1,451 @@
+/*
+ * MOBILE-FIRST RESPONSIVE DESIGN
+ * Capital Ladder App - Pool League Mobile Experience
+ * 
+ * Approach: Mobile styles first, then enhance for larger screens
+ * Target: 99% mobile users with occasional desktop admin
+ */
+
+/* ===== MOBILE-FIRST FOUNDATION (320px+) ===== */
+/* Default styles optimized for mobile phones */
+
+:root {
+  /* Existing color variables */
+  --color-background: #0a0c0e;
+  --color-background-mist: #111418;
+  --color-marble-dark: #1a1d1c;
+  --color-marble-light: #2c302e;
+  --color-gold: #d4af37;
+  --color-gold-faded: rgba(212, 175, 55, 0.5);
+  --color-green-accent: #2e8b57;
+  --color-text: #eaeaea;
+  --color-text-muted: #888;
+  --font-heading: 'Cinzel', serif;
+  --font-body: 'Lato', sans-serif;
+  --ease-monumental: cubic-bezier(0.7, 0, 0.3, 1);
+  
+  /* Mobile-specific spacing */
+  --mobile-padding: 16px;
+  --mobile-gap: 12px;
+  --touch-target: 44px;
+  --mobile-font-base: 16px;
+  --mobile-font-large: 18px;
+  --mobile-font-small: 14px;
+}
+
+/* ===== MOBILE-FIRST RESET ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  /* Improve touch performance */
+  -webkit-tap-highlight-color: rgba(212, 175, 55, 0.2);
+}
+
+/* ===== MOBILE-OPTIMIZED BODY ===== */
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--mobile-font-base);
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Optimize for mobile scrolling */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===== MOBILE-FIRST APP LAYOUT ===== */
+.app-container {
+  /* Single column mobile layout */
+  display: flex;
+  flex-direction: column;
+  gap: var(--mobile-gap);
+  padding: var(--mobile-padding);
+  min-height: 100vh;
+  width: 100%;
+  /* Remove desktop grid completely on mobile */
+  grid-template-columns: none;
+  
+  /* Mobile entrance animation */
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.app-container.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== MOBILE USER HEADER ===== */
+.user-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mobile-gap);
+  padding: var(--mobile-padding);
+  background: linear-gradient(145deg, var(--color-marble-light), var(--color-marble-dark));
+  border-radius: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  margin-bottom: var(--mobile-gap);
+}
+
+.user-profile-centered {
+  text-align: center;
+}
+
+.user-profile-centered h1 {
+  font-family: var(--font-heading);
+  font-size: var(--mobile-font-large);
+  color: var(--color-gold);
+  margin-bottom: 4px;
+}
+
+.user-profile-centered p {
+  font-size: var(--mobile-font-small);
+  color: var(--color-text-muted);
+}
+
+.user-controls {
+  display: flex;
+  justify-content: center;
+}
+
+/* ===== MOBILE LEADERBOARD (Priority #1) ===== */
+.ziggurat-container {
+  /* This is the most important section - make it prominent */
+  order: 1;
+  margin-bottom: var(--mobile-gap);
+}
+
+.ziggurat {
+  width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px; /* Tighter gaps on mobile */
+}
+
+.ziggurat-tier {
+  width: 100%;
+  padding: 12px var(--mobile-padding);
+  background: linear-gradient(145deg, var(--color-marble-dark), var(--color-marble-light));
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* Optimize for touch */
+  min-height: var(--touch-target);
+  /* Mobile-optimized typography */
+  font-size: var(--mobile-font-base);
+  line-height: 1.3;
+}
+
+.ziggurat-tier .rank {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--color-gold);
+  min-width: 40px; /* Smaller on mobile */
+  font-size: var(--mobile-font-base);
+}
+
+.ziggurat-tier .name {
+  flex: 1;
+  text-align: left; /* Left-align on mobile for better readability */
+  font-weight: 600;
+  color: var(--color-text);
+  padding: 0 var(--mobile-gap);
+  /* Truncate long names on mobile */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ziggurat-tier .rating {
+  min-width: 60px; /* Smaller on mobile */
+  text-align: right;
+  color: var(--color-text-muted);
+  font-size: var(--mobile-font-small);
+}
+
+/* ===== MOBILE CARD COMPONENTS ===== */
+.card {
+  background: linear-gradient(145deg, var(--color-marble-light), var(--color-marble-dark));
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 8px; /* Simpler radius for mobile */
+  padding: var(--mobile-padding);
+  margin-bottom: var(--mobile-gap);
+  /* Remove complex clip-path for mobile performance */
+  clip-path: none;
+  /* Subtle mobile shadow */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.card h3 {
+  font-family: var(--font-heading);
+  color: var(--color-gold);
+  font-size: var(--mobile-font-large);
+  margin-bottom: var(--mobile-gap);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-gold-faded);
+}
+
+/* ===== MOBILE BUTTONS & FORMS ===== */
+.btn {
+  /* Mobile-first button design */
+  min-height: var(--touch-target);
+  padding: 12px 24px;
+  background: transparent;
+  border: 2px solid var(--color-gold);
+  color: var(--color-gold);
+  font-family: var(--font-heading);
+  font-size: var(--mobile-font-base);
+  border-radius: 6px;
+  cursor: pointer;
+  /* Remove complex clip-path for mobile */
+  clip-path: none;
+  /* Better touch feedback */
+  transition: all 0.2s ease;
+  /* Ensure text doesn't wrap */
+  white-space: nowrap;
+  text-align: center;
+}
+
+.btn:active {
+  transform: scale(0.98);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mobile-gap);
+  margin-bottom: var(--mobile-gap);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mobile-gap);
+  margin-bottom: var(--mobile-gap);
+}
+
+input {
+  min-height: var(--touch-target);
+  padding: 12px var(--mobile-padding);
+  background: var(--color-marble-dark);
+  border: 1px solid var(--color-gold-faded);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: var(--mobile-font-base);
+  color: var(--color-text);
+  /* Mobile keyboard optimization */
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+/* ===== MOBILE SIDEBAR CONTENT ===== */
+.plinth {
+  /* Stack all sidebar content in mobile */
+  display: flex;
+  flex-direction: column;
+  gap: var(--mobile-gap);
+  /* No fixed positioning on mobile */
+  position: static;
+  transform: none;
+  animation: none;
+}
+
+.plinth-left {
+  order: 2; /* Challenge controls after leaderboard */
+}
+
+.plinth-right {
+  order: 3; /* Notifications last */
+}
+
+/* ===== MOBILE-SPECIFIC FEATURES ===== */
+/* Pull to refresh hint */
+.pull-refresh-hint {
+  text-align: center;
+  padding: var(--mobile-gap);
+  color: var(--color-text-muted);
+  font-size: var(--mobile-font-small);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Loading states for mobile */
+.mobile-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: calc(var(--mobile-padding) * 2);
+  color: var(--color-text-muted);
+}
+
+.mobile-loading::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-gold-faded);
+  border-top: 2px solid var(--color-gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: var(--mobile-gap);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== TABLET RESPONSIVE (768px+) ===== */
+@media (min-width: 768px) {
+  /* Slightly larger spacing for tablets */
+  :root {
+    --mobile-padding: 20px;
+    --mobile-gap: 16px;
+  }
+  
+  .app-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .ziggurat-tier .name {
+    text-align: center; /* Center align on tablet */
+  }
+  
+  /* Two-column layout for some cards on tablet */
+  .button-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .btn {
+    flex: 1;
+    min-width: 120px;
+  }
+}
+
+/* ===== DESKTOP ADMIN (1024px+) ===== */
+@media (min-width: 1024px) {
+  /* Desktop gets the 3-column layout back for admin use */
+  .app-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 2em;
+    max-width: none;
+    padding: 2em;
+  }
+  
+  .ziggurat-container {
+    order: 0; /* Reset order for grid layout */
+  }
+  
+  .plinth-left,
+  .plinth-right {
+    order: 0; /* Reset order for grid layout */
+  }
+  
+  .user-header {
+    grid-column: 1 / -1; /* Span all columns */
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .ziggurat-tier .name {
+    text-align: center; /* Desktop keeps center alignment */
+  }
+}
+
+/* ===== MOBILE AUTH SCREEN ===== */
+.auth-container {
+  padding: var(--mobile-padding);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 400px;
+  padding: calc(var(--mobile-padding) * 1.5);
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  text-align: center;
+}
+
+.main-title {
+  font-family: var(--font-heading);
+  font-size: 2.5em; /* Smaller on mobile */
+  font-weight: 700;
+  color: var(--color-gold);
+  margin-bottom: 0.5em;
+  text-shadow: 0 0 10px var(--color-gold-faded);
+  /* Responsive title sizing */
+  line-height: 1.1;
+}
+
+.subtitle {
+  font-size: var(--mobile-font-base);
+  color: var(--color-text-muted);
+  margin-bottom: 2em;
+  font-weight: 300;
+}
+
+/* ===== MOBILE PERFORMANCE OPTIMIZATIONS ===== */
+/* Reduce animations on mobile for performance */
+@media (max-width: 767px) {
+  * {
+    animation-duration: 0.3s !important;
+    transition-duration: 0.2s !important;
+  }
+  
+  /* Disable complex animations on mobile */
+  .god-rays-container {
+    display: none;
+  }
+  
+  .futuristic-tips::before {
+    animation: none;
+  }
+}
+
+/* ===== ACCESSIBILITY FOR MOBILE ===== */
+/* Ensure touch targets are accessible */
+button, input, select, textarea, a {
+  min-height: var(--touch-target);
+  min-width: var(--touch-target);
+}
+
+/* High contrast for mobile screens */
+@media (max-width: 767px) and (prefers-contrast: high) {
+  .ziggurat-tier {
+    border-width: 2px;
+  }
+  
+  .card {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

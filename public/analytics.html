@@ -1,0 +1,393 @@
+<!-- Analytics Dashboard Section -->
+<div id="analytics-container" class="analytics-container hidden">
+  <!-- Analytics Navigation Tabs -->
+  <nav class="analytics-nav">
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-tab="overview">
+        <span class="tab-icon">📊</span>
+        <span class="tab-text">Overview</span>
+      </button>
+      <button class="nav-tab" data-tab="players">
+        <span class="tab-icon">👥</span>
+        <span class="tab-text">Players</span>
+      </button>
+      <button class="nav-tab" data-tab="competition">
+        <span class="tab-icon">🏆</span>
+        <span class="tab-text">Competition</span>
+      </button>
+      <button class="nav-tab" data-tab="trends">
+        <span class="tab-icon">📈</span>
+        <span class="tab-text">Trends</span>
+      </button>
+    </div>
+
+    <div class="analytics-controls">
+      <select id="analytics-period" class="period-selector">
+        <option value="24h">24 Hours</option>
+        <option value="7d">7 Days</option>
+        <option value="30d" selected>30 Days</option>
+        <option value="90d">90 Days</option>
+        <option value="1y">1 Year</option>
+      </select>
+      <button id="refresh-analytics" class="btn btn-refresh">
+        <span class="refresh-icon">🔄</span>
+        Refresh
+      </button>
+    </div>
+  </nav>
+
+  <!-- Overview Tab -->
+  <div id="overview-tab" class="analytics-tab active">
+    <div class="analytics-header">
+      <h2 class="analytics-title">League Analytics Overview</h2>
+      <div class="last-updated">Last updated: <span id="last-updated-time">Loading...</span></div>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="metrics-grid">
+      <div class="metric-card health-card">
+        <div class="metric-icon">⚡</div>
+        <div class="metric-content">
+          <div class="metric-label">League Health</div>
+          <div class="metric-value" id="league-health">--</div>
+          <div class="metric-trend" id="health-trend">
+            <span class="trend-arrow">--</span>
+            <span class="trend-text">--</span>
+          </div>
+        </div>
+        <div class="metric-chart">
+          <div class="health-indicator" id="health-indicator"></div>
+        </div>
+      </div>
+
+      <div class="metric-card players-card">
+        <div class="metric-icon">👥</div>
+        <div class="metric-content">
+          <div class="metric-label">Active Players</div>
+          <div class="metric-value" id="active-players">--</div>
+          <div class="metric-trend" id="players-trend">
+            <span class="trend-arrow">--</span>
+            <span class="trend-text">--</span>
+          </div>
+        </div>
+        <div class="metric-breakdown" id="player-segments">
+          <div class="segment highly-active">
+            <div class="segment-label">Highly Active</div>
+            <div class="segment-value">--</div>
+          </div>
+          <div class="segment moderate">
+            <div class="segment-label">Moderate</div>
+            <div class="segment-value">--</div>
+          </div>
+          <div class="segment at-risk">
+            <div class="segment-label">At Risk</div>
+            <div class="segment-value">--</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="metric-card challenges-card">
+        <div class="metric-icon">⚔️</div>
+        <div class="metric-content">
+          <div class="metric-label">Pending Challenges</div>
+          <div class="metric-value" id="pending-challenges">--</div>
+          <div class="metric-subtitle" id="urgent-challenges">-- urgent</div>
+        </div>
+        <div class="metric-info" id="avg-response-time">
+          <div class="info-label">Avg Response Time</div>
+          <div class="info-value">-- days</div>
+        </div>
+      </div>
+
+      <div class="metric-card matches-card">
+        <div class="metric-icon">🎱</div>
+        <div class="metric-content">
+          <div class="metric-label">Match Completion</div>
+          <div class="metric-value" id="match-completion">--%</div>
+          <div class="metric-trend" id="completion-trend">
+            <span class="trend-arrow">--</span>
+            <span class="trend-text">--</span>
+          </div>
+        </div>
+        <div class="metric-info" id="completed-matches">
+          <div class="info-label">Completed</div>
+          <div class="info-value">--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-row">
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>League Activity (24h)</h3>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="activity-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>Player Segments</h3>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="segments-chart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Feed -->
+    <div class="activity-section">
+      <div class="section-header">
+        <h3>Recent Activity</h3>
+        <div class="activity-filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="challenges">Challenges</button>
+          <button class="filter-btn" data-filter="matches">Matches</button>
+        </div>
+      </div>
+      <div class="activity-feed" id="analytics-activity-feed">
+        <div class="loading-spinner">Loading activity...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Players Tab -->
+  <div id="players-tab" class="analytics-tab">
+    <div class="analytics-header">
+      <h2 class="analytics-title">Player Analytics</h2>
+      <div class="player-controls">
+        <select id="player-segment-filter" class="segment-filter">
+          <option value="all">All Players</option>
+          <option value="highly_active">Highly Active</option>
+          <option value="moderately_active">Moderately Active</option>
+          <option value="at_risk">At Risk</option>
+        </select>
+        <input
+          type="search"
+          id="player-search"
+          placeholder="Search players..."
+          class="player-search"
+        />
+      </div>
+    </div>
+
+    <!-- Player Segments Overview -->
+    <div class="segments-overview">
+      <div class="segment-card highly-active">
+        <div class="segment-header">
+          <div class="segment-icon">🔥</div>
+          <div class="segment-info">
+            <div class="segment-title">Highly Active</div>
+            <div class="segment-count" id="highly-active-count">--</div>
+          </div>
+        </div>
+        <div class="segment-description">Active within 7 days, 3+ activities</div>
+        <div class="segment-trend positive">↗️ Trending up</div>
+      </div>
+
+      <div class="segment-card moderate">
+        <div class="segment-header">
+          <div class="segment-icon">📊</div>
+          <div class="segment-info">
+            <div class="segment-title">Moderately Active</div>
+            <div class="segment-count" id="moderate-active-count">--</div>
+          </div>
+        </div>
+        <div class="segment-description">Active within 30 days, 1-2 activities</div>
+        <div class="segment-trend stable">➡️ Stable</div>
+      </div>
+
+      <div class="segment-card at-risk">
+        <div class="segment-header">
+          <div class="segment-icon">⚠️</div>
+          <div class="segment-info">
+            <div class="segment-title">At Risk</div>
+            <div class="segment-count" id="at-risk-count">--</div>
+          </div>
+        </div>
+        <div class="segment-description">Inactive 30+ days</div>
+        <div class="segment-trend negative">↘️ Needs attention</div>
+      </div>
+    </div>
+
+    <!-- Activity Heatmap -->
+    <div class="heatmap-section">
+      <div class="section-header">
+        <h3>Activity Heatmap (30 Days)</h3>
+      </div>
+      <div class="heatmap-container" id="activity-heatmap">
+        <div class="heatmap-placeholder">Activity heatmap will be displayed here</div>
+      </div>
+    </div>
+
+    <!-- Player List -->
+    <div class="player-list-section">
+      <div class="section-header">
+        <h3>Player List</h3>
+        <div class="list-controls">
+          <select id="sort-players" class="sort-select">
+            <option value="lastActive">Sort by Last Active</option>
+            <option value="name">Sort by Name</option>
+            <option value="challengeCount">Sort by Challenges</option>
+            <option value="matchCount">Sort by Matches</option>
+          </select>
+          <button id="sort-order" class="sort-order-btn" data-order="desc">↓</button>
+        </div>
+      </div>
+      <div class="player-list" id="analytics-player-list">
+        <div class="loading-spinner">Loading players...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Competition Tab -->
+  <div id="competition-tab" class="analytics-tab">
+    <div class="analytics-header">
+      <h2 class="analytics-title">Competition Analytics</h2>
+    </div>
+
+    <!-- Challenge Flow -->
+    <div class="challenge-flow-section">
+      <div class="section-header">
+        <h3>Challenge Flow (This Week)</h3>
+      </div>
+      <div class="challenge-funnel" id="challenge-funnel">
+        <div class="funnel-step">
+          <div class="step-label">Created</div>
+          <div class="step-value" id="challenges-created">--</div>
+          <div class="step-bar">
+            <div class="bar-fill" style="width: 100%"></div>
+          </div>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <div class="step-label">Accepted</div>
+          <div class="step-value" id="challenges-accepted">--</div>
+          <div class="step-bar">
+            <div class="bar-fill" id="accepted-bar"></div>
+          </div>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <div class="step-label">Scheduled</div>
+          <div class="step-value" id="challenges-scheduled">--</div>
+          <div class="step-bar">
+            <div class="bar-fill" id="scheduled-bar"></div>
+          </div>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <div class="step-label">Completed</div>
+          <div class="step-value" id="challenges-completed">--</div>
+          <div class="step-bar">
+            <div class="bar-fill" id="completed-bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Match Statistics -->
+    <div class="charts-row">
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>Match Trends</h3>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="match-trends-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>Popular Disciplines</h3>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="disciplines-chart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Venue Performance -->
+    <div class="venue-section">
+      <div class="section-header">
+        <h3>Venue Performance</h3>
+      </div>
+      <div class="venue-table">
+        <div class="table-header">
+          <div class="col-venue">Venue</div>
+          <div class="col-matches">Matches</div>
+          <div class="col-completion">Completion Rate</div>
+          <div class="col-time">Avg Time</div>
+        </div>
+        <div class="table-body" id="venue-performance-table">
+          <div class="loading-spinner">Loading venue data...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trends Tab -->
+  <div id="trends-tab" class="analytics-tab">
+    <div class="analytics-header">
+      <h2 class="analytics-title">Historical Trends</h2>
+      <div class="trend-controls">
+        <select id="comparison-period" class="period-selector">
+          <option value="3m">Last 3 Months</option>
+          <option value="6m">Last 6 Months</option>
+          <option value="1y">Last Year</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Growth Chart -->
+    <div class="chart-container full-width">
+      <div class="chart-header">
+        <h3>League Growth Over Time</h3>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="growth-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="comparison-section">
+      <div class="section-header">
+        <h3>Monthly Comparison</h3>
+      </div>
+      <div class="comparison-table">
+        <div class="table-header">
+          <div class="col-metric">Metric</div>
+          <div class="col-current">This Month</div>
+          <div class="col-previous">Previous Month</div>
+          <div class="col-change">Change</div>
+        </div>
+        <div class="table-body" id="comparison-table-body">
+          <div class="loading-spinner">Loading comparison data...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Export Options -->
+    <div class="export-section">
+      <div class="section-header">
+        <h3>Export Data</h3>
+      </div>
+      <div class="export-controls">
+        <button class="btn btn-export" id="export-csv">
+          <span class="export-icon">📊</span>
+          Export CSV
+        </button>
+        <button class="btn btn-export" id="export-pdf">
+          <span class="export-icon">📄</span>
+          Generate Report
+        </button>
+        <button class="btn btn-export" id="schedule-report">
+          <span class="export-icon">📅</span>
+          Schedule Reports
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

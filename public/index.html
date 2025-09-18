@@ -1,88 +1,644 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Top of the Capital</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <script src="/socket.io/socket.io.js"></script>
-  <link rel="stylesheet" href="/styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Top of the Capital</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes, viewport-fit=cover"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      window.socketErrors = [];
+    </script>
+    <!-- Mobile-First CSS Foundation -->
+    <link rel="stylesheet" href="/mobile-first.css?v=1" />
+    <!-- Original styles for desktop fallback -->
+    <link rel="stylesheet" href="/styles.css?v=10" />
+    <link rel="stylesheet" href="/player-stats.css" />
+    <link rel="stylesheet" href="/visual-effects.css" />
+    <link rel="stylesheet" href="/data-analytics.css" />
+    <link rel="stylesheet" href="/chat-system.css" />
+    <link rel="stylesheet" href="/dynamic-themes.css" />
+    <link rel="stylesheet" href="/pool-table-viz.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Lato:wght@300;400&family=Dancing+Script:wght@400;500;600&family=Orbitron:wght@400;700;900&family=Playfair+Display:wght@400;700&family=Righteous&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ULTRA FORCE OVERRIDE - Elegant Modal Labels */
+      div.modal-content div#challengeForm div.form-field label,
+      #challengeModal .modal-content #challengeForm .form-field label,
+      .challenge-modal-content #challengeForm .form-field label {
+        color: #d4af37 !important;
+        font-family: 'Dancing Script', 'Brush Script MT', 'Lucida Handwriting', cursive !important;
+        font-weight: 500 !important;
+        font-size: 0.8em !important;
+        text-align: center !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        letter-spacing: 1px !important;
+        font-style: normal !important;
+        text-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.5),
+          0 0 8px rgba(212, 175, 55, 0.4) !important;
+        text-transform: capitalize !important;
+        line-height: 1 !important;
+        display: block !important;
+      }
 
-  <div class="god-rays-container"></div>
+      /* Ultra compact form to prevent cutoff */
+      #challengeForm {
+        padding: 0.8rem 1.5rem !important;
+        gap: 0.8rem !important;
+      }
 
-  <div id="auth-container" class="auth-container">
-    <div class="auth-form">
+      .form-field {
+        min-height: 40px !important;
+        gap: 0.3rem !important;
+      }
+
+      /* Smaller buttons */
+      .modal-actions {
+        padding: 1rem 2rem !important;
+      }
+
+      /* ELEGANT CINZEL MODAL TITLE */
+      .modal-header h3 {
+        font-family: 'Cinzel', serif !important;
+        font-weight: 700 !important;
+        font-size: 1.4em !important;
+        letter-spacing: 1px !important;
+        text-transform: uppercase !important;
+        color: #d4af37 !important;
+        text-shadow:
+          0 2px 6px rgba(0, 0, 0, 0.5),
+          0 0 15px rgba(212, 175, 55, 0.4) !important;
+      }
+
+      /* ELEGANT DROPDOWN TEXT */
+      .form-select {
+        font-family: 'Cinzel', serif !important;
+        font-weight: 600 !important;
+        font-size: 1em !important;
+        letter-spacing: 0.5px !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+      }
+
+      /* ELEGANT BUTTONS */
+      .btn-primary,
+      .btn-secondary {
+        font-family: 'Cinzel', serif !important;
+        font-weight: 600 !important;
+        font-size: 1em !important;
+        letter-spacing: 1px !important;
+        text-transform: uppercase !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+      }
+    </style>
+    <script>
+      // FORCE APPLY ELEGANT STYLING VIA JAVASCRIPT
+      document.addEventListener('DOMContentLoaded', function () {
+        function applyElegantStyling() {
+          const labels = document.querySelectorAll(
+            '.form-field label, #challengeForm .form-field label'
+          );
+          labels.forEach(label => {
+            label.style.cssText = `
+            color: #d4af37 !important;
+            font-family: 'Dancing Script', 'Brush Script MT', 'Lucida Handwriting', cursive !important;
+            font-weight: 500 !important;
+            font-size: 0.8em !important;
+            text-align: center !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            letter-spacing: 1px !important;
+            font-style: normal !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 8px rgba(212, 175, 55, 0.4) !important;
+            text-transform: capitalize !important;
+            line-height: 1.0 !important;
+            display: block !important;
+          `;
+          });
+        }
+
+        // Apply immediately
+        applyElegantStyling();
+
+        // Apply again after a short delay in case elements load later
+        setTimeout(applyElegantStyling, 500);
+
+        // Apply when modal opens
+        const observer = new MutationObserver(() => {
+          applyElegantStyling();
+          applyStunningFonts();
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        function applyStunningFonts() {
+          // Modal title - Beautiful Cinzel
+          const modalTitle = document.querySelector('.modal-header h3');
+          if (modalTitle) {
+            modalTitle.style.cssText += `
+            font-family: 'Cinzel', serif !important;
+            font-weight: 700 !important;
+            letter-spacing: 1px !important;
+            text-transform: uppercase !important;
+            color: #d4af37 !important;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 0 15px rgba(212, 175, 55, 0.4) !important;
+          `;
+          }
+
+          // Dropdown selects - Elegant Cinzel
+          const selects = document.querySelectorAll('.form-select');
+          selects.forEach(select => {
+            select.style.cssText += `
+            font-family: 'Cinzel', serif !important;
+            font-weight: 600 !important;
+            font-size: 1.0em !important;
+            letter-spacing: 0.5px !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+          `;
+          });
+
+          // Buttons - Sophisticated Cinzel
+          const buttons = document.querySelectorAll('.btn-primary, .btn-secondary');
+          buttons.forEach(button => {
+            button.style.cssText += `
+            font-family: 'Cinzel', serif !important;
+            font-weight: 600 !important;
+            font-size: 1.0em !important;
+            letter-spacing: 1px !important;
+            text-transform: uppercase !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+          `;
+          });
+        }
+
+        // Apply stunning fonts immediately
+        applyStunningFonts();
+        setTimeout(applyStunningFonts, 1000);
+      });
+    </script>
+  </head>
+  <body>
+    <div class="god-rays-container"></div>
+
+    <div id="auth-container" class="auth-container">
+      <div class="auth-form">
         <h1 class="main-title">Top of the Capital</h1>
         <p class="subtitle">Helena's King of the Hill</p>
         <div class="input-group">
-            <input id="email" type="email" placeholder="Email Address">
-            <input id="password" type="password" placeholder="Password">
-            <input id="displayName" placeholder="Display Name (Optional)">
+          <input id="email" type="email" placeholder="Email Address" />
+          <input id="password" type="password" placeholder="Password" />
+          <input id="displayName" placeholder="Display Name (Optional)" />
         </div>
         <div class="button-group">
-            <button id="btnRegister" class="btn">Register</button>
-            <button id="btnLogin" class="btn">Login</button>
+          <button id="btnRegister" class="btn">Register</button>
+          <button id="btnLogin" class="btn">Login</button>
         </div>
         <p id="authMsg"></p>
+      </div>
     </div>
-  </div>
 
-  <main id="app-container" class="app-container hidden">
-    
-    <aside class="plinth plinth-left">
-      <div id="profile-card" class="card marble-card">
-        <h2 id="myName"></h2>
-        <p id="myRating"></p>
-      </div>
-      <div id="challenge-card" class="card marble-card">
-        <h3>Challenge</h3>
-        <div id="selectedTarget"></div>
-        <div id="challengeForm" class="hidden">
-          <div class="custom-select-wrapper">
-            <select id="discipline"></select>
-          </div>
-          <div class="custom-select-wrapper">
-            <select id="gamesToWin"></select>
-          </div>
-          <button id="sendChallenge" class="btn">Send</button>
-          <button id="cancelTarget" class="btn btn-secondary">Cancel</button>
+    <main id="app-container" class="app-container hidden">
+      <!-- User Header -->
+      <div class="user-header">
+        <div class="user-profile-centered" id="userProfile">
+          <h1 id="myName">My Profile</h1>
+          <p id="myRating">Loading...</p>
+        </div>
+        <div class="user-controls">
+          <button id="logoutBtn" class="btn btn-secondary logout-btn">
+            <span class="logout-icon">🚪</span>
+            <span class="logout-text">Logout</span>
+          </button>
         </div>
       </div>
-    </aside>
 
-    <section id="ziggurat-container" class="ziggurat-container">
+      <aside class="plinth plinth-left">
+        <div id="challenge-card" class="card marble-card">
+          <h3>Challenge</h3>
+          <div class="button-group">
+            <button id="openChallenge" class="btn">New Challenge</button>
+            <button id="showStats" class="btn btn-secondary">📊 My Stats</button>
+          </div>
+          <div class="button-group" style="margin-top: 10px">
+            <button id="visualEffectsSettings" class="btn btn-secondary" style="font-size: 0.9em">
+              ✨ Visual Settings
+            </button>
+            <button id="openPoolTable" class="btn btn-secondary" style="font-size: 0.9em">
+              🎱 Pool Table
+            </button>
+          </div>
+          <div class="button-group" style="margin-top: 10px">
+            <button
+              id="openAnalytics"
+              class="btn btn-secondary"
+              style="
+                font-size: 0.9em;
+                background: linear-gradient(135deg, #1e3c72, #2a5298);
+                color: white;
+                border: none;
+              "
+            >
+              📈 Analytics
+            </button>
+          </div>
+          <div id="selectedTarget"></div>
+        </div>
+
+        <div id="tips-and-drills" class="card marble-card futuristic-tips">
+          <div class="tips-header">
+            <div class="tips-icon-cluster">
+              <span class="tool-icon">⚙️</span>
+              <span class="tool-icon">🔧</span>
+              <span class="tool-icon">⚡</span>
+            </div>
+            <h3>Professional Training Hub</h3>
+            <div class="tips-subtitle">Master the Art of Precision</div>
+          </div>
+          <div id="tips-content" class="futuristic-content">
+            <div class="tip-item advanced-tip">
+              <div class="tip-icon">🔮</div>
+              <div class="tip-content">
+                <h4>Power Break Mechanics</h4>
+                <p>
+                  Contact the 1-ball at 30% below center with maximum acceleration. Keep your bridge
+                  hand locked and follow through straight. The key is controlled power, not brute
+                  force.
+                </p>
+                <div class="tip-source">Source: Professional Pool Instructors Association</div>
+              </div>
+            </div>
+            <div class="tip-item advanced-tip">
+              <div class="tip-icon">🎯</div>
+              <div class="tip-content">
+                <h4>Position Play Mastery</h4>
+                <p>
+                  Use the "90-degree rule" for stop shots and "tangent line" for rolling shots. Plan
+                  3 balls ahead, not just the next shot. Speed control is more important than
+                  perfect aim.
+                </p>
+                <div class="tip-source">Source: Billiards Digest Training Manual</div>
+              </div>
+            </div>
+            <div class="tip-item advanced-tip">
+              <div class="tip-icon">🧠</div>
+              <div class="tip-content">
+                <h4>Pattern Recognition</h4>
+                <p>
+                  Study common rack layouts and develop "muscle memory" for standard patterns.
+                  Practice the same runout 10 times to build neural pathways.
+                </p>
+                <div class="tip-source">Source: World Pool-Billiard Association</div>
+              </div>
+            </div>
+            <div class="tip-item advanced-tip">
+              <div class="tip-icon">🔭</div>
+              <div class="tip-content">
+                <h4>Advanced Safety Play</h4>
+                <p>
+                  When in doubt, play safe. Hide the cue ball behind the lowest numbered ball. Force
+                  your opponent into difficult angles and long shots.
+                </p>
+                <div class="tip-source">Source: Mosconi Cup Training Guidelines</div>
+              </div>
+            </div>
+          </div>
+          <button id="refreshTips" class="btn futuristic-btn">
+            <span class="btn-icon">🔄</span>
+            Load New Techniques
+          </button>
+        </div>
+      </aside>
+
+      <section id="ziggurat-container" class="ziggurat-container">
         <div id="leaderboard" class="ziggurat">
-            <!-- Leaderboard items will be injected here -->
+          <!-- Leaderboard items will be injected here -->
         </div>
-    </section>
+      </section>
 
-    <aside class="plinth plinth-right">
+      <aside class="plinth plinth-right">
+        <div id="community-notifications" class="card marble-card">
+          <h3>🌟 Community Feed</h3>
+          <div id="community-feed">
+            <div class="notification-item">
+              <div class="notification-icon">🎯</div>
+              <div class="notification-content">
+                <span class="notification-text"
+                  >Welcome to Capital Ladder! Challenge players to climb the ranks.</span
+                >
+                <span class="notification-time">Now</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div id="matches-card" class="card marble-card">
-            <h3>Live Matches</h3>
-            <div class="custom-select-wrapper">
-                <select id="opponentSelect"></select>
-            </div>
-            <div class="custom-select-wrapper">
-                <select id="liveGamesToWin"></select>
-            </div>
-            <button id="createMatch" class="btn">Create</button>
-            <div id="activeMatches"></div>
+          <h3>Active Matches</h3>
+          <div style="margin-bottom: 15px; display: flex; gap: 8px; align-items: center">
+            <input type="checkbox" id="myMatchesToggle" />
+            <label for="myMatchesToggle">My Matches Only</label>
+          </div>
+          <div id="activeMatches"></div>
+          <div id="recentMatches"></div>
         </div>
+
+        <!-- Missing Feed Section -->
         <div id="feed-card" class="card marble-card">
-            <h3>Feed & Notifications</h3>
-            <div id="feed"></div>
-            <hr/>
-            <div id="notifications"></div>
+          <h3>Pending Challenges</h3>
+          <div id="feed"></div>
         </div>
-    </aside>
 
-  </main>
+        <!-- Missing Notifications Section -->
+        <div id="notifications-card" class="card marble-card">
+          <h3>Awaiting Confirmation</h3>
+          <div id="notifications"></div>
+        </div>
+      </aside>
+    </main>
 
-  <script src="/app.js"></script>
-</body>
+    <!-- Challenge Modal (moved to document body for proper overlay) -->
+    <div id="challengeModal" class="modal hidden">
+      <div class="modal-content challenge-modal-content">
+        <div class="modal-header">
+          <h3>New Challenge</h3>
+          <button id="closeChallengeModal" class="btn btn-secondary">Close</button>
+        </div>
+        <div id="challengeForm">
+          <div class="form-field">
+            <label for="challengeTargetSelect">Opponent</label>
+            <select id="challengeTargetSelect" class="form-select">
+              <option value="">Select opponent...</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="discipline">Game Type</label>
+            <select id="discipline" class="form-select">
+              <option value="">Select game type...</option>
+              <option value="Eight Ball">Eight Ball</option>
+              <option value="Nine Ball">Nine Ball</option>
+              <option value="Ten Ball">Ten Ball</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="gamesToWin">Race To</label>
+            <select id="gamesToWin" class="form-select">
+              <option value="">Select race to...</option>
+              <option value="5">5 Games</option>
+              <option value="6">6 Games</option>
+              <option value="7">7 Games</option>
+              <option value="8">8 Games</option>
+              <option value="9">9 Games</option>
+              <option value="10">10 Games</option>
+              <option value="11">11 Games</option>
+              <option value="12">12 Games</option>
+              <option value="13">13 Games</option>
+              <option value="14">14 Games</option>
+              <option value="15">15 Games</option>
+            </select>
+          </div>
+
+          <!-- Hidden fields for venue/time - only shown during response phase -->
+          <div id="venueTimeFields" class="venue-time-fields hidden">
+            <div class="form-field">
+              <label for="venueSelect">Venue</label>
+              <select id="venueSelect" class="form-select">
+                <option value="Valley Hub">Valley Hub</option>
+                <option value="Eagles 4040">Eagles 4040</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="scheduledAt">Date & Time</label>
+              <input id="scheduledAt" type="datetime-local" class="form-input" />
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button id="sendChallenge" class="btn btn-primary">Send Challenge</button>
+            <button id="cancelTarget" class="btn btn-secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visual Effects Settings Modal -->
+    <div id="visualEffectsModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><span class="stats-icon">✨</span> Visual Effects Settings</h3>
+          <button id="closeVisualEffectsModal" class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="settings-section">
+            <h4>Particle Effects</h4>
+            <label class="settings-toggle">
+              <input type="checkbox" id="particlesToggle" checked />
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Enable floating particles</span>
+            </label>
+            <p class="settings-description">Subtle animated particles floating across the screen</p>
+          </div>
+
+          <div class="settings-section">
+            <h4>Dynamic Lighting</h4>
+            <label class="settings-toggle">
+              <input type="checkbox" id="lightingToggle" checked />
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Time-based lighting</span>
+            </label>
+            <p class="settings-description">Automatically adjust colors based on time of day</p>
+          </div>
+
+          <div class="settings-section">
+            <h4>Enhanced Avatars</h4>
+            <label class="settings-toggle">
+              <input type="checkbox" id="avatarsToggle" checked />
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Player avatars</span>
+            </label>
+            <p class="settings-description">Colorful avatars next to player names</p>
+          </div>
+
+          <div class="settings-section">
+            <h4>Spectator Mode</h4>
+            <label class="settings-toggle">
+              <input type="checkbox" id="spectatorToggle" checked />
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Live match enhancements</span>
+            </label>
+            <p class="settings-description">Special effects and tension meters for live matches</p>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button id="resetVisualSettings" class="btn btn-secondary">Reset to Defaults</button>
+          <button id="saveVisualSettings" class="btn btn-primary">Save Settings</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pool Table Visualization Modal -->
+    <div id="poolTableModal" class="modal hidden">
+      <div class="modal-content pool-table-modal-content">
+        <div class="modal-header">
+          <h3>🎱 Pool Table Visualization</h3>
+          <button id="closePoolTableModal" class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="pool-table-container">
+            <div class="pool-table-header">
+              <div class="game-type-selector">
+                <button class="game-type-btn active" data-game="eight-ball">8-Ball</button>
+                <button class="game-type-btn" data-game="nine-ball">9-Ball</button>
+              </div>
+              <div class="table-controls">
+                <button class="btn btn-secondary" id="resetRack">Reset Rack</button>
+                <button class="btn btn-secondary" id="clearTable">Clear Table</button>
+                <button class="btn btn-secondary" id="saveSetup">Save Setup</button>
+                <button class="btn btn-secondary" id="loadSetup">Load Setup</button>
+                <button class="btn btn-secondary" id="shareSetup">Share Setup</button>
+              </div>
+            </div>
+
+            <div class="pool-table-canvas-container">
+              <canvas id="poolTableCanvas" width="800" height="400"></canvas>
+              <div class="canvas-instructions">
+                <p>Interactive Pool Table</p>
+                <ul>
+                  <li>Click and drag balls to reposition</li>
+                  <li>Switch between 8-Ball and 9-Ball modes</li>
+                  <li>Save custom setups for practice</li>
+                  <li>Share setups via URL</li>
+                  <li>Reset rack for standard layouts</li>
+                </ul>
+
+                <div class="ball-legend">
+                  <div class="legend-section">
+                    <h4>Ball Types</h4>
+                    <div class="legend-items">
+                      <div class="legend-item">
+                        <div class="legend-ball cue-ball"></div>
+                        <span>Cue Ball</span>
+                      </div>
+                      <div class="legend-item">
+                        <div class="legend-ball solid-ball"></div>
+                        <span>Solids</span>
+                      </div>
+                      <div class="legend-item">
+                        <div class="legend-ball stripe-ball"></div>
+                        <span>Stripes</span>
+                      </div>
+                      <div class="legend-item">
+                        <div class="legend-ball eight-ball"></div>
+                        <span>8-Ball</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Save Setup Modal -->
+    <div id="saveSetupModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Save Pool Table Setup</h3>
+          <button id="closeSaveSetupModal" class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <form class="save-setup-form">
+            <div class="form-field">
+              <label for="setupName">Setup Name</label>
+              <input
+                type="text"
+                id="setupName"
+                class="form-input"
+                placeholder="Enter setup name..."
+                required
+              />
+            </div>
+            <div class="form-field">
+              <label for="setupDescription">Description (Optional)</label>
+              <textarea
+                id="setupDescription"
+                class="form-input"
+                placeholder="Describe this setup..."
+              ></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-actions">
+          <button id="confirmSaveSetup" class="btn btn-primary">Save Setup</button>
+          <button id="cancelSaveSetup" class="btn btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Dashboard Modal -->
+    <div id="analyticsModal" class="modal hidden">
+      <div class="modal-content analytics-modal-content">
+        <div class="modal-header">
+          <h3>📈 League Analytics Dashboard</h3>
+          <button id="closeAnalyticsModal" class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <iframe
+            id="analyticsFrame"
+            src="analytics.html"
+            style="width: 100%; height: 80vh; border: none; border-radius: 8px"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- Load Setup Modal -->
+    <div id="loadSetupModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Load Pool Table Setup</h3>
+          <button id="closeLoadSetupModal" class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <div id="savedSetupsList" class="saved-setups-list">
+            <div class="empty-setups">
+              <div class="empty-icon">🎱</div>
+              <h4>No Saved Setups</h4>
+              <p>Create and save custom ball layouts to load them later.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="audio-manager.js"></script>
+    <script src="visual-effects.js"></script>
+    <script src="data-analytics.js"></script>
+    <script src="chat-system.js"></script>
+    <script src="dynamic-themes.js"></script>
+    <script src="pool-table-viz.js"></script>
+    <script src="player-stats.js"></script>
+    <script src="notification-manager.js"></script>
+    <!-- Mobile Experience Enhancements -->
+    <script src="mobile-enhancements.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="analytics.css" />
+    <script src="analytics.js"></script>
+    <script src="/app.js?v=3"></script>
+  </body>
 </html>
-
