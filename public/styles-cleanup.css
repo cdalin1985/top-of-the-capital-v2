@@ -1,0 +1,143 @@
+/* === STRICT THEME ENFORCEMENT === */
+
+/* 1. BUTTONS: Kill all default styles and white backgrounds */
+button,
+.header-btn,
+.start-btn,
+.confirm-btn,
+.score-btn,
+.view-btn,
+.control-btn,
+.close-btn {
+    font-family: 'Cinzel Decorative', serif !important;
+    text-transform: uppercase;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    /* Ensure no white default */
+    background-color: transparent;
+    color: #f5f5dc;
+}
+
+/* Specific Button Themes */
+
+/* Primary Action (Start Match, Submit, Confirm) */
+.start-btn,
+.confirm-btn {
+    background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%) !important;
+    border: 1px solid #4caf50 !important;
+    color: #f5f5dc !important;
+    padding: 10px 20px !important;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.start-btn:hover,
+.confirm-btn:hover {
+    background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%) !important;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.4);
+    transform: translateY(-1px);
+}
+
+/* Secondary Action (Back, View Details, Toggle) */
+.view-btn,
+.control-btn {
+    background: rgba(30, 30, 30, 0.8) !important;
+    border: 1px solid #87a96b !important;
+    color: #a8c090 !important;
+    padding: 6px 12px !important;
+}
+
+.view-btn:hover,
+.control-btn:hover {
+    background: rgba(135, 169, 107, 0.2) !important;
+    color: #f5f5dc !important;
+}
+
+/* Scoreboard Buttons (+1, -1) */
+.score-btn {
+    background: #1a1a1a !important;
+    border: 1px solid #87a96b !important;
+    color: #f5f5dc !important;
+    padding: 8px 12px !important;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.score-btn:hover {
+    background: #2e7d32 !important;
+}
+
+.score-btn.minus {
+    background: #000 !important;
+    border-color: #666 !important;
+    color: #999 !important;
+}
+
+.score-btn.minus:hover {
+    border-color: #d32f2f !important;
+    color: #d32f2f !important;
+}
+
+/* 2. INPUTS & DROPDOWNS: Strict Dark Mode */
+input,
+select,
+textarea {
+    background-color: rgba(20, 20, 20, 0.95) !important;
+    color: #f5f5dc !important;
+    border: 1px solid #87a96b !important;
+    border-radius: 4px;
+    padding: 10px !important;
+    font-family: inherit;
+    /* Remove browser defaults */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Fix Dropdown Arrow for Dark Background */
+select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2387a96b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 30px !important;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #a8c090 !important;
+    box-shadow: 0 0 8px rgba(135, 169, 107, 0.4);
+}
+
+/* 3. MODAL & CONTAINERS */
+.modal-content,
+.negotiation-card,
+.upcoming-match-item,
+.result-form {
+    background: linear-gradient(135deg, #1e1e1e 0%, #121212 100%) !important;
+    border: 1px solid #87a96b;
+    color: #f5f5dc;
+}
+
+/* Specifically fix the Report Result form area */
+.result-form {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid rgba(135, 169, 107, 0.3);
+}
+
+/* Fix "Start Live Match" special button */
+button[onclick^="openLiveMatch"] {
+    background: linear-gradient(135deg, #f57f17 0%, #e65100 100%) !important;
+    border: 1px solid #ff9800 !important;
+    color: #fff !important;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+button[onclick^="openLiveMatch"]:hover {
+    box-shadow: 0 0 15px rgba(255, 152, 0, 0.4);
+}
