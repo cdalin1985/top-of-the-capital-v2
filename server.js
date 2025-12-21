@@ -1,5 +1,5 @@
 const express = require('express');
-const http = require('http' );
+const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
 const fs = require('fs');
@@ -9,7 +9,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-const server = http.createServer(app );
+const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
         origin: "*",
@@ -107,12 +107,12 @@ app.post('/api/check-user', (req, res) => {
     try {
         const { displayName } = req.body;
         const db = readDatabase();
-        
+
         const existingUser = db.users.find(user => user.displayName === displayName);
-        
+
         if (existingUser) {
-            res.json({ 
-                exists: true, 
+            res.json({
+                exists: true,
                 user: {
                     id: existingUser.id,
                     displayName: existingUser.displayName,
@@ -134,13 +134,13 @@ app.post('/api/check-user', (req, res) => {
 app.post('/api/register', async (req, res) => {
     try {
         const { displayName, password, avatar } = req.body;
-        
+
         if (!displayName || !password) {
             return res.status(400).json({ error: 'Display name and password are required' });
         }
 
         const db = readDatabase();
-        
+
         // Check if user already exists
         const existingUser = db.users.find(user => user.displayName === displayName);
         if (existingUser) {
@@ -155,7 +155,7 @@ app.post('/api/register', async (req, res) => {
 
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
-        
+
         // Create user
         const newUser = {
             id: Date.now().toString(),
@@ -181,7 +181,7 @@ app.post('/api/register', async (req, res) => {
 
         // Return user data without password
         const { password: _, ...userWithoutPassword } = newUser;
-        
+
         res.status(201).json({
             message: 'User registered successfully',
             user: userWithoutPassword,
@@ -201,14 +201,14 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     try {
         const { displayName, password } = req.body;
-        
+
         if (!displayName || !password) {
             return res.status(400).json({ error: 'Display name and password are required' });
         }
 
         const db = readDatabase();
         const user = db.users.find(u => u.displayName === displayName);
-        
+
         if (!user) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
@@ -227,7 +227,7 @@ app.post('/api/login', async (req, res) => {
 
         // Return user data without password
         const { password: _, ...userWithoutPassword } = user;
-        
+
         res.json({
             message: 'Login successful',
             user: userWithoutPassword,
@@ -248,7 +248,7 @@ app.get('/api/me', authenticateToken, (req, res) => {
     try {
         const db = readDatabase();
         const user = db.users.find(u => u.id === req.user.id);
-        
+
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
@@ -277,7 +277,7 @@ app.get('/api/notifications', authenticateToken, (req, res) => {
 app.post('/api/challenges', authenticateToken, (req, res) => {
     try {
         const { targetPlayer, discipline, gamesToWin } = req.body;
-        
+
         if (!targetPlayer || !discipline || !gamesToWin) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
@@ -285,7 +285,7 @@ app.post('/api/challenges', authenticateToken, (req, res) => {
         const db = readDatabase();
         const challenger = db.users.find(u => u.id === req.user.id);
         const target = db.leaderboard.find(p => p.displayName === targetPlayer);
-        
+
         if (!challenger || !target) {
             return res.status(404).json({ error: 'Player not found' });
         }
@@ -298,12 +298,14 @@ app.post('/api/challenges', authenticateToken, (req, res) => {
             discipline,
             gamesToWin: parseInt(gamesToWin),
             status: 'pending',
+            currentProposal: null,
+            lastActionBy: null, // No action yet, just created
             createdAt: new Date().toISOString()
         };
 
         db.challenges.push(challenge);
-        
-        // Create notification for target player (if they have an account)
+
+        // Create notification for target player
         const targetUser = db.users.find(u => u.displayName === targetPlayer);
         if (targetUser) {
             const notification = {
@@ -325,13 +327,7 @@ app.post('/api/challenges', authenticateToken, (req, res) => {
             challenge
         });
 
-        // Emit challenge event
-        io.emit('challengeSent', {
-            challenger: challenger.displayName,
-            target: targetPlayer,
-            discipline,
-            gamesToWin
-        });
+        io.emit('challengeEvent', { type: 'created', challenge });
 
     } catch (error) {
         console.error('Error sending challenge:', error);
@@ -339,11 +335,196 @@ app.post('/api/challenges', authenticateToken, (req, res) => {
     }
 });
 
+// Respond to challenge (Negotiation)
+app.post('/api/challenges/:id/respond', authenticateToken, (req, res) => {
+    try {
+        const { id } = req.params;
+        const { type, venue, time } = req.body; // type: 'propose' | 'accept'
+
+        const db = readDatabase();
+        const challenge = db.challenges.find(c => c.id === id);
+
+        if (!challenge) {
+            return res.status(404).json({ error: 'Challenge not found' });
+        }
+
+        // Verify user is part of the challenge
+        if (challenge.challengerId !== req.user.id && challenge.targetName !== req.user.displayName) {
+            return res.status(403).json({ error: 'Not authorized' });
+        }
+
+        // Determine opponent
+        const isChallenger = challenge.challengerId === req.user.id;
+        const opponentName = isChallenger ? challenge.targetName : challenge.challengerName;
+        const opponentUser = db.users.find(u => u.displayName === opponentName);
+
+        // Update Challenge
+        challenge.lastActionBy = req.user.id;
+        challenge.currentProposal = { venue, time };
+
+        let notifMessage = '';
+
+        if (type === 'accept') {
+            challenge.status = 'scheduled';
+            notifMessage = `${req.user.displayName} ACCEPTED the match! Scheduled: ${venue} @ ${time}`;
+        } else {
+            challenge.status = 'negotiating';
+            notifMessage = `${req.user.displayName} PROPOSES: ${venue} @ ${time}`;
+        }
+
+        // Notify Opponent
+        if (opponentUser) {
+            db.notifications.push({
+                id: Date.now().toString() + '_notif',
+                userId: opponentUser.id,
+                type: 'negotiation',
+                message: notifMessage,
+                challengeId: challenge.id,
+                read: false,
+                createdAt: new Date().toISOString()
+            });
+        }
+
+        writeDatabase(db);
+
+        res.json({ message: 'Response recorded', challenge });
+
+        // Real-time update
+        io.emit('challengeEvent', { type: 'updated', challengeId: id });
+
+    } catch (error) {
+        console.error('Error responding:', error);
+        res.status(500).json({ error: 'Failed to process response' });
+    }
+});
+
+// Get single challenge details
+app.get('/api/challenges/:id', authenticateToken, (req, res) => {
+    try {
+        const db = readDatabase();
+        const challenge = db.challenges.find(c => c.id === req.params.id);
+        if (!challenge) return res.status(404).json({ error: 'Not found' });
+        res.json(challenge);
+    } catch (e) {
+        res.status(500).json({ error: 'Error fetching challenge' });
+    }
+});
+
+// Mark notifications as read
+app.put('/api/notifications/read', authenticateToken, (req, res) => {
+    try {
+        const db = readDatabase();
+        let updated = false;
+
+        db.notifications.forEach(n => {
+            if (n.userId === req.user.id && !n.read) {
+                n.read = true;
+                updated = true;
+            }
+        });
+
+        if (updated) {
+            writeDatabase(db);
+        }
+
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ error: 'Error updating notifications' });
+    }
+});
+
+// Complete Match & Update Rankings
+app.post('/api/challenges/:id/complete', authenticateToken, (req, res) => {
+    try {
+        const { id } = req.params;
+        const { winner, score } = req.body;
+
+        const db = readDatabase();
+        const challenge = db.challenges.find(c => c.id === id);
+
+        if (!challenge) {
+            return res.status(404).json({ error: 'Challenge not found' });
+        }
+
+        // Find players
+        const challengerIndex = db.leaderboard.findIndex(p => p.displayName === challenge.challengerName);
+        const targetIndex = db.leaderboard.findIndex(p => p.displayName === challenge.targetName);
+
+        if (challengerIndex === -1 || targetIndex === -1) {
+            return res.status(500).json({ error: 'Players not found in rankings' });
+        }
+
+        const challenger = db.leaderboard[challengerIndex];
+        const target = db.leaderboard[targetIndex];
+
+        // Update W/L records
+        if (winner === challenge.challengerName) {
+            challenger.wins++;
+            target.losses++;
+        } else {
+            target.wins++;
+            challenger.losses++;
+        }
+
+        // RANKING UPDATE LOGIC (Leapfrog)
+        // Only change ranks if Challenger (lower rank/higher index) defeats Target (higher rank/lower index)
+        let rankUpdateMsg = 'Rankings unchanged.';
+        if (winner === challenge.challengerName && challengerIndex > targetIndex) {
+            // Remove challenger from current position
+            const [winnerObj] = db.leaderboard.splice(challengerIndex, 1);
+            // Insert at target position (target pushes down)
+            db.leaderboard.splice(targetIndex, 0, winnerObj);
+
+            // Re-assign 'rank' property for all users based on new array order
+            db.leaderboard.forEach((p, i) => {
+                if (p.displayName !== 'ADMIN') { // Admin rank 0 logic handles separate
+                    p.rank = i + 1; // Assuming ADMIN is index 0 in filtered list, but here db.leaderboard HAS admin
+                    // Actually, ADMIN is usually at index 0. Let's preserve that safe logic if ADMIN is 0.
+                }
+            });
+            rankUpdateMsg = `${winner} takes rank #${targetIndex} (was #${challengerIndex})!`;
+        }
+
+        // Update Challenge
+        challenge.status = 'completed';
+        challenge.winner = winner;
+        challenge.score = score;
+        challenge.completedAt = new Date().toISOString();
+
+        // Notification
+        const loserName = winner === challenge.challengerName ? challenge.targetName : challenge.challengerName;
+        const loser = db.users.find(u => u.displayName === loserName);
+
+        if (loser) {
+            db.notifications.push({
+                id: Date.now().toString() + '_notif',
+                userId: loser.id,
+                type: 'info',
+                message: `Match Complete: ${winner} def. You ${score}. ${rankUpdateMsg}`,
+                read: false,
+                createdAt: new Date().toISOString()
+            });
+        }
+
+        writeDatabase(db);
+
+        res.json({ message: 'Result submitted', rankUpdate: rankUpdateMsg });
+
+        // Broadcast updates
+        io.emit('challengeEvent', { type: 'completed', challengeId: id, winner, score });
+        io.emit('databaseSeeded', { playersCount: db.leaderboard.length }); // Reuse this to trigger client-side leaderboard refresh
+
+    } catch (e) {
+        console.error('Error completing match:', e);
+        res.status(500).json({ error: 'Failed to complete match' });
+    }
+});
+
 // Admin seed data
 app.post('/api/admin/seed', (req, res) => {
     try {
         const db = readDatabase();
-        
+
         // Seed leaderboard with 70 real players
         const players = [
             { rank: 1, displayName: "Dan Hamper", rating: 2100, wins: 45, losses: 8 },
@@ -428,7 +609,7 @@ app.post('/api/admin/seed', (req, res) => {
         };
 
         db.leaderboard = [adminUser, ...players];
-        
+
         writeDatabase(db);
 
         res.json({
@@ -467,7 +648,7 @@ app.get('/', (req, res) => {
 // Start server
 server.listen(PORT, () => {
     console.log(`🎱 Top of the Capital server running on port ${PORT}`);
-    console.log(`🌐 Access the application at: http://localhost:${PORT}` );
+    console.log(`🌐 Access the application at: http://localhost:${PORT}`);
 });
 
 module.exports = app;

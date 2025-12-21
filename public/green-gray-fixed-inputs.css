@@ -1,0 +1,25 @@
+/* File Input Styling */
+input[type="file"] {
+    background: rgba(30, 30, 30, 0.95) !important;
+    border: 1px solid #87a96b !important;
+    color: #f5f5dc !important;
+    padding: 10px !important;
+    border-radius: 4px;
+    width: 100%;
+    cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+    background: linear-gradient(135deg, #2d5016 0%, #87a96b 100%) !important;
+    color: #f5f5dc !important;
+    border: none !important;
+    padding: 5px 10px !important;
+    border-radius: 4px !important;
+    margin-right: 15px;
+    cursor: pointer;
+    font-family: 'Cinzel Decorative', serif !important;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: linear-gradient(135deg, #87a96b 0%, #a8c090 100%) !important;
+}

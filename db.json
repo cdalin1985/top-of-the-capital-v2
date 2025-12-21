@@ -1,0 +1,592 @@
+{
+  "users": [
+    {
+      "id": "1766272964955",
+      "displayName": "Chase Dalin",
+      "email": "chase.dalin.0qsu@topofthecapital.local",
+      "password": "$2a$10$Ng1eIgVoaSNI3SP6MzckBeVhe8Ur9l2TNpF.3ZKwFddqreNqDmJti",
+      "rating": 2060,
+      "wins": 40,
+      "losses": 12,
+      "avatar": null,
+      "createdAt": "2025-12-20T23:22:44.955Z"
+    },
+    {
+      "id": "1766272999285",
+      "displayName": "Dan Hamper",
+      "email": "dan.hamper.wndw@topofthecapital.local",
+      "password": "$2a$10$UClVtdQgnJpwtnpRap2BZOPP735lJZyT4GamqLpRMWwhHNO9F0htu",
+      "rating": 2100,
+      "wins": 45,
+      "losses": 8,
+      "avatar": null,
+      "createdAt": "2025-12-20T23:23:19.285Z"
+    }
+  ],
+  "challenges": [
+    {
+      "id": "1766272972203",
+      "challengerId": "1766272964955",
+      "challengerName": "Chase Dalin",
+      "targetName": "Dan Hamper",
+      "discipline": "8-Ball",
+      "gamesToWin": 7,
+      "status": "pending",
+      "createdAt": "2025-12-20T23:22:52.203Z"
+    },
+    {
+      "id": "1766337851430",
+      "challengerId": "1766272964955",
+      "challengerName": "Chase Dalin",
+      "targetName": "Dan Hamper",
+      "discipline": "8-Ball",
+      "gamesToWin": 7,
+      "status": "completed",
+      "currentProposal": {
+        "venue": "Eagles 4040",
+        "time": "2025-12-21T10:27"
+      },
+      "lastActionBy": "1766272964955",
+      "createdAt": "2025-12-21T17:24:11.430Z",
+      "winner": "Chase Dalin",
+      "score": "7-0",
+      "completedAt": "2025-12-21T20:57:59.852Z"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "1766337851430_notif",
+      "userId": "1766272999285",
+      "type": "challenge",
+      "message": "Chase Dalin has challenged you to 8-Ball",
+      "challengeId": "1766337851430",
+      "read": true,
+      "createdAt": "2025-12-21T17:24:11.430Z"
+    },
+    {
+      "id": "1766337949427_notif",
+      "userId": "1766272964955",
+      "type": "negotiation",
+      "message": "Dan Hamper PROPOSES: Eagles 4040 @ 2025-12-21T10:27",
+      "challengeId": "1766337851430",
+      "read": false,
+      "createdAt": "2025-12-21T17:25:49.427Z"
+    },
+    {
+      "id": "1766337981556_notif",
+      "userId": "1766272999285",
+      "type": "negotiation",
+      "message": "Chase Dalin ACCEPTED the match! Scheduled: Eagles 4040 @ 2025-12-21T10:27",
+      "challengeId": "1766337851430",
+      "read": true,
+      "createdAt": "2025-12-21T17:26:21.556Z"
+    },
+    {
+      "id": "1766350679852_notif",
+      "userId": "1766272999285",
+      "type": "info",
+      "message": "Match Complete: Chase Dalin def. You 7-0. Chase Dalin takes rank #1 (was #3)!",
+      "read": true,
+      "createdAt": "2025-12-21T20:57:59.852Z"
+    }
+  ],
+  "leaderboard": [
+    {
+      "rank": 0,
+      "displayName": "ADMIN",
+      "rating": 2200,
+      "wins": 50,
+      "losses": 5
+    },
+    {
+      "rank": 2,
+      "displayName": "Chase Dalin",
+      "rating": 2060,
+      "wins": 41,
+      "losses": 12
+    },
+    {
+      "rank": 3,
+      "displayName": "Dan Hamper",
+      "rating": 2100,
+      "wins": 45,
+      "losses": 9
+    },
+    {
+      "rank": 4,
+      "displayName": "David Smith",
+      "rating": 2080,
+      "wins": 42,
+      "losses": 10
+    },
+    {
+      "rank": 5,
+      "displayName": "Frank Kincl",
+      "rating": 2040,
+      "wins": 38,
+      "losses": 14
+    },
+    {
+      "rank": 6,
+      "displayName": "Dave Alderman",
+      "rating": 2020,
+      "wins": 36,
+      "losses": 16
+    },
+    {
+      "rank": 7,
+      "displayName": "Mike Zahn",
+      "rating": 2000,
+      "wins": 34,
+      "losses": 18
+    },
+    {
+      "rank": 8,
+      "displayName": "Mike Paliga",
+      "rating": 1980,
+      "wins": 32,
+      "losses": 20
+    },
+    {
+      "rank": 9,
+      "displayName": "Tim Webster",
+      "rating": 1960,
+      "wins": 30,
+      "losses": 22
+    },
+    {
+      "rank": 10,
+      "displayName": "Jerry Sabol",
+      "rating": 1940,
+      "wins": 28,
+      "losses": 24
+    },
+    {
+      "rank": 11,
+      "displayName": "Thomas E. Kingston",
+      "rating": 1920,
+      "wins": 26,
+      "losses": 26
+    },
+    {
+      "rank": 12,
+      "displayName": "Timmy Squires",
+      "rating": 1900,
+      "wins": 25,
+      "losses": 27
+    },
+    {
+      "rank": 13,
+      "displayName": "Joel Selzer",
+      "rating": 1880,
+      "wins": 24,
+      "losses": 28
+    },
+    {
+      "rank": 14,
+      "displayName": "Josh Fava",
+      "rating": 1860,
+      "wins": 23,
+      "losses": 29
+    },
+    {
+      "rank": 15,
+      "displayName": "Eric Croft",
+      "rating": 1840,
+      "wins": 22,
+      "losses": 30
+    },
+    {
+      "rank": 16,
+      "displayName": "Louise Broksle",
+      "rating": 1820,
+      "wins": 21,
+      "losses": 31
+    },
+    {
+      "rank": 17,
+      "displayName": "Kurt Kubicka",
+      "rating": 1800,
+      "wins": 20,
+      "losses": 32
+    },
+    {
+      "rank": 18,
+      "displayName": "George Cotton",
+      "rating": 1780,
+      "wins": 19,
+      "losses": 33
+    },
+    {
+      "rank": 19,
+      "displayName": "Vern Carpenter",
+      "rating": 1760,
+      "wins": 18,
+      "losses": 34
+    },
+    {
+      "rank": 20,
+      "displayName": "Mike Churchill",
+      "rating": 1740,
+      "wins": 17,
+      "losses": 35
+    },
+    {
+      "rank": 21,
+      "displayName": "Chris Gomez",
+      "rating": 1720,
+      "wins": 16,
+      "losses": 36
+    },
+    {
+      "rank": 22,
+      "displayName": "Matt Gilbert",
+      "rating": 1700,
+      "wins": 15,
+      "losses": 37
+    },
+    {
+      "rank": 23,
+      "displayName": "Gurn Blanston",
+      "rating": 1680,
+      "wins": 14,
+      "losses": 38
+    },
+    {
+      "rank": 24,
+      "displayName": "Rob Millions",
+      "rating": 1660,
+      "wins": 13,
+      "losses": 39
+    },
+    {
+      "rank": 25,
+      "displayName": "Walker Hopkins",
+      "rating": 1640,
+      "wins": 12,
+      "losses": 40
+    },
+    {
+      "rank": 26,
+      "displayName": "Janice Osborne",
+      "rating": 1620,
+      "wins": 11,
+      "losses": 41
+    },
+    {
+      "rank": 27,
+      "displayName": "Anthony Jacobs",
+      "rating": 1600,
+      "wins": 10,
+      "losses": 42
+    },
+    {
+      "rank": 28,
+      "displayName": "Patrick Donald",
+      "rating": 1580,
+      "wins": 9,
+      "losses": 43
+    },
+    {
+      "rank": 29,
+      "displayName": "Tim Gregor",
+      "rating": 1560,
+      "wins": 8,
+      "losses": 44
+    },
+    {
+      "rank": 30,
+      "displayName": "James McMasters",
+      "rating": 1540,
+      "wins": 7,
+      "losses": 45
+    },
+    {
+      "rank": 31,
+      "displayName": "Joe Mackay",
+      "rating": 1520,
+      "wins": 6,
+      "losses": 46
+    },
+    {
+      "rank": 32,
+      "displayName": "Steve Adsem",
+      "rating": 1500,
+      "wins": 15,
+      "losses": 35
+    },
+    {
+      "rank": 33,
+      "displayName": "Samantha Chase",
+      "rating": 1480,
+      "wins": 14,
+      "losses": 36
+    },
+    {
+      "rank": 34,
+      "displayName": "Lea Hightshoe",
+      "rating": 1460,
+      "wins": 13,
+      "losses": 37
+    },
+    {
+      "rank": 35,
+      "displayName": "Courtney Norman",
+      "rating": 1440,
+      "wins": 12,
+      "losses": 38
+    },
+    {
+      "rank": 36,
+      "displayName": "Marc Sanche",
+      "rating": 1420,
+      "wins": 11,
+      "losses": 39
+    },
+    {
+      "rank": 37,
+      "displayName": "Kenny Thurman",
+      "rating": 1400,
+      "wins": 10,
+      "losses": 40
+    },
+    {
+      "rank": 38,
+      "displayName": "Roger Simmons",
+      "rating": 1380,
+      "wins": 9,
+      "losses": 41
+    },
+    {
+      "rank": 39,
+      "displayName": "Christina Talbot",
+      "rating": 1360,
+      "wins": 8,
+      "losses": 42
+    },
+    {
+      "rank": 40,
+      "displayName": "Jon Nash",
+      "rating": 1340,
+      "wins": 7,
+      "losses": 43
+    },
+    {
+      "rank": 41,
+      "displayName": "Sady Garrison",
+      "rating": 1320,
+      "wins": 6,
+      "losses": 44
+    },
+    {
+      "rank": 42,
+      "displayName": "Justin Cavazos",
+      "rating": 1300,
+      "wins": 15,
+      "losses": 35
+    },
+    {
+      "rank": 43,
+      "displayName": "Sean Royston",
+      "rating": 1280,
+      "wins": 14,
+      "losses": 36
+    },
+    {
+      "rank": 44,
+      "displayName": "James Smith",
+      "rating": 1260,
+      "wins": 13,
+      "losses": 37
+    },
+    {
+      "rank": 45,
+      "displayName": "Zach Ledesma",
+      "rating": 1240,
+      "wins": 12,
+      "losses": 38
+    },
+    {
+      "rank": 46,
+      "displayName": "Clayton Carter",
+      "rating": 1220,
+      "wins": 11,
+      "losses": 39
+    },
+    {
+      "rank": 47,
+      "displayName": "Ryan Fields",
+      "rating": 1200,
+      "wins": 10,
+      "losses": 40
+    },
+    {
+      "rank": 48,
+      "displayName": "Kris Vladic",
+      "rating": 1180,
+      "wins": 9,
+      "losses": 41
+    },
+    {
+      "rank": 49,
+      "displayName": "Nate Welch",
+      "rating": 1160,
+      "wins": 8,
+      "losses": 42
+    },
+    {
+      "rank": 50,
+      "displayName": "Josh Hill",
+      "rating": 1140,
+      "wins": 7,
+      "losses": 43
+    },
+    {
+      "rank": 51,
+      "displayName": "Josh Waples",
+      "rating": 1120,
+      "wins": 6,
+      "losses": 44
+    },
+    {
+      "rank": 52,
+      "displayName": "Steven Ross Brandenburg",
+      "rating": 1100,
+      "wins": 15,
+      "losses": 35
+    },
+    {
+      "rank": 53,
+      "displayName": "Troy Jacobs",
+      "rating": 1080,
+      "wins": 14,
+      "losses": 36
+    },
+    {
+      "rank": 54,
+      "displayName": "Makayla Ledford",
+      "rating": 1060,
+      "wins": 13,
+      "losses": 37
+    },
+    {
+      "rank": 55,
+      "displayName": "Sarah Urbaniak VanCleave",
+      "rating": 1040,
+      "wins": 12,
+      "losses": 38
+    },
+    {
+      "rank": 56,
+      "displayName": "Jennifer Lynn",
+      "rating": 1020,
+      "wins": 11,
+      "losses": 39
+    },
+    {
+      "rank": 57,
+      "displayName": "Walter Ryan Isenhour",
+      "rating": 1000,
+      "wins": 10,
+      "losses": 40
+    },
+    {
+      "rank": 58,
+      "displayName": "Craig Rogers",
+      "rating": 980,
+      "wins": 9,
+      "losses": 41
+    },
+    {
+      "rank": 59,
+      "displayName": "Jesse Chandler",
+      "rating": 960,
+      "wins": 8,
+      "losses": 42
+    },
+    {
+      "rank": 60,
+      "displayName": "Tizer Rushford",
+      "rating": 940,
+      "wins": 7,
+      "losses": 43
+    },
+    {
+      "rank": 61,
+      "displayName": "Randy Hoag",
+      "rating": 920,
+      "wins": 6,
+      "losses": 44
+    },
+    {
+      "rank": 62,
+      "displayName": "Justin Whittenberg",
+      "rating": 900,
+      "wins": 5,
+      "losses": 45
+    },
+    {
+      "rank": 63,
+      "displayName": "Kenrick Leistiko",
+      "rating": 880,
+      "wins": 4,
+      "losses": 46
+    },
+    {
+      "rank": 64,
+      "displayName": "Richard Frankforter",
+      "rating": 860,
+      "wins": 3,
+      "losses": 47
+    },
+    {
+      "rank": 65,
+      "displayName": "Brandon Lucas Parker",
+      "rating": 840,
+      "wins": 2,
+      "losses": 48
+    },
+    {
+      "rank": 66,
+      "displayName": "James Ellington",
+      "rating": 820,
+      "wins": 1,
+      "losses": 49
+    },
+    {
+      "rank": 67,
+      "displayName": "Anita Scharf",
+      "rating": 800,
+      "wins": 6,
+      "losses": 44
+    },
+    {
+      "rank": 68,
+      "displayName": "Ileana Hernandez",
+      "rating": 780,
+      "wins": 5,
+      "losses": 45
+    },
+    {
+      "rank": 69,
+      "displayName": "Heather Jarvis",
+      "rating": 760,
+      "wins": 4,
+      "losses": 46
+    },
+    {
+      "rank": 70,
+      "displayName": "Keenen Blackbird",
+      "rating": 740,
+      "wins": 3,
+      "losses": 47
+    },
+    {
+      "rank": 71,
+      "displayName": "Kelly Smail",
+      "rating": 720,
+      "wins": 2,
+      "losses": 48
+    }
+  ]
+}
