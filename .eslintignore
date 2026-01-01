@@ -1,0 +1,4 @@
+node_modules/
+*.zip
+.gitmcp.json
+.gitmcp.json1
