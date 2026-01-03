@@ -6,9 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Top of the Capital - Pool League</title>
     <link rel="stylesheet" href="green-gray-styles.css?v=3">
+    <link rel="stylesheet" href="shot-trainer.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client@2.0/dist/livekit-client.umd.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 </head>
 
@@ -35,6 +38,8 @@
                         </svg>
                         <span id="notifBadge" class="badge hidden">0</span>
                     </button>
+                    <button id="profileBtn" class="header-btn" onclick="toggleProfileModal()">Profile</button>
+                    <button id="showMyShotBtn" class="header-btn">Show My Shot</button>
                     <button id="logoutBtn" class="header-btn logout-btn">Log Out</button>
                 </div>
             </div>
@@ -49,6 +54,31 @@
                 </div>
                 <div id="modalBody" class="modal-body">
                     <!-- Dynamic Content -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Modal (NEW) -->
+        <div id="profileModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>MY PROFILE</h2>
+                    <button class="close-btn" onclick="toggleProfileModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="profileDisplayName">Display Name:</label>
+                        <input type="text" id="profileDisplayName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="profileEmail">Email:</label>
+                        <input type="email" id="profileEmail" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="profilePhoneNumber">Phone Number (for SMS reminders):</label>
+                        <input type="tel" id="profilePhoneNumber" placeholder="e.g., +15551234567">
+                    </div>
+                    <button id="saveProfileBtn" class="auth-btn">Save Profile</button>
                 </div>
             </div>
         </div>
@@ -91,6 +121,11 @@
                     </div>
                     <div class="match-actions">
                         <div class="race-info">Race to <span id="liveRaceTo">7</span></div>
+                        <div class="social-share">
+                            <button class="share-btn facebook" onclick="shareLiveMatch('facebook')">Share on Facebook</button>
+                            <button class="share-btn twitter" onclick="shareLiveMatch('twitter')">Share on Twitter</button>
+                            <button class="share-btn copy" onclick="shareLiveMatch('copy')">Copy Link</button>
+                        </div>
                         <button class="confirm-btn end-match-btn" onclick="endLiveMatch()">FINISH & SUBMIT
                             RESULT</button>
                     </div>
@@ -104,10 +139,9 @@
                 <h2 class="auth-title">MEMBER AUTHENTICATION</h2>
 
                 <div class="form-group">
-                    <label for="playerSelect">Select Your Name:</label>
-                    <select id="playerSelect" class="player-dropdown">
-                        <option value="">Choose your name...</option>
-                    </select>
+                    <label for="playerSelect">Enter or Select Your Name:</label>
+                    <input type="text" id="playerSelect" list="playerOptions" class="player-dropdown" placeholder="Start typing your name...">
+                    <datalist id="playerOptions"></datalist>
                 </div>
 
                 <div id="authForm" class="auth-form hidden">
@@ -118,8 +152,8 @@
                         <input type="password" id="password" placeholder="Enter your password" required>
                     </div>
 
-                    <div id="avatarSection" class="form-group">
-                        <label for="avatar">Avatar (Optional ):</label>
+                    <div id="avatarSection" class="form-group hidden">
+                        <label for="avatar">Avatar (Optional):</label>
                         <input type="file" id="avatar" accept="image/*">
                         <div id="avatarPreview" class="avatar-preview"></div>
                     </div>
@@ -226,7 +260,69 @@
         </div>
     </div>
 
+    <div id="paymentModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Complete Your Payment</h2>
+                <p>Pay the $5.00 match fee to proceed.</p>
+            </div>
+            <div class="modal-body">
+                <form id="payment-form">
+                    <div id="payment-element">
+                        <!-- Stripe.js injects the Payment Element here -->
+                    </div>
+                    <button id="submit" class="auth-btn">Pay Now</button>
+                    <button id="markPaidManually" class="auth-btn alternate-btn" style="margin-top: 10px;">Mark as Paid (Cash/Other)</button>
+                    <div id="error-message" class="hidden"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show My Shot Page -->
+    <div id="shotTrainerPage" class="dashboard hidden">
+        <div class="shot-trainer-grid">
+            <div class="panel pool-table-panel">
+                <h3 class="panel-title">Layout Your Shot</h3>
+                <div id="poolTable" class="pool-table">
+                    <canvas id="shotCanvas"></canvas>
+                    <!-- Balls will be dynamically inserted here -->
+                </div>
+                <div class="shot-tools">
+                    <button id="resetBallsBtn" class="tool-btn">Reset Balls</button>
+                    <button id="saveShotBtn" class="tool-btn">Save/Share Shot</button>
+                    <button id="loadShotBtn" class="tool-btn">Load Shot</button>
+                </div>
+            </div>
+            <div class="panel shot-controls-panel">
+                <h3 class="panel-title">Shot Controls</h3>
+                <div id="arrowSelector" class="control-section">
+                    <h4>Aim / Path Arrows</h4>
+                    <div class="arrow-selector">
+                        <button class="arrow-btn" data-tool="line" title="Straight Line">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="19" x2="19" y2="5"></line></svg>
+                        </button>
+                        <button class="arrow-btn" data-tool="curve" title="Curved Line">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 19s4-8 14-8"></path></svg>
+                        </button>
+                        <button class="arrow-btn" data-tool="bank" title="Bank Shot">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="5 19 12 12 19 19"></polyline></svg>
+                        </button>
+                        <button id="clearLinesBtn" class="tool-btn">Clear</button>
+                    </div>
+                </div>
+                <div id="englishSelector" class="control-section">
+                    <h4>Cue Ball English</h4>
+                    <div id="cueBallView" class="cue-ball-view">
+                        <div id="englishDot" class="english-dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="app.js"></script>
+    <script src="shot-trainer.js"></script>
 </body>
 
 </html>
