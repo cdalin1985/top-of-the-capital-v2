@@ -46,10 +46,18 @@ export default function ScoreboardScreen({ route, navigation }: any) {
     const finalizeMatch = async () => {
         setLoading(true);
         try {
-            const winnerId = score1 >= challenge.games_to_win ? challenge.challenger_id : challenge.challenged_id;
-            const winnerName = score1 >= challenge.games_to_win ? challenge.challenger.display_name : challenge.challenged.display_name;
+            const isChallengerWinner = score1 >= challenge.games_to_win;
+            const winnerId = isChallengerWinner ? challenge.challenger_id : challenge.challenged_id;
+            const loserId = isChallengerWinner ? challenge.challenged_id : challenge.challenger_id;
+            const winnerName = isChallengerWinner ? (challenge.challenger?.display_name || 'Challenger') : (challenge.challenged?.display_name || 'Opponent');
 
-            const { error } = await supabase
+            // Victory Vibration Pattern
+            if (Platform.OS !== 'web') {
+                Vibration.vibrate([0, 500, 200, 500]);
+            }
+
+            // 1. Mark challenge as completed
+            const { error: challengeError } = await supabase
                 .from('challenges')
                 .update({
                     status: 'completed',
@@ -57,38 +65,34 @@ export default function ScoreboardScreen({ route, navigation }: any) {
                 })
                 .eq('id', challenge.id);
 
-            if (error) throw error;
+            if (challengeError) throw challengeError;
 
-            // 1. Update Rankings (Atomic shift)
-            await supabase.rpc('update_rankings_on_win', {
+            // 2. Update Rankings (Atomic shift in DB)
+            const { error: rankError } = await supabase.rpc('update_rankings_on_win', {
                 match_winner_id: winnerId,
-                match_loser_id: winnerId === challenge.challenger_id ? challenge.challenged_id : challenge.challenger_id
+                match_loser_id: loserId
             });
 
-            // 2. Log Detailed Activity for the Feed
+            if (rankError) throw rankError;
+
+            // 3. Log Activity
             await supabase.from('activities').insert({
                 user_id: winnerId,
                 action_type: 'MATCH_COMPLETED',
                 metadata: {
-                    challenger_name: challenge.challenger.display_name,
-                    challenged_name: challenge.challenged.display_name,
+                    challenger_name: challenge.challenger?.display_name || 'Unknown',
+                    challenged_name: challenge.challenged?.display_name || 'Unknown',
                     final_score: `${score1} - ${score2}`,
                     winner_name: winnerName,
                     game_type: challenge.game_type
                 }
             });
 
-            // 3. Award Engagement Points (1 for play, 3 for win)
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-                await supabase.rpc('increment_points_secure', { amount: 1 });
-                if (user.id === winnerId) {
-                    await supabase.rpc('increment_points_secure', { amount: 3 });
-                }
-            }
+            // 4. Award Points
+            await supabase.rpc('increment_points_secure', { amount: 3 }); // 3 points for finishing/winning
 
             Alert.alert('Match Complete', `${winnerName} wins the match!`, [
-                { text: 'Finalize', onPress: () => navigation.navigate('TheList') }
+                { text: 'View Rankings', onPress: () => navigation.navigate('Rankings') }
             ]);
         } catch (error: any) {
             Alert.alert('Error', error.message);
