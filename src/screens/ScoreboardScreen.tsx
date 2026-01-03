@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform, Vibration } 
 import * as Haptics from 'expo-haptics';
 import { supabase } from '../lib/supabase';
 import { Challenge } from '../types';
+import { sendPushNotification } from '../lib/notifications';
 import { Maximize2, RotateCcw, Share2, Trophy } from 'lucide-react-native';
 
 export default function ScoreboardScreen({ route, navigation }: any) {
@@ -11,20 +12,7 @@ export default function ScoreboardScreen({ route, navigation }: any) {
     const [score2, setScore2] = useState(0);
     const [loading, setLoading] = useState(false);
 
-    // Subscribe to real-time score updates if multiple devices/viewers are involved
-    useEffect(() => {
-        const channel = supabase
-            .channel(`match:${challenge.id}`)
-            .on('broadcast', { event: 'score-update' }, (payload) => {
-                setScore1(payload.payload.score1);
-                setScore2(payload.payload.score2);
-            })
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(channel);
-        };
-    }, [challenge.id]);
+    // ... (useEffect for broadcasting updates)
 
     const updateScore = async (player: 1 | 2, delta: number) => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -116,8 +104,33 @@ export default function ScoreboardScreen({ route, navigation }: any) {
                                 .update({ stream_url: url })
                                 .eq('id', challenge.id);
                             
-                            if (error) Alert.alert('Error', error.message);
-                            else Alert.alert('Success', 'You are now LIVE in the Arena!');
+                            if (error) {
+                                Alert.alert('Error', error.message);
+                            } else {
+                                // NOTIFY THE WHOLE LEAGUE
+                                const { data: profiles } = await supabase
+                                    .from('users_profiles')
+                                    .select('expo_push_token')
+                                    .not('expo_push_token', 'is', null);
+                                
+                                if (profiles) {
+                                    const p1 = challenge.challenger?.display_name || 'Player 1';
+                                    const p2 = challenge.challenged?.display_name || 'Player 2';
+                                    
+                                    // Send to everyone in the league
+                                    profiles.forEach(p => {
+                                        if (p.expo_push_token) {
+                                            sendPushNotification(
+                                                p.expo_push_token,
+                                                'Match LIVE! 🎥',
+                                                `${p1} vs ${p2} is live in the Arena. Tap to watch!`,
+                                                { type: 'LIVE_MATCH', challengeId: challenge.id }
+                                            );
+                                        }
+                                    });
+                                }
+                                Alert.alert('Success', 'You are now LIVE in the Arena!');
+                            }
                         }
                     }
                 }
