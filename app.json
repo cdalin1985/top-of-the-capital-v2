@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "The List",
+    "slug": "the-list",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

@@ -28,7 +28,7 @@ export default function StreamingScreen() {
     useEffect(() => {
         fetchStreams();
         const channel = supabase.channel('stream-updates')
-            .on('postgres_changes', { event: '*', table: 'challenges' }, () => fetchStreams())
+            .on('postgres_changes' as any, { event: '*', table: 'challenges' }, () => fetchStreams())
             .subscribe();
 
         return () => { supabase.removeChannel(channel); };
@@ -38,7 +38,7 @@ export default function StreamingScreen() {
         <View style={styles.streamCard}>
             <View style={styles.cardHeader}>
                 <View style={styles.liveBadge}>
-                    <Wifi size={14} color="#fff" />
+                    <Wifi size={14} {...({ color: "#fff" } as any)} />
                     <Text style={styles.liveText}>LIVE NOW</Text>
                 </View>
                 <Text style={styles.matchTitle}>{item.game_type} Race to {item.games_to_win}</Text>
@@ -50,13 +50,13 @@ export default function StreamingScreen() {
                 <Text style={styles.playerText}>{item.challenged?.display_name}</Text>
             </View>
 
-            <TouchableOpacity 
-                style={styles.watchBtn} 
+            <TouchableOpacity
+                style={styles.watchBtn}
                 onPress={() => Linking.openURL(item.stream_url)}
             >
-                <Play size={20} color="#000" fill="#000" />
+                <Play size={20} {...({ color: "#000", fill: "#000" } as any)} />
                 <Text style={styles.watchBtnText}>WATCH ON EXTERNAL PLAYER</Text>
-                <ExternalLink size={16} color="#000" />
+                <ExternalLink size={16} {...({ color: "#000" } as any)} />
             </TouchableOpacity>
         </View>
     );
@@ -64,7 +64,7 @@ export default function StreamingScreen() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Video color="#87a96b" size={32} />
+                <Video size={32} {...({ color: "#87a96b" } as any)} />
                 <Text style={styles.title}>LIVE ARENA</Text>
             </View>
 
@@ -80,7 +80,7 @@ export default function StreamingScreen() {
             ) : (
                 <View style={styles.emptyContainer}>
                     <View style={styles.videoMock}>
-                        <Video size={48} color="rgba(255,255,255,0.1)" />
+                        <Video size={48} {...({ color: "rgba(255,255,255,0.1)" } as any)} />
                         <Text style={styles.placeholderText}>NO ACTIVE STREAMS</Text>
                         <Text style={styles.subtitle}>Streaming matches will appear here automatically when players go live.</Text>
                     </View>

@@ -7,12 +7,14 @@ import { Bell, Clock, MapPin, Check, X } from 'lucide-react-native';
 export default function InboxScreen({ navigation }: any) {
     const [challenges, setChallenges] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
     async function fetchChallenges() {
         setLoading(true);
         try {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) return;
+            setCurrentUserId(user.id);
 
             const { data, error } = await supabase
                 .from('challenges')
@@ -61,9 +63,13 @@ export default function InboxScreen({ navigation }: any) {
     }
 
     const renderItem = ({ item }: { item: any }) => {
-        const currentUserId = supabase.auth.getSession().then(({data}) => data.session?.user.id);
         const isChallenger = item.challenger_id === currentUserId;
         const canRespond = item.status === 'pending' && item.challenged_id === currentUserId;
+
+        const deadline = new Date(item.deadline);
+        const now = new Date();
+        const daysLeft = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+        const expirationText = daysLeft > 0 ? `${daysLeft}d left` : 'Expiring soon';
 
         return (
             <View style={styles.card}>
@@ -72,14 +78,16 @@ export default function InboxScreen({ navigation }: any) {
                         {isChallenger ? `You challenged ${item.challenged.display_name}` : `${item.challenger.display_name} challenged you`}
                     </Text>
                     <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
-                        <Text style={styles.statusText}>{item.status.toUpperCase()}</Text>
+                        <Text style={styles.statusText}>
+                            {item.status === 'pending' ? expirationText.toUpperCase() : item.status.toUpperCase()}
+                        </Text>
                     </View>
                 </View>
 
                 <View style={styles.details}>
                     <Text style={styles.detailText}>{item.game_type} • Race to {item.games_to_win}</Text>
-                    <Text style={styles.detailText}><Clock size={14} color="#888" /> {new Date(item.proposed_time).toLocaleString()}</Text>
-                    <Text style={styles.detailText}><MapPin size={14} color="#888" /> {item.venue || 'TBD'}</Text>
+                    <Text style={styles.detailText}><Clock size={14} {...({ color: "#888" } as any)} /> {new Date(item.proposed_time).toLocaleString()}</Text>
+                    <Text style={styles.detailText}><MapPin size={14} {...({ color: "#888" } as any)} /> {item.venue || 'TBD'}</Text>
                 </View>
 
                 {canRespond && (
@@ -88,14 +96,14 @@ export default function InboxScreen({ navigation }: any) {
                             style={[styles.actionBtn, styles.acceptBtn]}
                             onPress={() => respondToChallenge(item, 'negotiating', 'Eagles 4040', new Date(Date.now() + 86400000).toISOString())}
                         >
-                            <Check size={20} color="#000" />
+                            <Check size={20} {...({ color: "#000" } as any)} />
                             <Text style={styles.acceptBtnText}>Accept (Eagles 4040)</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[styles.actionBtn, styles.declineBtn]}
                             onPress={() => respondToChallenge(item, 'forfeited')}
                         >
-                            <X size={20} color="#fff" />
+                            <X size={20} {...({ color: "#fff" } as any)} />
                         </TouchableOpacity>
                     </View>
                 )}
@@ -106,7 +114,7 @@ export default function InboxScreen({ navigation }: any) {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Bell color="#87a96b" size={32} />
+                <Bell size={32} {...({ color: "#87a96b" } as any)} />
                 <Text style={styles.title}>INBOX</Text>
             </View>
 
