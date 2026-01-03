@@ -101,10 +101,38 @@ export default function ScoreboardScreen({ route, navigation }: any) {
         }
     };
 
+    const startStreaming = () => {
+        Alert.prompt(
+            'Go Live',
+            'Paste your YouTube or Facebook Live URL to broadcast this match to the league.',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                    text: 'Start Streaming',
+                    onPress: async (url) => {
+                        if (url) {
+                            const { error } = await supabase
+                                .from('challenges')
+                                .update({ stream_url: url })
+                                .eq('id', challenge.id);
+                            
+                            if (error) Alert.alert('Error', error.message);
+                            else Alert.alert('Success', 'You are now LIVE in the Arena!');
+                        }
+                    }
+                }
+            ],
+            'plain-text'
+        );
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.matchTitle}>{challenge.game_type} Race to {challenge.games_to_win}</Text>
+                <TouchableOpacity onPress={startStreaming} style={styles.liveButton}>
+                    <Text style={styles.liveButtonText}>GO LIVE</Text>
+                </TouchableOpacity>
             </View>
 
             <View style={styles.scoreboard}>
@@ -175,6 +203,18 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         letterSpacing: 2,
+    },
+    liveButton: {
+        marginTop: 10,
+        backgroundColor: '#f44336',
+        paddingHorizontal: 15,
+        paddingVertical: 5,
+        borderRadius: 20,
+    },
+    liveButtonText: {
+        color: '#fff',
+        fontSize: 10,
+        fontWeight: 'bold',
     },
     scoreboard: {
         flex: 1,
