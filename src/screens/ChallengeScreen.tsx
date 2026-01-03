@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Platform } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { Profile, GameType } from '../types';
+import { sendPushNotification } from '../lib/notifications';
 import { Calendar, MapPin, Target, ChevronRight } from 'lucide-react-native';
 
 export default function ChallengeScreen({ route, navigation }: any) {
@@ -51,6 +52,16 @@ export default function ChallengeScreen({ route, navigation }: any) {
             });
 
             if (error) throw error;
+
+            // Send Push Notification to Target
+            if (target.expo_push_token) {
+                await sendPushNotification(
+                    target.expo_push_token,
+                    'New Challenge! 🎱',
+                    `${profile.display_name} has challenged you to a race to ${gamesToWin} in ${gameType}!`,
+                    { type: 'CHALLENGE_RECEIVED', challengerId: user.id }
+                );
+            }
 
             // Add points for engagement (+2 for challenge)
             await supabase.rpc('increment_points', { user_id: user.id, amount: 2 });

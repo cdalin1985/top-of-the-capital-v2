@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useAuth } from './src/hooks/useAuth';
+import { useNotificationStore } from './src/store/useNotificationStore';
+import { registerForPushNotificationsAsync } from './src/lib/notifications';
+import { supabase } from './src/lib/supabase';
 import AuthScreen from './src/screens/AuthScreen';
 import RankingScreen from './src/screens/RankingScreen';
 import ChallengeScreen from './src/screens/ChallengeScreen';
@@ -17,6 +20,8 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function MainTabs() {
+  const unreadCount = useNotificationStore((state) => state.unreadCount);
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -50,6 +55,8 @@ function MainTabs() {
         component={InboxScreen}
         options={{
           tabBarIcon: ({ color }) => <Bell color={color} size={24} />,
+          tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
+          tabBarBadgeStyle: { backgroundColor: '#f44336' },
         }}
       />
       <Tab.Screen
@@ -73,12 +80,47 @@ function RankingStack() {
   );
 }
 
-function PlaceholderScreen() {
-  return <View style={{ flex: 1, backgroundColor: '#0a0a0a' }} />;
-}
-
 export default function App() {
   const { session, loading } = useAuth();
+  const fetchUnreadCount = useNotificationStore((state) => state.fetchUnreadCount);
+
+  useEffect(() => {
+    if (session?.user) {
+      // 1. Initial Load
+      fetchUnreadCount(session.user.id);
+
+      // 2. Real-time Subscription
+      const channel = supabase
+        .channel('db-notifications')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            table: 'challenges',
+            filter: `challenged_id=eq.${session.user.id}`,
+          },
+          () => fetchUnreadCount(session.user.id)
+        )
+        .subscribe();
+
+      // 3. Push Token Registration
+      registerForPushNotificationsAsync().then(token => {
+        if (token) {
+          supabase
+            .from('users_profiles')
+            .update({ expo_push_token: token })
+            .eq('id', session.user.id)
+            .then(({ error }) => {
+              if (error) console.error('Error saving push token:', error);
+            });
+        }
+      });
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [session, fetchUnreadCount]);
 
   if (loading) {
     return (

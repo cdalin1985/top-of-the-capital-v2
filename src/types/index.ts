@@ -12,6 +12,7 @@ export interface Profile {
     spot_rank: number;
     created_at: string;
     updated_at: string;
+    expo_push_token: string | null;
 }
 
 export interface Ranking {
@@ -35,6 +36,7 @@ export interface Challenge {
     deadline: string;
     created_at: string;
     updated_at: string;
+    stream_url: string | null;
 }
 
 export interface Activity {
