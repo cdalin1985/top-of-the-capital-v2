@@ -62,6 +62,26 @@ CREATE TABLE IF NOT EXISTS public.comments (
 );
 
 -- FUNCTIONS
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+    INSERT INTO public.users_profiles (id, display_name, phone, avatar_url, spot_rank)
+    VALUES (
+        new.id,
+        COALESCE(new.raw_user_meta_data->>'display_name', 'Player'),
+        new.raw_user_meta_data->>'phone',
+        new.raw_user_meta_data->>'avatar_url',
+        (SELECT COALESCE(MAX(spot_rank), 0) + 1 FROM public.users_profiles)
+    );
+    RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- TRIGGERS
+CREATE TRIGGER on_auth_user_created
+    AFTER INSERT ON auth.users
+    FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
 CREATE OR REPLACE FUNCTION public.increment_points(user_id uuid, amount integer)
 RETURNS void AS $$
 BEGIN
