@@ -1,32 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, RefreshControl, Platform } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, RefreshControl, Platform, Image } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { Profile, GameType } from '../types';
-import { Trophy, Swords } from 'lucide-react-native';
+import { Trophy, Swords, Star, TrendingUp } from 'lucide-react-native';
 
 export default function RankingScreen({ navigation }: any) {
     const [rankings, setRankings] = useState<Profile[]>([]);
     const [loading, setLoading] = useState(true);
     const [gameType, setGameType] = useState<GameType>('8-ball');
-
     const [activeMatches, setActiveMatches] = useState<string[]>([]);
+    const [spotlightPlayer, setSpotlightPlayer] = useState<Profile | null>(null);
 
     async function fetchRankings() {
         setLoading(true);
         try {
-            // Fetch rankings for specific game type
             const { data, error } = await supabase
                 .from('users_profiles')
                 .select('*')
                 .order('spot_rank', { ascending: true });
 
             if (error) throw error;
-            
-            // In a real Phase IV, we'd filter by game_type in the query
-            // For now, we'll simulate the filter to keep Phase III moving
             setRankings(data || []);
 
-            // Fetch live matches to show who is currently playing
+            // Pick a spotlight player (Top 20)
+            if (data && data.length > 0) {
+                const top20 = data.slice(0, 20);
+                const random = top20[Math.floor(Math.random() * top20.length)];
+                setSpotlightPlayer(random);
+            }
+
             const { data: liveMatches } = await supabase
                 .from('challenges')
                 .select('challenger_id, challenged_id')
@@ -42,16 +44,49 @@ export default function RankingScreen({ navigation }: any) {
         }
     }
 
-    useEffect(() => {
-        fetchRankings();
-        
-        // Real-time subscription for match status changes
-        const channel = supabase.channel('ranking-updates')
-            .on('postgres_changes', { event: '*', table: 'challenges' }, () => fetchRankings())
-            .subscribe();
+    // ... (useEffect for real-time)
 
-        return () => { supabase.removeChannel(channel); };
-    }, [gameType]);
+    const renderHeader = () => (
+        <View>
+            <View style={styles.mainHeader}>
+                <Trophy color="#ffd700" size={32} />
+                <Text style={styles.title}>THE LIST</Text>
+            </View>
+
+            {spotlightPlayer && (
+                <View style={styles.spotlightCard}>
+                    <View style={styles.spotlightContent}>
+                        <View style={styles.spotlightIcon}>
+                            <Star color="#ffd700" size={20} fill="#ffd700" />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <Text style={styles.spotlightLabel}>TODAY'S SPOTLIGHT</Text>
+                            <Text style={styles.spotlightName}>{spotlightPlayer.display_name}</Text>
+                            <Text style={styles.spotlightSub}>Currently Rank #{spotlightPlayer.spot_rank} • Fargo {spotlightPlayer.fargo_rating}</Text>
+                        </View>
+                        <TouchableOpacity 
+                            style={styles.spotlightAction}
+                            onPress={() => navigation.navigate('Challenge', { target: spotlightPlayer })}
+                        >
+                            <Swords color="#000" size={20} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )}
+
+            <View style={styles.tabContainer}>
+                {(['8-ball', '9-ball', '10-ball'] as GameType[]).map((t) => (
+                    <TouchableOpacity
+                        key={t}
+                        style={[styles.tab, gameType === t && styles.activeTab]}
+                        onPress={() => setGameType(t)}
+                    >
+                        <Text style={[styles.tabText, gameType === t && styles.activeTabText]}>{t.toUpperCase()}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+        </View>
+    );
 
     const renderItem = ({ item }: { item: Profile }) => {
         const isPlaying = activeMatches.includes(item.id);
@@ -86,26 +121,10 @@ export default function RankingScreen({ navigation }: any) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Trophy color="#ffd700" size={32} />
-                <Text style={styles.title}>THE LIST</Text>
-            </View>
-
-            <View style={styles.tabContainer}>
-                {(['8-ball', '9-ball', '10-ball'] as GameType[]).map((t) => (
-                    <TouchableOpacity
-                        key={t}
-                        style={[styles.tab, gameType === t && styles.activeTab]}
-                        onPress={() => setGameType(t)}
-                    >
-                        <Text style={[styles.tabText, gameType === t && styles.activeTabText]}>{t.toUpperCase()}</Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
-
             <FlatList
                 data={rankings}
                 renderItem={renderItem}
+                ListHeaderComponent={renderHeader}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.listContent}
                 refreshControl={
@@ -121,7 +140,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#0a0a0a',
     },
-    header: {
+    mainHeader: {
         flexDirection: 'row',
         alignItems: 'center',
         padding: 20,
@@ -135,10 +154,55 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         fontFamily: Platform.OS === 'ios' ? 'Cinzel Decorative' : 'serif',
     },
+    spotlightCard: {
+        margin: 15,
+        padding: 2,
+        borderRadius: 15,
+        backgroundColor: 'rgba(255, 215, 0, 0.1)',
+        borderWidth: 1,
+        borderColor: 'rgba(255, 215, 0, 0.3)',
+    },
+    spotlightContent: {
+        backgroundColor: '#111',
+        borderRadius: 13,
+        padding: 15,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    spotlightIcon: {
+        marginRight: 15,
+    },
+    spotlightLabel: {
+        color: '#ffd700',
+        fontSize: 10,
+        fontWeight: 'bold',
+        letterSpacing: 1,
+        marginBottom: 2,
+    },
+    spotlightName: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    spotlightSub: {
+        color: '#666',
+        fontSize: 12,
+    },
+    spotlightAction: {
+        backgroundColor: '#ffd700',
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 10,
+    },
     tabContainer: {
         flexDirection: 'row',
         padding: 10,
+        marginHorizontal: 10,
         backgroundColor: 'rgba(255, 255, 255, 0.02)',
+        borderRadius: 10,
     },
     tab: {
         flex: 1,
@@ -157,7 +221,7 @@ const styles = StyleSheet.create({
         color: '#000',
     },
     listContent: {
-        padding: 10,
+        paddingBottom: 100,
     },
     rankingItem: {
         flexDirection: 'row',
@@ -165,6 +229,7 @@ const styles = StyleSheet.create({
         padding: 15,
         backgroundColor: 'rgba(255, 255, 255, 0.05)',
         borderRadius: 12,
+        marginHorizontal: 15,
         marginBottom: 10,
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.1)',
@@ -194,6 +259,13 @@ const styles = StyleSheet.create({
     fargoText: {
         color: '#888',
         fontSize: 12,
+    },
+    challengeButton: {
+        backgroundColor: '#87a96b',
+        padding: 10,
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     disabledButton: {
         backgroundColor: 'rgba(255,255,255,0.1)',
