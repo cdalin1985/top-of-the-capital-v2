@@ -12,7 +12,18 @@ export default function ScoreboardScreen({ route, navigation }: any) {
     const [score2, setScore2] = useState(0);
     const [loading, setLoading] = useState(false);
 
-    // ... (useEffect for broadcasting updates)
+    useEffect(() => {
+        const channel = supabase.channel(`match:${challenge.id}`)
+            .on('broadcast', { event: 'score-update' }, (payload: any) => {
+                setScore1(payload.payload.score1);
+                setScore2(payload.payload.score2);
+            })
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [challenge.id]);
 
     const updateScore = async (player: 1 | 2, delta: number) => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -97,13 +108,13 @@ export default function ScoreboardScreen({ route, navigation }: any) {
                 { text: 'Cancel', style: 'cancel' },
                 {
                     text: 'Start Streaming',
-                    onPress: async (url) => {
+                    onPress: async (url: string | undefined) => {
                         if (url) {
                             const { error } = await supabase
                                 .from('challenges')
                                 .update({ stream_url: url })
                                 .eq('id', challenge.id);
-                            
+
                             if (error) {
                                 Alert.alert('Error', error.message);
                             } else {
@@ -112,11 +123,11 @@ export default function ScoreboardScreen({ route, navigation }: any) {
                                     .from('users_profiles')
                                     .select('expo_push_token')
                                     .not('expo_push_token', 'is', null);
-                                
+
                                 if (profiles) {
                                     const p1 = challenge.challenger?.display_name || 'Player 1';
                                     const p2 = challenge.challenged?.display_name || 'Player 2';
-                                    
+
                                     // Send to everyone in the league
                                     profiles.forEach(p => {
                                         if (p.expo_push_token) {
@@ -182,18 +193,18 @@ export default function ScoreboardScreen({ route, navigation }: any) {
 
             <View style={styles.footer}>
                 <TouchableOpacity style={styles.footerIcon}>
-                    <RotateCcw size={24} color="#666" />
+                    <RotateCcw size={24} {...({ color: "#666" } as any)} />
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.finishBtn, (score1 < challenge.games_to_win && score2 < challenge.games_to_win) && styles.disabledFinish]}
                     onPress={finalizeMatch}
                     disabled={loading || (score1 < challenge.games_to_win && score2 < challenge.games_to_win)}
                 >
-                    <Trophy size={20} color="#000" />
+                    <Trophy size={20} {...({ color: "#000" } as any)} />
                     <Text style={styles.finishBtnText}>FINISH MATCH</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.footerIcon}>
-                    <Share2 size={24} color="#666" />
+                    <Share2 size={24} {...({ color: "#666" } as any)} />
                 </TouchableOpacity>
             </View>
         </View>

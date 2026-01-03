@@ -85,7 +85,7 @@ export default function ChallengeScreen({ route, navigation }: any) {
 
             <View style={styles.section}>
                 <View style={styles.sectionHeader}>
-                    <Target size={20} color="#87a96b" />
+                    <Target size={20} {...({ color: "#87a96b" } as any)} />
                     <Text style={styles.sectionTitle}>Game Type</Text>
                 </View>
                 <View style={styles.optionsGrid}>
@@ -103,7 +103,7 @@ export default function ChallengeScreen({ route, navigation }: any) {
 
             <View style={styles.section}>
                 <View style={styles.sectionHeader}>
-                    <ChevronRight size={20} color="#87a96b" />
+                    <ChevronRight size={20} {...({ color: "#87a96b" } as any)} />
                     <Text style={styles.sectionTitle}>Race To (Games to Win)</Text>
                 </View>
                 <View style={styles.raceController}>
@@ -119,7 +119,8 @@ export default function ChallengeScreen({ route, navigation }: any) {
 
             <View style={styles.infoCard}>
                 <Text style={styles.infoText}>
-                    The challenged player will choose the venue (Eagles 4040/Valley Hub) and the match time.
+                    The challenged player will choose the venue and time.
+                    They have <Text style={{ fontWeight: 'bold', color: '#fff' }}>2 weeks</Text> to respond before the challenge is automatically forfeited.
                 </Text>
             </View>
 

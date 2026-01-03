@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, Image, ActivityIndicator } from 'react-native';
 import { supabase } from '../lib/supabase';
+import * as ImagePicker from 'expo-image-picker';
+import { Camera, Image as ImageIcon, Sparkles } from 'lucide-react-native';
 
 export default function AuthScreen() {
     const [email, setEmail] = useState('');
@@ -12,6 +14,62 @@ export default function AuthScreen() {
     const [loading, setLoading] = useState(false);
     const [generating, setGenerating] = useState(false);
     const [isSignUp, setIsSignUp] = useState(false);
+
+    async function pickImage(useCamera: boolean) {
+        let result;
+        if (useCamera) {
+            const { status } = await ImagePicker.requestCameraPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('Permission denied', 'We need camera access to take a photo.');
+                return;
+            }
+            result = await ImagePicker.launchCameraAsync({
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 0.5,
+            });
+        } else {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('Permission denied', 'We need gallery access to choose a photo.');
+                return;
+            }
+            result = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 0.5,
+            });
+        }
+
+        if (!result.canceled && result.assets && result.assets.length > 0) {
+            uploadImage(result.assets[0].uri);
+        }
+    }
+
+    async function uploadImage(uri: string) {
+        setGenerating(true);
+        try {
+            const response = await fetch(uri);
+            const blob = await response.blob();
+            const fileName = `${Date.now()}.jpg`;
+
+            const { data, error } = await supabase.storage
+                .from('avatars')
+                .upload(fileName, blob);
+
+            if (error) throw error;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('avatars')
+                .getPublicUrl(fileName);
+
+            setAvatarUrl(publicUrl);
+        } catch (error: any) {
+            Alert.alert('Upload Error', error.message);
+        } finally {
+            setGenerating(false);
+        }
+    }
 
     async function generateAvatar() {
         if (!avatarPrompt) {
@@ -110,11 +168,29 @@ export default function AuthScreen() {
                             />
 
                             <View style={styles.aiSection}>
-                                <Text style={styles.sectionTitle}>AI Avatar (Optional)</Text>
+                                <Text style={styles.sectionTitle}>Profile Photo</Text>
+
+                                <View style={styles.manualUploadRow}>
+                                    <TouchableOpacity style={styles.uploadBtn} onPress={() => pickImage(true)}>
+                                        <Camera size={20} {...({ color: "#000" } as any)} />
+                                        <Text style={styles.uploadBtnText}>Camera</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.uploadBtn} onPress={() => pickImage(false)}>
+                                        <ImageIcon size={20} {...({ color: "#000" } as any)} />
+                                        <Text style={styles.uploadBtnText}>Gallery</Text>
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={styles.dividerRow}>
+                                    <View style={styles.line} />
+                                    <Text style={styles.dividerText}>OR USE AI</Text>
+                                    <View style={styles.line} />
+                                </View>
+
                                 <View style={styles.aiInputRow}>
                                     <TextInput
                                         style={[styles.input, { flex: 1, marginBottom: 0 }]}
-                                        placeholder="e.g. Shark in a tuxedo playing pool"
+                                        placeholder="AI Prompt: e.g. Neon Shark"
                                         placeholderTextColor="#666"
                                         value={avatarPrompt}
                                         onChangeText={setAvatarPrompt}
@@ -127,7 +203,7 @@ export default function AuthScreen() {
                                         {generating ? (
                                             <ActivityIndicator color="#000" />
                                         ) : (
-                                            <Text style={styles.generateButtonText}>AI</Text>
+                                            <Sparkles size={20} {...({ color: "#000" } as any)} />
                                         )}
                                     </TouchableOpacity>
                                 </View>
@@ -140,7 +216,7 @@ export default function AuthScreen() {
                                         </TouchableOpacity>
                                     </View>
                                 ) : (
-                                    <Text style={styles.hintText}>Enter text to generate a custom avatar</Text>
+                                    <Text style={styles.hintText}>Upload a photo or use AI generation</Text>
                                 )}
                             </View>
                         </>
@@ -236,6 +312,42 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 10,
+    },
+    dividerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 15,
+        gap: 10,
+    },
+    line: {
+        flex: 1,
+        height: 1,
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    dividerText: {
+        color: '#666',
+        fontSize: 10,
+        fontWeight: 'bold',
+    },
+    manualUploadRow: {
+        flexDirection: 'row',
+        gap: 10,
+        marginBottom: 5,
+    },
+    uploadBtn: {
+        flex: 1,
+        backgroundColor: '#87a96b',
+        borderRadius: 12,
+        padding: 12,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+    },
+    uploadBtnText: {
+        color: '#000',
+        fontWeight: 'bold',
+        fontSize: 14,
     },
     generateButton: {
         backgroundColor: '#87a96b',

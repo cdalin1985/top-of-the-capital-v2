@@ -13,8 +13,9 @@ import ChallengeScreen from './src/screens/ChallengeScreen';
 import InboxScreen from './src/screens/InboxScreen';
 import ScoreboardScreen from './src/screens/ScoreboardScreen';
 import ActivityFeedScreen from './src/screens/ActivityFeedScreen';
+import StreamingScreen from './src/screens/StreamingScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
-import { List, Bell, User, MessageSquare } from 'lucide-react-native';
+import { List, Bell, User, MessageSquare, Video } from 'lucide-react-native';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -40,21 +41,28 @@ function MainTabs() {
         name="Rankings"
         component={RankingStack}
         options={{
-          tabBarIcon: ({ color }) => <List color={color} size={24} />,
+          tabBarIcon: ({ color }) => <List color={color} size={24} {...({ color } as any)} />,
         }}
       />
       <Tab.Screen
         name="Feed"
         component={ActivityFeedScreen}
         options={{
-          tabBarIcon: ({ color }) => <MessageSquare color={color} size={24} />,
+          tabBarIcon: ({ color }) => <MessageSquare color={color} size={24} {...({ color } as any)} />,
+        }}
+      />
+      <Tab.Screen
+        name="Arena"
+        component={StreamingScreen}
+        options={{
+          tabBarIcon: ({ color }) => <Video color={color} size={24} {...({ color } as any)} />,
         }}
       />
       <Tab.Screen
         name="Inbox"
         component={InboxScreen}
         options={{
-          tabBarIcon: ({ color }) => <Bell color={color} size={24} />,
+          tabBarIcon: ({ color }) => <Bell color={color} size={24} {...({ color } as any)} />,
           tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
           tabBarBadgeStyle: { backgroundColor: '#f44336' },
         }}
@@ -63,7 +71,7 @@ function MainTabs() {
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({ color }) => <User color={color} size={24} />,
+          tabBarIcon: ({ color }) => <User color={color} size={24} {...({ color } as any)} />,
         }}
       />
     </Tab.Navigator>
