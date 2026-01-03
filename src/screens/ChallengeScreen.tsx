@@ -28,9 +28,9 @@ export default function ChallengeScreen({ route, navigation }: any) {
 
             // ±5 Rule
             const spotDiff = Math.abs(profile.spot_rank - target.spot_rank);
-            const is#1 = profile.spot_rank === 1;
+            const isRankOne = profile.spot_rank === 1;
 
-            if (spotDiff > 5 && !is#1) {
+            if (spotDiff > 5 && !isRankOne) {
                 throw new Error('You can only challenge players within ±5 spots of your current rank.');
             }
 

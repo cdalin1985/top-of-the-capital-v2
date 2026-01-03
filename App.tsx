@@ -93,7 +93,7 @@ export default function App() {
       const channel = supabase
         .channel('db-notifications')
         .on(
-          'postgres_changes',
+          'postgres_changes' as any,
           {
             event: '*',
             table: 'challenges',
