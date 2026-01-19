@@ -12,6 +12,7 @@ import { ErrorBoundary } from './src/components/ErrorBoundary';
 import { OfflineBanner } from './src/components/OfflineBanner';
 import AuthScreen from './src/screens/AuthScreen';
 import RankingScreen from './src/screens/RankingScreen';
+import LeaderboardScreen from './src/screens/LeaderboardScreen';
 import ChallengeScreen from './src/screens/ChallengeScreen';
 import InboxScreen from './src/screens/InboxScreen';
 import ScoreboardScreen from './src/screens/ScoreboardScreen';
@@ -85,7 +86,7 @@ function MainTabs() {
 function RankingStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="TheList" component={RankingScreen} />
+      <Stack.Screen name="TheList" component={LeaderboardScreen} />
       <Stack.Screen name="Challenge" component={ChallengeScreen} />
       <Stack.Screen name="Scoreboard" component={ScoreboardScreen} />
     </Stack.Navigator>

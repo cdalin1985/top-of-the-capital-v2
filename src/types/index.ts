@@ -68,6 +68,7 @@ export type RootStackParamList = {
   Claim: undefined;
   Main: undefined;
   TheList: undefined;
+  Leaderboard: undefined;
   Challenge: { target: Profile };
   Scoreboard: { challenge: Challenge };
 };
