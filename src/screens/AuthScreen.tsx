@@ -1,144 +1,217 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, Image, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Modal, FlatList } from 'react-native';
 import { supabase } from '../lib/supabase';
-import * as ImagePicker from 'expo-image-picker';
-import { Camera, Image as ImageIcon, Sparkles } from 'lucide-react-native';
+import { ChevronDown, User, Lock, Search, X, Check, Crown } from 'lucide-react-native';
+
+interface LadderPlayer {
+    id: string;
+    display_name: string;
+    spot_rank: number;
+    fargo_rating: number;
+    avatar_url?: string;
+}
+
+type AuthMode = 'select' | 'register' | 'login';
 
 export default function AuthScreen() {
-    const [email, setEmail] = useState('');
+    const [players, setPlayers] = useState<LadderPlayer[]>([]);
+    const [loadingPlayers, setLoadingPlayers] = useState(true);
+    const [selectedPlayer, setSelectedPlayer] = useState<LadderPlayer | null>(null);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
     const [password, setPassword] = useState('');
-    const [phone, setPhone] = useState('');
-    const [displayName, setDisplayName] = useState('');
-    const [avatarPrompt, setAvatarPrompt] = useState('');
-    const [avatarUrl, setAvatarUrl] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
-    const [generating, setGenerating] = useState(false);
-    const [isSignUp, setIsSignUp] = useState(false);
+    const [authMode, setAuthMode] = useState<AuthMode>('select');
+    const [isExistingUser, setIsExistingUser] = useState(false);
 
-    async function pickImage(useCamera: boolean) {
-        let result;
-        if (useCamera) {
-            const { status } = await ImagePicker.requestCameraPermissionsAsync();
-            if (status !== 'granted') {
-                Alert.alert('Permission denied', 'We need camera access to take a photo.');
-                return;
-            }
-            result = await ImagePicker.launchCameraAsync({
-                allowsEditing: true,
-                aspect: [1, 1],
-                quality: 0.5,
-            });
-        } else {
-            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status !== 'granted') {
-                Alert.alert('Permission denied', 'We need gallery access to choose a photo.');
-                return;
-            }
-            result = await ImagePicker.launchImageLibraryAsync({
-                allowsEditing: true,
-                aspect: [1, 1],
-                quality: 0.5,
-            });
-        }
+    // Fetch players from ladder_view on mount
+    useEffect(() => {
+        fetchPlayers();
+    }, []);
 
-        if (!result.canceled && result.assets && result.assets.length > 0) {
-            uploadImage(result.assets[0].uri);
+    async function fetchPlayers() {
+        setLoadingPlayers(true);
+        try {
+            const { data, error } = await supabase
+                .from('ladder_view')
+                .select('id, display_name, spot_rank, fargo_rating, avatar_url')
+                .order('spot_rank', { ascending: true })
+                .limit(70);
+
+            if (error) throw error;
+            setPlayers(data || []);
+        } catch (error: any) {
+            console.error('Error fetching players:', error.message);
+            // Fallback to users_profiles if ladder_view fails
+            try {
+                const { data, error: fallbackError } = await supabase
+                    .from('users_profiles')
+                    .select('id, display_name, spot_rank, fargo_rating, avatar_url')
+                    .order('spot_rank', { ascending: true })
+                    .limit(70);
+
+                if (fallbackError) throw fallbackError;
+                setPlayers(data || []);
+            } catch (fallbackErr: any) {
+                Alert.alert('Error', 'Failed to load players. Please try again.');
+            }
+        } finally {
+            setLoadingPlayers(false);
         }
     }
 
-    async function uploadImage(uri: string) {
-        setGenerating(true);
-        try {
-            const response = await fetch(uri);
-            const blob = await response.blob();
-            const fileName = `${Date.now()}.jpg`;
+    async function handlePlayerSelect(player: LadderPlayer) {
+        setSelectedPlayer(player);
+        setShowDropdown(false);
+        setSearchQuery('');
 
-            const { data, error } = await supabase.storage
-                .from('avatars')
-                .upload(fileName, blob);
+        // Check if this player already has an owner (existing user)
+        try {
+            const { data, error } = await supabase
+                .from('users_profiles')
+                .select('owner_id')
+                .eq('id', player.id)
+                .single();
 
             if (error) throw error;
 
-            const { data: { publicUrl } } = supabase.storage
-                .from('avatars')
-                .getPublicUrl(fileName);
-
-            setAvatarUrl(publicUrl);
+            if (data?.owner_id) {
+                // Player has an account, show login mode
+                setIsExistingUser(true);
+                setAuthMode('login');
+            } else {
+                // New player, show registration mode
+                setIsExistingUser(false);
+                setAuthMode('register');
+            }
         } catch (error: any) {
-            Alert.alert('Upload Error', error.message);
-        } finally {
-            setGenerating(false);
+            Alert.alert('Error', 'Failed to check player status. Please try again.');
+            setSelectedPlayer(null);
+            setAuthMode('select');
         }
     }
 
-    async function generateAvatar() {
-        if (!avatarPrompt) {
-            Alert.alert('Error', 'Please enter a description for your avatar');
+    async function handleRegister() {
+        if (!selectedPlayer) {
+            Alert.alert('Error', 'Please select your player profile');
             return;
         }
-        setGenerating(true);
-        try {
-            const qualityPrompt = `high-end professional pool player avatar, ${avatarPrompt}, cinematic lighting, neon green accents, sharp focus, 8k resolution, minimalist digital art style`;
-
-            // Invoke the Supabase Edge Function
-            const { data, error } = await supabase.functions.invoke('generate-avatar', {
-                body: { prompt: qualityPrompt }
-            });
-
-            if (error) {
-                console.warn('Edge function failed, using high-fidelity fallback');
-                // High-fidelity fallback service
-                const seed = Math.floor(Math.random() * 1000000);
-                const fallbackUrl = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${seed}&backgroundColor=0a0a0a&eyes=happy&mouth=smile`;
-                setAvatarUrl(fallbackUrl);
-            } else if (data?.url) {
-                setAvatarUrl(data.url);
-            }
-
-            Alert.alert('Avatar Ready!', 'Your AI-generated avatar is ready to use.');
-        } catch (error: any) {
-            console.warn('Generation error, using fallback:', error.message);
-            const seed = Math.floor(Math.random() * 1000000);
-            const fallbackUrl = `https://api.dicebear.com/7.x/open-peeps/svg?seed=${seed}&facialHairProbability=50&maskProbability=0`;
-            setAvatarUrl(fallbackUrl);
-            Alert.alert('Avatar Ready!', 'Your avatar has been generated.');
-        } finally {
-            setGenerating(false);
+        if (!email.trim()) {
+            Alert.alert('Error', 'Please enter your email');
+            return;
         }
-    }
+        if (!password) {
+            Alert.alert('Error', 'Please enter a password');
+            return;
+        }
+        if (password.length < 6) {
+            Alert.alert('Error', 'Password must be at least 6 characters');
+            return;
+        }
+        if (password !== confirmPassword) {
+            Alert.alert('Error', 'Passwords do not match');
+            return;
+        }
 
-    async function handleAuth() {
         setLoading(true);
         try {
-            if (isSignUp) {
-                // Register user with phone, displayName, and avatarUrl
-                const { data, error } = await supabase.auth.signUp({
-                    email,
-                    password,
-                    options: {
-                        data: {
-                            display_name: displayName,
-                            phone: phone,
-                            avatar_url: avatarUrl,
-                        },
+            // Create auth account
+            const { data: authData, error: authError } = await supabase.auth.signUp({
+                email: email.trim(),
+                password,
+                options: {
+                    data: {
+                        display_name: selectedPlayer.display_name,
+                        player_id: selectedPlayer.id,
                     },
-                });
-                if (error) throw error;
-                Alert.alert('Success', 'Check your email for the confirmation link!');
-            } else {
-                // Login
-                const { error } = await supabase.auth.signInWithPassword({
-                    email,
-                    password,
-                });
-                if (error) throw error;
+                },
+            });
+
+            if (authError) throw authError;
+
+            if (authData.user) {
+                // Link the player profile to the new user
+                const { error: linkError } = await supabase
+                    .from('users_profiles')
+                    .update({ owner_id: authData.user.id })
+                    .eq('id', selectedPlayer.id);
+
+                if (linkError) {
+                    console.error('Failed to link profile:', linkError);
+                    // Don't throw - user is created, they can still use the app
+                }
             }
+
+            Alert.alert(
+                'Welcome!',
+                `Account created for ${selectedPlayer.display_name}!\n\nPlease check your email to confirm your account.`
+            );
         } catch (error: any) {
-            Alert.alert('Error', error.message);
+            Alert.alert('Registration Failed', error.message);
         } finally {
             setLoading(false);
         }
     }
+
+    async function handleLogin() {
+        if (!selectedPlayer) {
+            Alert.alert('Error', 'Please select your player profile');
+            return;
+        }
+        if (!email.trim()) {
+            Alert.alert('Error', 'Please enter your email');
+            return;
+        }
+        if (!password) {
+            Alert.alert('Error', 'Please enter your password');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const { error } = await supabase.auth.signInWithPassword({
+                email: email.trim(),
+                password,
+            });
+
+            if (error) throw error;
+            // Navigation will be handled by the auth state change listener
+        } catch (error: any) {
+            Alert.alert('Login Failed', error.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    // Filter players based on search query
+    const filteredPlayers = players.filter(player =>
+        player.display_name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const renderPlayerItem = ({ item }: { item: LadderPlayer }) => (
+        <TouchableOpacity
+            style={styles.playerItem}
+            onPress={() => handlePlayerSelect(item)}
+        >
+            <View style={styles.playerRankBadge}>
+                {item.spot_rank === 1 ? (
+                    <Crown size={14} color="#FFD700" />
+                ) : (
+                    <Text style={styles.playerRankText}>#{item.spot_rank}</Text>
+                )}
+            </View>
+            <View style={styles.playerInfo}>
+                <Text style={styles.playerName}>{item.display_name}</Text>
+                <Text style={styles.playerFargo}>Fargo {item.fargo_rating}</Text>
+            </View>
+            {selectedPlayer?.id === item.id && (
+                <Check size={20} color="#87a96b" />
+            )}
+        </TouchableOpacity>
+    );
 
     return (
         <KeyboardAvoidingView
@@ -147,115 +220,182 @@ export default function AuthScreen() {
         >
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <View style={styles.card}>
-                    <Text style={styles.title}>{isSignUp ? 'Join the League' : 'Welcome Back'}</Text>
+                    {/* Header */}
+                    <Text style={styles.title}>Top of the Capital</Text>
+                    <Text style={styles.subtitle}>Pool Ladder League</Text>
 
-                    {isSignUp && (
-                        <>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Display Name"
-                                placeholderTextColor="#666"
-                                value={displayName}
-                                onChangeText={setDisplayName}
-                            />
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Phone Number"
-                                placeholderTextColor="#666"
-                                keyboardType="phone-pad"
-                                value={phone}
-                                onChangeText={setPhone}
-                            />
-
-                            <View style={styles.aiSection}>
-                                <Text style={styles.sectionTitle}>Profile Photo</Text>
-
-                                <View style={styles.manualUploadRow}>
-                                    <TouchableOpacity style={styles.uploadBtn} onPress={() => pickImage(true)}>
-                                        <Camera size={20} {...({ color: "#000" } as any)} />
-                                        <Text style={styles.uploadBtnText}>Camera</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.uploadBtn} onPress={() => pickImage(false)}>
-                                        <ImageIcon size={20} {...({ color: "#000" } as any)} />
-                                        <Text style={styles.uploadBtnText}>Gallery</Text>
-                                    </TouchableOpacity>
+                    {/* Player Selection Dropdown */}
+                    <Text style={styles.sectionLabel}>Select Your Profile</Text>
+                    <TouchableOpacity
+                        style={styles.dropdown}
+                        onPress={() => setShowDropdown(true)}
+                        disabled={loadingPlayers}
+                    >
+                        {loadingPlayers ? (
+                            <ActivityIndicator color="#87a96b" size="small" />
+                        ) : selectedPlayer ? (
+                            <View style={styles.selectedPlayer}>
+                                <View style={styles.playerRankBadge}>
+                                    {selectedPlayer.spot_rank === 1 ? (
+                                        <Crown size={14} color="#FFD700" />
+                                    ) : (
+                                        <Text style={styles.playerRankText}>#{selectedPlayer.spot_rank}</Text>
+                                    )}
                                 </View>
-
-                                <View style={styles.dividerRow}>
-                                    <View style={styles.line} />
-                                    <Text style={styles.dividerText}>OR USE AI</Text>
-                                    <View style={styles.line} />
-                                </View>
-
-                                <View style={styles.aiInputRow}>
-                                    <TextInput
-                                        style={[styles.input, { flex: 1, marginBottom: 0 }]}
-                                        placeholder="AI Prompt: e.g. Neon Shark"
-                                        placeholderTextColor="#666"
-                                        value={avatarPrompt}
-                                        onChangeText={setAvatarPrompt}
-                                    />
-                                    <TouchableOpacity
-                                        style={styles.generateButton}
-                                        onPress={generateAvatar}
-                                        disabled={generating}
-                                    >
-                                        {generating ? (
-                                            <ActivityIndicator color="#000" />
-                                        ) : (
-                                            <Sparkles size={20} {...({ color: "#000" } as any)} />
-                                        )}
-                                    </TouchableOpacity>
-                                </View>
-
-                                {avatarUrl ? (
-                                    <View style={styles.avatarPreviewContainer}>
-                                        <Image source={{ uri: avatarUrl }} style={styles.avatarPreview} />
-                                        <TouchableOpacity onPress={() => setAvatarUrl('')}>
-                                            <Text style={styles.removeText}>Remove</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                ) : (
-                                    <Text style={styles.hintText}>Upload a photo or use AI generation</Text>
-                                )}
+                                <Text style={styles.selectedPlayerName}>{selectedPlayer.display_name}</Text>
                             </View>
+                        ) : (
+                            <View style={styles.placeholderRow}>
+                                <User size={18} color="#666" />
+                                <Text style={styles.placeholderText}>Choose your player...</Text>
+                            </View>
+                        )}
+                        <ChevronDown size={20} color="#87a96b" />
+                    </TouchableOpacity>
+
+                    {/* Auth Form - shows after player selection */}
+                    {authMode !== 'select' && selectedPlayer && (
+                        <>
+                            {/* Mode indicator */}
+                            <View style={styles.modeIndicator}>
+                                <View style={[styles.modeBadge, isExistingUser ? styles.loginBadge : styles.registerBadge]}>
+                                    <Text style={styles.modeBadgeText}>
+                                        {isExistingUser ? 'Existing Account' : 'New Account'}
+                                    </Text>
+                                </View>
+                            </View>
+
+                            {/* Email Input */}
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Email"
+                                placeholderTextColor="#666"
+                                autoCapitalize="none"
+                                keyboardType="email-address"
+                                value={email}
+                                onChangeText={setEmail}
+                            />
+
+                            {/* Password Input */}
+                            <View style={styles.passwordContainer}>
+                                <Lock size={18} color="#666" style={styles.inputIcon} />
+                                <TextInput
+                                    style={styles.inputWithIcon}
+                                    placeholder="Password"
+                                    placeholderTextColor="#666"
+                                    secureTextEntry
+                                    value={password}
+                                    onChangeText={setPassword}
+                                />
+                            </View>
+
+                            {/* Confirm Password for new users */}
+                            {!isExistingUser && (
+                                <View style={styles.passwordContainer}>
+                                    <Lock size={18} color="#666" style={styles.inputIcon} />
+                                    <TextInput
+                                        style={styles.inputWithIcon}
+                                        placeholder="Confirm Password"
+                                        placeholderTextColor="#666"
+                                        secureTextEntry
+                                        value={confirmPassword}
+                                        onChangeText={setConfirmPassword}
+                                    />
+                                </View>
+                            )}
+
+                            {/* Submit Button */}
+                            <TouchableOpacity
+                                style={[styles.button, loading && styles.buttonDisabled]}
+                                onPress={isExistingUser ? handleLogin : handleRegister}
+                                disabled={loading}
+                            >
+                                <Text style={styles.buttonText}>
+                                    {loading ? 'Processing...' : (isExistingUser ? 'Sign In' : 'Create Account')}
+                                </Text>
+                            </TouchableOpacity>
+
+                            {/* Help text */}
+                            <Text style={styles.helpText}>
+                                {isExistingUser
+                                    ? 'Enter the email and password you used to create your account.'
+                                    : 'Create a password to secure your profile. You\'ll use this to sign in.'}
+                            </Text>
+
+                            {/* Switch mode button for existing users who might be new */}
+                            {isExistingUser && (
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setIsExistingUser(false);
+                                        setAuthMode('register');
+                                    }}
+                                >
+                                    <Text style={styles.switchText}>
+                                        First time signing up? Create a new account
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
                         </>
                     )}
-
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Email"
-                        placeholderTextColor="#666"
-                        autoCapitalize="none"
-                        keyboardType="email-address"
-                        value={email}
-                        onChangeText={setEmail}
-                    />
-
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Password"
-                        placeholderTextColor="#666"
-                        secureTextEntry
-                        value={password}
-                        onChangeText={setPassword}
-                    />
-
-                    <TouchableOpacity
-                        style={[styles.button, loading && styles.buttonDisabled]}
-                        onPress={handleAuth}
-                        disabled={loading}
-                    >
-                        <Text style={styles.buttonText}>{loading ? 'Processing...' : (isSignUp ? 'Create Account' : 'Sign In')}</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
-                        <Text style={styles.switchText}>
-                            {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Join Now"}
-                        </Text>
-                    </TouchableOpacity>
                 </View>
             </ScrollView>
+
+            {/* Player Selection Modal */}
+            <Modal
+                visible={showDropdown}
+                animationType="slide"
+                presentationStyle="pageSheet"
+                onRequestClose={() => setShowDropdown(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalHeader}>
+                        <Text style={styles.modalTitle}>Select Player</Text>
+                        <TouchableOpacity
+                            onPress={() => setShowDropdown(false)}
+                            style={styles.closeButton}
+                        >
+                            <X size={24} color="#fff" />
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* Search Input */}
+                    <View style={styles.searchContainer}>
+                        <Search size={18} color="#666" style={styles.searchIcon} />
+                        <TextInput
+                            style={styles.searchInput}
+                            placeholder="Search players..."
+                            placeholderTextColor="#666"
+                            value={searchQuery}
+                            onChangeText={setSearchQuery}
+                            autoFocus
+                        />
+                        {searchQuery.length > 0 && (
+                            <TouchableOpacity onPress={() => setSearchQuery('')}>
+                                <X size={18} color="#666" />
+                            </TouchableOpacity>
+                        )}
+                    </View>
+
+                    {/* Player List */}
+                    <FlatList
+                        data={filteredPlayers}
+                        keyExtractor={(item) => item.id}
+                        renderItem={renderPlayerItem}
+                        contentContainerStyle={styles.playerList}
+                        showsVerticalScrollIndicator={false}
+                        ListEmptyComponent={
+                            <Text style={styles.emptyText}>No players found</Text>
+                        }
+                    />
+
+                    {/* Player count */}
+                    <View style={styles.playerCount}>
+                        <Text style={styles.playerCountText}>
+                            {filteredPlayers.length} of {players.length} players
+                        </Text>
+                    </View>
+                </View>
+            </Modal>
         </KeyboardAvoidingView>
     );
 }
@@ -281,9 +421,74 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: 'bold',
         color: '#fff',
-        marginBottom: 30,
         textAlign: 'center',
         fontFamily: Platform.OS === 'ios' ? 'Cinzel Decorative' : 'serif',
+    },
+    subtitle: {
+        fontSize: 14,
+        color: '#87a96b',
+        textAlign: 'center',
+        marginBottom: 30,
+        textTransform: 'uppercase',
+        letterSpacing: 2,
+    },
+    sectionLabel: {
+        color: '#888',
+        fontSize: 12,
+        fontWeight: '600',
+        textTransform: 'uppercase',
+        marginBottom: 8,
+        letterSpacing: 1,
+    },
+    dropdown: {
+        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+        borderRadius: 12,
+        padding: 15,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 20,
+        minHeight: 54,
+    },
+    selectedPlayer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+    },
+    selectedPlayerName: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+        marginLeft: 10,
+    },
+    placeholderRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+    },
+    placeholderText: {
+        color: '#666',
+        fontSize: 16,
+    },
+    modeIndicator: {
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    modeBadge: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 20,
+    },
+    loginBadge: {
+        backgroundColor: 'rgba(135, 169, 107, 0.2)',
+    },
+    registerBadge: {
+        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+    },
+    modeBadgeText: {
+        color: '#87a96b',
+        fontSize: 12,
+        fontWeight: '600',
     },
     input: {
         backgroundColor: 'rgba(255, 255, 255, 0.08)',
@@ -293,96 +498,21 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
     },
-    aiSection: {
-        marginBottom: 20,
-        padding: 15,
-        backgroundColor: 'rgba(135, 169, 107, 0.05)',
-        borderRadius: 15,
-        borderWidth: 1,
-        borderColor: 'rgba(135, 169, 107, 0.2)',
-    },
-    sectionTitle: {
-        color: '#87a96b',
-        fontSize: 14,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        textTransform: 'uppercase',
-    },
-    aiInputRow: {
+    passwordContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 10,
-    },
-    dividerRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 15,
-        gap: 10,
-    },
-    line: {
-        flex: 1,
-        height: 1,
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    },
-    dividerText: {
-        color: '#666',
-        fontSize: 10,
-        fontWeight: 'bold',
-    },
-    manualUploadRow: {
-        flexDirection: 'row',
-        gap: 10,
-        marginBottom: 5,
-    },
-    uploadBtn: {
-        flex: 1,
-        backgroundColor: '#87a96b',
+        backgroundColor: 'rgba(255, 255, 255, 0.08)',
         borderRadius: 12,
-        padding: 12,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 8,
+        marginBottom: 15,
     },
-    uploadBtnText: {
-        color: '#000',
-        fontWeight: 'bold',
-        fontSize: 14,
+    inputIcon: {
+        marginLeft: 15,
     },
-    generateButton: {
-        backgroundColor: '#87a96b',
-        borderRadius: 12,
+    inputWithIcon: {
+        flex: 1,
         padding: 15,
-        width: 60,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    generateButtonText: {
-        color: '#000',
-        fontWeight: 'bold',
-    },
-    avatarPreviewContainer: {
-        marginTop: 15,
-        alignItems: 'center',
-        flexDirection: 'row',
-        gap: 15,
-    },
-    avatarPreview: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        borderWidth: 2,
-        borderColor: '#87a96b',
-    },
-    removeText: {
-        color: '#ff4444',
-        fontSize: 12,
-    },
-    hintText: {
-        color: '#666',
-        fontSize: 12,
-        marginTop: 8,
-        fontStyle: 'italic',
+        color: '#fff',
+        fontSize: 16,
     },
     button: {
         backgroundColor: '#87a96b',
@@ -390,7 +520,7 @@ const styles = StyleSheet.create({
         padding: 18,
         alignItems: 'center',
         marginTop: 10,
-        marginBottom: 20,
+        marginBottom: 15,
     },
     buttonDisabled: {
         opacity: 0.5,
@@ -400,9 +530,112 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+    helpText: {
+        color: '#666',
+        fontSize: 12,
+        textAlign: 'center',
+        lineHeight: 18,
+    },
     switchText: {
         color: '#87a96b',
         textAlign: 'center',
         fontSize: 14,
+        marginTop: 15,
+    },
+    // Modal styles
+    modalContainer: {
+        flex: 1,
+        backgroundColor: '#0a0a0a',
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 20,
+        paddingTop: Platform.OS === 'ios' ? 60 : 20,
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    modalTitle: {
+        color: '#fff',
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    closeButton: {
+        padding: 5,
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+        borderRadius: 12,
+        margin: 15,
+        paddingHorizontal: 15,
+    },
+    searchIcon: {
+        marginRight: 10,
+    },
+    searchInput: {
+        flex: 1,
+        padding: 15,
+        color: '#fff',
+        fontSize: 16,
+    },
+    playerList: {
+        padding: 15,
+        paddingTop: 5,
+    },
+    playerItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 15,
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+        borderRadius: 12,
+        marginBottom: 8,
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.08)',
+    },
+    playerRankBadge: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: 'rgba(135, 169, 107, 0.2)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    playerRankText: {
+        color: '#87a96b',
+        fontSize: 11,
+        fontWeight: 'bold',
+    },
+    playerInfo: {
+        flex: 1,
+        marginLeft: 12,
+    },
+    playerName: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    playerFargo: {
+        color: '#666',
+        fontSize: 12,
+        marginTop: 2,
+    },
+    emptyText: {
+        color: '#666',
+        textAlign: 'center',
+        marginTop: 40,
+        fontSize: 16,
+    },
+    playerCount: {
+        padding: 15,
+        alignItems: 'center',
+        borderTopWidth: 1,
+        borderTopColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    playerCountText: {
+        color: '#666',
+        fontSize: 12,
     },
 });
