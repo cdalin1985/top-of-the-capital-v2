@@ -1,18 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, RefreshControl, Platform, Image } from 'react-native';
+﻿import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, RefreshControl, Platform, Alert } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { Profile, GameType } from '../types';
-import { Trophy, Swords, Star, TrendingUp } from 'lucide-react-native';
+import { Trophy, Swords, Star } from 'lucide-react-native';
+import { SkeletonRankingItem } from '../components/SkeletonLoader';
 
 export default function RankingScreen({ navigation }: any) {
     const [rankings, setRankings] = useState<Profile[]>([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
     const [gameType, setGameType] = useState<GameType>('8-ball');
     const [activeMatches, setActiveMatches] = useState<string[]>([]);
     const [spotlightPlayer, setSpotlightPlayer] = useState<Profile | null>(null);
 
-    async function fetchRankings() {
-        setLoading(true);
+    async function fetchRankings(isRefresh = false) {
+        if (isRefresh) {
+            setRefreshing(true);
+        } else {
+            setLoading(true);
+        }
+        
         try {
             const { data, error } = await supabase
                 .from('users_profiles')
@@ -39,12 +46,35 @@ export default function RankingScreen({ navigation }: any) {
 
         } catch (error: any) {
             console.error('Error fetching rankings:', error.message);
+            Alert.alert('Error', 'Failed to load rankings. Pull down to refresh.');
         } finally {
             setLoading(false);
+            setRefreshing(false);
         }
     }
 
-    // ... (useEffect for real-time)
+    useEffect(() => {
+        fetchRankings();
+
+        // Real-time subscription for ranking changes
+        const channel = supabase
+            .channel('rankings-changes')
+            .on(
+                'postgres_changes' as any,
+                { event: '*', table: 'users_profiles' },
+                () => fetchRankings()
+            )
+            .on(
+                'postgres_changes' as any,
+                { event: '*', table: 'challenges' },
+                () => fetchRankings()
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, []);
 
     const renderHeader = () => (
         <View>
@@ -62,11 +92,14 @@ export default function RankingScreen({ navigation }: any) {
                         <View style={{ flex: 1 }}>
                             <Text style={styles.spotlightLabel}>TODAY'S SPOTLIGHT</Text>
                             <Text style={styles.spotlightName}>{spotlightPlayer.display_name}</Text>
-                            <Text style={styles.spotlightSub}>Currently Rank #{spotlightPlayer.spot_rank} • Fargo {spotlightPlayer.fargo_rating}</Text>
+                            <Text style={styles.spotlightSub}>
+                                Rank #{spotlightPlayer.spot_rank} | Fargo {spotlightPlayer.fargo_rating}
+                            </Text>
                         </View>
                         <TouchableOpacity 
                             style={styles.spotlightAction}
                             onPress={() => navigation.navigate('Challenge', { target: spotlightPlayer })}
+                            accessibilityLabel={`Challenge ${spotlightPlayer.display_name}`}
                         >
                             <Swords color="#000" size={20} />
                         </TouchableOpacity>
@@ -80,11 +113,22 @@ export default function RankingScreen({ navigation }: any) {
                         key={t}
                         style={[styles.tab, gameType === t && styles.activeTab]}
                         onPress={() => setGameType(t)}
+                        accessibilityLabel={`Select ${t}`}
                     >
-                        <Text style={[styles.tabText, gameType === t && styles.activeTabText]}>{t.toUpperCase()}</Text>
+                        <Text style={[styles.tabText, gameType === t && styles.activeTabText]}>
+                            {t.toUpperCase()}
+                        </Text>
                     </TouchableOpacity>
                 ))}
             </View>
+        </View>
+    );
+
+    const renderSkeletons = () => (
+        <View>
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <SkeletonRankingItem key={i} />
+            ))}
         </View>
     );
 
@@ -92,7 +136,12 @@ export default function RankingScreen({ navigation }: any) {
         const isPlaying = activeMatches.includes(item.id);
 
         return (
-            <View style={[styles.rankingItem, isPlaying && styles.playingItem]}>
+            <TouchableOpacity
+                style={[styles.rankingItem, isPlaying && styles.playingItem]}
+                onPress={() => !isPlaying && navigation.navigate('Challenge', { target: item })}
+                disabled={isPlaying}
+                accessibilityLabel={`${item.display_name}, Rank ${item.spot_rank}`}
+            >
                 <View style={styles.rankContainer}>
                     <Text style={styles.rankText}>#{item.spot_rank}</Text>
                 </View>
@@ -106,29 +155,36 @@ export default function RankingScreen({ navigation }: any) {
                             </View>
                         )}
                     </View>
-                    <Text style={styles.fargoText}>Fargo: {item.fargo_rating} • {item.points} pts</Text>
+                    <Text style={styles.fargoText}>
+                        Fargo: {item.fargo_rating} | {item.points} pts
+                    </Text>
                 </View>
-                <TouchableOpacity
-                    style={[styles.challengeButton, isPlaying && styles.disabledButton]}
-                    onPress={() => !isPlaying && navigation.navigate('Challenge', { target: item })}
-                    disabled={isPlaying}
-                >
-                    {isPlaying ? <Trophy size={20} color="#666" /> : <Swords size={20} color="#000" />}
-                </TouchableOpacity>
-            </View>
+                <View style={[styles.challengeButton, isPlaying && styles.disabledButton]}>
+                    {isPlaying ? (
+                        <Trophy size={20} color="#666" />
+                    ) : (
+                        <Swords size={20} color="#000" />
+                    )}
+                </View>
+            </TouchableOpacity>
         );
     };
 
     return (
         <View style={styles.container}>
             <FlatList
-                data={rankings}
+                data={loading ? [] : rankings}
                 renderItem={renderItem}
                 ListHeaderComponent={renderHeader}
+                ListEmptyComponent={loading ? renderSkeletons : null}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.listContent}
                 refreshControl={
-                    <RefreshControl refreshing={loading} onRefresh={fetchRankings} tintColor="#87a96b" />
+                    <RefreshControl 
+                        refreshing={refreshing} 
+                        onRefresh={() => fetchRankings(true)} 
+                        tintColor="#87a96b" 
+                    />
                 }
             />
         </View>
@@ -152,7 +208,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#fff',
         marginLeft: 15,
-        fontFamily: Platform.OS === 'ios' ? 'Cinzel Decorative' : 'serif',
     },
     spotlightCard: {
         margin: 15,

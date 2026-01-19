@@ -21,10 +21,17 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.cdalin1985.thelist"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9f7b3fd7-cb50-4f95-8c22-4748e139f801"
+      }
+    },
+    "owner": "cdalin1985"
   }
 }

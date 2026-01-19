@@ -156,3 +156,24 @@ CREATE POLICY "Comments are viewable by everyone" ON public.comments FOR SELECT 
 
 DROP POLICY IF EXISTS "Users can post comments" ON public.comments;
 CREATE POLICY "Users can post comments" ON public.comments FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+
+-- VIEWS
+-- ladder_view: Read-only view of the player ladder for easy querying
+DROP VIEW IF EXISTS public.ladder_view;
+CREATE VIEW public.ladder_view AS
+SELECT
+    id,
+    display_name,
+    spot_rank,
+    fargo_rating,
+    points,
+    cooldown_until,
+    avatar_url,
+    created_at,
+    updated_at
+FROM public.users_profiles
+ORDER BY spot_rank ASC;
+
+-- Grant access to ladder_view
+GRANT SELECT ON public.ladder_view TO anon;
+GRANT SELECT ON public.ladder_view TO authenticated;

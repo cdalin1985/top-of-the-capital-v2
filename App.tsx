@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useAuth } from './src/hooks/useAuth';
+import { useNetworkStatus } from './src/hooks/useNetworkStatus';
 import { useNotificationStore } from './src/store/useNotificationStore';
 import { registerForPushNotificationsAsync } from './src/lib/notifications';
 import { supabase } from './src/lib/supabase';
+import { ErrorBoundary } from './src/components/ErrorBoundary';
+import { OfflineBanner } from './src/components/OfflineBanner';
 import AuthScreen from './src/screens/AuthScreen';
 import RankingScreen from './src/screens/RankingScreen';
 import ChallengeScreen from './src/screens/ChallengeScreen';
@@ -14,6 +17,7 @@ import InboxScreen from './src/screens/InboxScreen';
 import ScoreboardScreen from './src/screens/ScoreboardScreen';
 import ActivityFeedScreen from './src/screens/ActivityFeedScreen';
 import StreamingScreen from './src/screens/StreamingScreen';
+import ClaimProfileScreen from './src/screens/ClaimProfileScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import { List, Bell, User, MessageSquare, Video } from 'lucide-react-native';
 
@@ -41,28 +45,28 @@ function MainTabs() {
         name="Rankings"
         component={RankingStack}
         options={{
-          tabBarIcon: ({ color }) => <List color={color} size={24} {...({ color } as any)} />,
+          tabBarIcon: ({ color }) => <List color={color} size={24} />,
         }}
       />
       <Tab.Screen
         name="Feed"
         component={ActivityFeedScreen}
         options={{
-          tabBarIcon: ({ color }) => <MessageSquare color={color} size={24} {...({ color } as any)} />,
+          tabBarIcon: ({ color }) => <MessageSquare color={color} size={24} />,
         }}
       />
       <Tab.Screen
         name="Arena"
         component={StreamingScreen}
         options={{
-          tabBarIcon: ({ color }) => <Video color={color} size={24} {...({ color } as any)} />,
+          tabBarIcon: ({ color }) => <Video color={color} size={24} />,
         }}
       />
       <Tab.Screen
         name="Inbox"
         component={InboxScreen}
         options={{
-          tabBarIcon: ({ color }) => <Bell color={color} size={24} {...({ color } as any)} />,
+          tabBarIcon: ({ color }) => <Bell color={color} size={24} />,
           tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
           tabBarBadgeStyle: { backgroundColor: '#f44336' },
         }}
@@ -71,7 +75,7 @@ function MainTabs() {
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({ color }) => <User color={color} size={24} {...({ color } as any)} />,
+          tabBarIcon: ({ color }) => <User color={color} size={24} />,
         }}
       />
     </Tab.Navigator>
@@ -88,9 +92,25 @@ function RankingStack() {
   );
 }
 
-export default function App() {
+function AppContent() {
   const { session, loading } = useAuth();
+  const { isConnected } = useNetworkStatus();
+  const [hasProfile, setHasProfile] = React.useState<boolean | null>(null);
   const fetchUnreadCount = useNotificationStore((state) => state.fetchUnreadCount);
+
+  const checkProfile = async (userId: string) => {
+    try {
+      const { data } = await supabase
+        .from('users_profiles')
+        .select('id')
+        .eq('owner_id', userId)
+        .single();
+      setHasProfile(!!data);
+    } catch (error) {
+      console.error('Error checking profile:', error);
+      setHasProfile(false);
+    }
+  };
 
   useEffect(() => {
     if (session?.user) {
@@ -117,20 +137,35 @@ export default function App() {
           supabase
             .from('users_profiles')
             .update({ expo_push_token: token })
-            .eq('id', session.user.id)
-            .then(({ error }) => {
-              if (error) console.error('Error saving push token:', error);
-            });
+            .eq('owner_id', session.user.id);
         }
       });
 
+      // 4. Check Profile Status
+      checkProfile(session.user.id);
+      const profileChannel = supabase
+        .channel('profile-check')
+        .on(
+          'postgres_changes' as any,
+          {
+            event: '*',
+            table: 'users_profiles',
+            filter: `owner_id=eq.${session.user.id}`,
+          },
+          () => setHasProfile(true)
+        )
+        .subscribe();
+
       return () => {
         supabase.removeChannel(channel);
+        supabase.removeChannel(profileChannel);
       };
+    } else {
+      setHasProfile(null);
     }
   }, [session, fetchUnreadCount]);
 
-  if (loading) {
+  if (loading || (session && hasProfile === null)) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator size="large" color="#87a96b" />
@@ -139,19 +174,36 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {session ? (
-          <Stack.Screen name="Main" component={MainTabs} />
-        ) : (
-          <Stack.Screen name="Auth" component={AuthScreen} />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View style={styles.container}>
+      {!isConnected && <OfflineBanner />}
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {!session ? (
+            <Stack.Screen name="Auth" component={AuthScreen} />
+          ) : !hasProfile && hasProfile !== null ? (
+            <Stack.Screen name="Claim" component={ClaimProfileScreen} />
+          ) : (
+            <Stack.Screen name="Main" component={MainTabs} />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </View>
+  );
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0a0a0a',
+  },
   loading: {
     flex: 1,
     justifyContent: 'center',

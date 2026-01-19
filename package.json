@@ -8,6 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest",
+    "test:supabase": "npx ts-node scripts/test-supabase-connection.ts",
     "supabase:set-keys": "supabase secrets set GEMINI_API_KEY=$npm_config_key",
     "supabase:deploy": "supabase functions deploy generate-avatar"
   },
@@ -29,8 +30,8 @@
     "expo-notifications": "^0.32.15",
     "expo-status-bar": "~3.0.9",
     "lucide-react-native": "^0.562.0",
-    "react": "19.1.0",
-    "react-dom": "^19.2.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "react-native": "0.81.5",
     "react-native-safe-area-context": "^5.6.2",
     "react-native-screens": "^4.19.0",

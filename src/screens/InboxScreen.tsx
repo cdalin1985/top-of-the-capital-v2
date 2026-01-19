@@ -1,42 +1,73 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, RefreshControl, Platform, Alert } from 'react-native';
 import { supabase } from '../lib/supabase';
-import { Challenge, Profile } from '../types';
+import { Challenge } from '../types';
 import { Bell, Clock, MapPin, Check, X } from 'lucide-react-native';
+import { SkeletonCard } from '../components/SkeletonLoader';
 
 export default function InboxScreen({ navigation }: any) {
     const [challenges, setChallenges] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
-    async function fetchChallenges() {
-        setLoading(true);
+    async function fetchChallenges(isRefresh = false) {
+        if (isRefresh) {
+            setRefreshing(true);
+        } else {
+            setLoading(true);
+        }
+        
         try {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) return;
-            setCurrentUserId(user.id);
+
+            const { data: profile } = await supabase
+                .from('users_profiles')
+                .select('id')
+                .eq('owner_id', user.id)
+                .single();
+
+            if (!profile) return;
+            setCurrentUserId(profile.id);
 
             const { data, error } = await supabase
                 .from('challenges')
                 .select(`
-          *,
-          challenger:challenger_id (display_name),
-          challenged:challenged_id (display_name)
-        `)
-                .or(`challenger_id.eq.${user.id},challenged_id.eq.${user.id}`)
+                    *,
+                    challenger:challenger_id (display_name),
+                    challenged:challenged_id (display_name)
+                `)
+                .or(`challenger_id.eq.${profile.id},challenged_id.eq.${profile.id}`)
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
             setChallenges(data || []);
         } catch (error: any) {
             console.error('Error fetching challenges:', error.message);
+            Alert.alert('Error', 'Failed to load inbox. Pull down to refresh.');
         } finally {
             setLoading(false);
+            setRefreshing(false);
         }
     }
 
     useEffect(() => {
         fetchChallenges();
+
+        // Real-time subscription
+        const channel = supabase
+            .channel('inbox-changes')
+            .on(
+                'postgres_changes' as any,
+                { event: '*', table: 'challenges' },
+                () => fetchChallenges()
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, []);
 
     async function respondToChallenge(challenge: Challenge, status: 'negotiating' | 'forfeited', venue?: string, time?: string) {
@@ -62,6 +93,14 @@ export default function InboxScreen({ navigation }: any) {
         }
     }
 
+    const renderSkeletons = () => (
+        <View>
+            {[1, 2, 3, 4].map((i) => (
+                <SkeletonCard key={i} />
+            ))}
+        </View>
+    );
+
     const renderItem = ({ item }: { item: any }) => {
         const isChallenger = item.challenger_id === currentUserId;
         const canRespond = item.status === 'pending' && item.challenged_id === currentUserId;
@@ -75,7 +114,7 @@ export default function InboxScreen({ navigation }: any) {
             <View style={styles.card}>
                 <View style={styles.cardHeader}>
                     <Text style={styles.challengerText}>
-                        {isChallenger ? `You challenged ${item.challenged.display_name}` : `${item.challenger.display_name} challenged you`}
+                        {isChallenger ? `You challenged ${item.challenged?.display_name}` : `${item.challenger?.display_name} challenged you`}
                     </Text>
                     <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
                         <Text style={styles.statusText}>
@@ -85,9 +124,15 @@ export default function InboxScreen({ navigation }: any) {
                 </View>
 
                 <View style={styles.details}>
-                    <Text style={styles.detailText}>{item.game_type} • Race to {item.games_to_win}</Text>
-                    <Text style={styles.detailText}><Clock size={14} {...({ color: "#888" } as any)} /> {new Date(item.proposed_time).toLocaleString()}</Text>
-                    <Text style={styles.detailText}><MapPin size={14} {...({ color: "#888" } as any)} /> {item.venue || 'TBD'}</Text>
+                    <Text style={styles.detailText}>{item.game_type} | Race to {item.games_to_win}</Text>
+                    <View style={styles.detailRow}>
+                        <Clock size={14} color="#888" />
+                        <Text style={styles.detailText}> {new Date(item.proposed_time).toLocaleString()}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                        <MapPin size={14} color="#888" />
+                        <Text style={styles.detailText}> {item.venue || 'TBD'}</Text>
+                    </View>
                 </View>
 
                 {canRespond && (
@@ -95,15 +140,17 @@ export default function InboxScreen({ navigation }: any) {
                         <TouchableOpacity
                             style={[styles.actionBtn, styles.acceptBtn]}
                             onPress={() => respondToChallenge(item, 'negotiating', 'Eagles 4040', new Date(Date.now() + 86400000).toISOString())}
+                            accessibilityLabel="Accept challenge"
                         >
-                            <Check size={20} {...({ color: "#000" } as any)} />
-                            <Text style={styles.acceptBtnText}>Accept (Eagles 4040)</Text>
+                            <Check size={20} color="#000" />
+                            <Text style={styles.acceptBtnText}>Accept</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[styles.actionBtn, styles.declineBtn]}
                             onPress={() => respondToChallenge(item, 'forfeited')}
+                            accessibilityLabel="Decline challenge"
                         >
-                            <X size={20} {...({ color: "#fff" } as any)} />
+                            <X size={20} color="#ff5252" />
                         </TouchableOpacity>
                     </View>
                 )}
@@ -111,20 +158,36 @@ export default function InboxScreen({ navigation }: any) {
         );
     };
 
+    const renderEmpty = () => {
+        if (loading) return null;
+        return (
+            <View style={styles.emptyContainer}>
+                <Bell size={48} color="#333" />
+                <Text style={styles.emptyText}>No challenges yet</Text>
+                <Text style={styles.emptySubtext}>Challenge someone from The List!</Text>
+            </View>
+        );
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Bell size={32} {...({ color: "#87a96b" } as any)} />
+                <Bell size={32} color="#87a96b" />
                 <Text style={styles.title}>INBOX</Text>
             </View>
 
             <FlatList
-                data={challenges}
+                data={loading ? [] : challenges}
                 renderItem={renderItem}
+                ListEmptyComponent={loading ? renderSkeletons : renderEmpty}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.listContent}
                 refreshControl={
-                    <RefreshControl refreshing={loading} onRefresh={fetchChallenges} tintColor="#87a96b" />
+                    <RefreshControl 
+                        refreshing={refreshing} 
+                        onRefresh={() => fetchChallenges(true)} 
+                        tintColor="#87a96b" 
+                    />
                 }
             />
         </View>
@@ -159,10 +222,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#fff',
         marginLeft: 15,
-        fontFamily: Platform.OS === 'ios' ? 'Cinzel Decorative' : 'serif',
     },
     listContent: {
         padding: 15,
+        flexGrow: 1,
     },
     card: {
         backgroundColor: 'rgba(255, 255, 255, 0.05)',
@@ -198,12 +261,14 @@ const styles = StyleSheet.create({
     details: {
         marginBottom: 15,
     },
+    detailRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 5,
+    },
     detailText: {
         color: '#aaa',
         fontSize: 14,
-        marginBottom: 5,
-        flexDirection: 'row',
-        alignItems: 'center',
     },
     actions: {
         flexDirection: 'row',
@@ -231,5 +296,21 @@ const styles = StyleSheet.create({
         flex: 1,
         borderWidth: 1,
         borderColor: '#ff5252',
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 100,
+    },
+    emptyText: {
+        color: '#666',
+        fontSize: 18,
+        marginTop: 16,
+    },
+    emptySubtext: {
+        color: '#444',
+        fontSize: 14,
+        marginTop: 4,
     },
 });
