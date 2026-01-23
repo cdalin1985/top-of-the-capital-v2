@@ -21,7 +21,8 @@ import ActivityFeedScreen from './src/screens/ActivityFeedScreen';
 import StreamingScreen from './src/screens/StreamingScreen';
 import ClaimProfileScreen from './src/screens/ClaimProfileScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
-import { List, Bell, User, MessageSquare, Video } from 'lucide-react-native';
+import HomeScreen from './src/screens/HomeScreen';
+import { Home, List, Bell, User, MessageSquare, Video } from 'lucide-react-native';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -43,6 +44,13 @@ function MainTabs() {
         tabBarInactiveTintColor: '#666',
       }}
     >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({ color }) => <Home color={color} size={24} />,
+        }}
+      />
       <Tab.Screen
         name="Rankings"
         component={RankingStack}

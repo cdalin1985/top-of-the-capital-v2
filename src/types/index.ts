@@ -67,6 +67,7 @@ export type RootStackParamList = {
   Auth: undefined;
   Claim: undefined;
   Main: undefined;
+  Home: undefined;
   TheList: undefined;
   Leaderboard: undefined;
   Challenge: { target: Profile };
