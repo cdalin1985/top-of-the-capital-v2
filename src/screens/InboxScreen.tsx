@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, RefreshControl, Platform, Alert } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { Challenge } from '../types';
@@ -23,7 +23,7 @@ export default function InboxScreen({ navigation }: any) {
             if (!user) return;
 
             const { data: profile } = await supabase
-                .from('users_profiles')
+                .from('profiles')
                 .select('id')
                 .eq('owner_id', user.id)
                 .single();
@@ -35,8 +35,8 @@ export default function InboxScreen({ navigation }: any) {
                 .from('challenges')
                 .select(`
                     *,
-                    challenger:challenger_id (display_name),
-                    challenged:challenged_id (display_name)
+                    challenger:challenger_id (full_name),
+                    challenged:challenged_id (full_name)
                 `)
                 .or(`challenger_id.eq.${profile.id},challenged_id.eq.${profile.id}`)
                 .order('created_at', { ascending: false });
@@ -114,7 +114,7 @@ export default function InboxScreen({ navigation }: any) {
             <View style={styles.card}>
                 <View style={styles.cardHeader}>
                     <Text style={styles.challengerText}>
-                        {isChallenger ? `You challenged ${item.challenged?.display_name}` : `${item.challenger?.display_name} challenged you`}
+                        {isChallenger ? `You challenged ${item.challenged?.full_name}` : `${item.challenger?.full_name} challenged you`}
                     </Text>
                     <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
                         <Text style={styles.statusText}>

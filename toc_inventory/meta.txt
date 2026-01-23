@@ -1,0 +1,5 @@
+﻿RunTimeUTC: 2026-01-22T07:37:47
+Machine: HOME
+User: 14062
+ProjectRoot: C:\Users\14062\top-of-the-capital-v2
+

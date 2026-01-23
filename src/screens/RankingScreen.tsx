@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, RefreshControl, Platform, Alert } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { Profile, GameType } from '../types';
@@ -22,9 +22,9 @@ export default function RankingScreen({ navigation }: any) {
         
         try {
             const { data, error } = await supabase
-                .from('users_profiles')
+                .from('profiles')
                 .select('*')
-                .order('spot_rank', { ascending: true });
+                .order('ladder_rank', { ascending: true });
 
             if (error) throw error;
             setRankings(data || []);
@@ -61,7 +61,7 @@ export default function RankingScreen({ navigation }: any) {
             .channel('rankings-changes')
             .on(
                 'postgres_changes' as any,
-                { event: '*', table: 'users_profiles' },
+                { event: '*', table: 'profiles' },
                 () => fetchRankings()
             )
             .on(
@@ -91,15 +91,15 @@ export default function RankingScreen({ navigation }: any) {
                         </View>
                         <View style={{ flex: 1 }}>
                             <Text style={styles.spotlightLabel}>TODAY'S SPOTLIGHT</Text>
-                            <Text style={styles.spotlightName}>{spotlightPlayer.display_name}</Text>
+                            <Text style={styles.spotlightName}>{spotlightPlayer.full_name}</Text>
                             <Text style={styles.spotlightSub}>
-                                Rank #{spotlightPlayer.spot_rank} | Fargo {spotlightPlayer.fargo_rating}
+                                Rank #{spotlightPlayer.ladder_rank} | Fargo {spotlightPlayer.fargo_rating}
                             </Text>
                         </View>
                         <TouchableOpacity 
                             style={styles.spotlightAction}
                             onPress={() => navigation.navigate('Challenge', { target: spotlightPlayer })}
-                            accessibilityLabel={`Challenge ${spotlightPlayer.display_name}`}
+                            accessibilityLabel={`Challenge ${spotlightPlayer.full_name}`}
                         >
                             <Swords color="#000" size={20} />
                         </TouchableOpacity>
@@ -140,14 +140,14 @@ export default function RankingScreen({ navigation }: any) {
                 style={[styles.rankingItem, isPlaying && styles.playingItem]}
                 onPress={() => !isPlaying && navigation.navigate('Challenge', { target: item })}
                 disabled={isPlaying}
-                accessibilityLabel={`${item.display_name}, Rank ${item.spot_rank}`}
+                accessibilityLabel={`${item.full_name}, Rank ${item.ladder_rank}`}
             >
                 <View style={styles.rankContainer}>
-                    <Text style={styles.rankText}>#{item.spot_rank}</Text>
+                    <Text style={styles.rankText}>#{item.ladder_rank}</Text>
                 </View>
                 <View style={styles.nameContainer}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={styles.nameText}>{item.display_name}</Text>
+                        <Text style={styles.nameText}>{item.full_name}</Text>
                         {isPlaying && (
                             <View style={styles.liveBadge}>
                                 <View style={styles.liveDot} />

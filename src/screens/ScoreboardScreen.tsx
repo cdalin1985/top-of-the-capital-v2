@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform, Vibration, ActivityIndicator } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { supabase } from '../lib/supabase';
@@ -58,7 +58,7 @@ export default function ScoreboardScreen({ route, navigation }: any) {
             const isChallengerWinner = score1 >= raceTarget;
             const winnerId = isChallengerWinner ? challenge.challenger_id : challenge.challenged_id;
             const loserId = isChallengerWinner ? challenge.challenged_id : challenge.challenger_id;
-            const winnerName = isChallengerWinner ? (challenge.challenger?.display_name || 'Challenger') : (challenge.challenged?.display_name || 'Opponent');
+            const winnerName = isChallengerWinner ? (challenge.challenger?.full_name || 'Challenger') : (challenge.challenged?.full_name || 'Opponent');
 
             if (Platform.OS !== 'web') { Vibration.vibrate([0, 500, 200, 500]); }
 
@@ -75,13 +75,13 @@ export default function ScoreboardScreen({ route, navigation }: any) {
             // Log activity
             await supabase.from('activities').insert({
                 user_id: winnerId, action_type: 'MATCH_COMPLETED',
-                metadata: { challenger_name: challenge.challenger?.display_name, challenged_name: challenge.challenged?.display_name, 
+                metadata: { challenger_name: challenge.challenger?.full_name, challenged_name: challenge.challenged?.full_name, 
                     final_score: `${score1} - ${score2}`, winner_name: winnerName, game_type: challenge.game_type }
             });
 
             // Apply 24h cooldown to loser
             const cooldownTime = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-            await supabase.from('users_profiles').update({ cooldown_until: cooldownTime }).eq('id', loserId);
+            await supabase.from('profiles').update({ cooldown_until: cooldownTime }).eq('id', loserId);
 
             Alert.alert('Match Complete!', `${winnerName} wins ${score1}-${score2}!`, [
                 { text: 'Back to Rankings', onPress: () => navigation.navigate('Rankings') }
@@ -97,10 +97,10 @@ export default function ScoreboardScreen({ route, navigation }: any) {
         setIsLive(true);
         try {
             await supabase.from('challenges').update({ status: 'live' }).eq('id', challenge.id);
-            const { data: profiles } = await supabase.from('users_profiles').select('expo_push_token').not('expo_push_token', 'is', null);
+            const { data: profiles } = await supabase.from('profiles').select('expo_push_token').not('expo_push_token', 'is', null);
             if (profiles) {
-                const p1 = challenge.challenger?.display_name || 'Player 1';
-                const p2 = challenge.challenged?.display_name || 'Player 2';
+                const p1 = challenge.challenger?.full_name || 'Player 1';
+                const p2 = challenge.challenged?.full_name || 'Player 2';
                 profiles.forEach(p => {
                     if (p.expo_push_token) {
                         sendPushNotification(p.expo_push_token, 'Match LIVE!', `${p1} vs ${p2} is now live!`, { type: 'LIVE_MATCH' });
@@ -116,8 +116,8 @@ export default function ScoreboardScreen({ route, navigation }: any) {
 
     const raceTarget = challenge.games_to_win;
     const matchComplete = score1 >= raceTarget || score2 >= raceTarget;
-    const p1Name = challenge.challenger?.display_name || 'Player 1';
-    const p2Name = challenge.challenged?.display_name || 'Player 2';
+    const p1Name = challenge.challenger?.full_name || 'Player 1';
+    const p2Name = challenge.challenged?.full_name || 'Player 2';
 
     return (
         <View style={styles.container}>

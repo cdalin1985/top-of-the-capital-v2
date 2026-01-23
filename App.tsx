@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useAuth } from './src/hooks/useAuth';
 import { useNetworkStatus } from './src/hooks/useNetworkStatus';
 import { useNotificationStore } from './src/store/useNotificationStore';
+import { useGuestStore } from './src/store/useGuestStore';
 import { registerForPushNotificationsAsync } from './src/lib/notifications';
 import { supabase } from './src/lib/supabase';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
@@ -98,11 +99,12 @@ function AppContent() {
   const { isConnected } = useNetworkStatus();
   const [hasProfile, setHasProfile] = React.useState<boolean | null>(null);
   const fetchUnreadCount = useNotificationStore((state) => state.fetchUnreadCount);
+  const isGuest = useGuestStore((state) => state.isGuest);
 
   const checkProfile = async (userId: string) => {
     try {
       const { data } = await supabase
-        .from('users_profiles')
+        .from('profiles')
         .select('id')
         .eq('owner_id', userId)
         .single();
@@ -136,7 +138,7 @@ function AppContent() {
       registerForPushNotificationsAsync().then(token => {
         if (token) {
           supabase
-            .from('users_profiles')
+            .from('profiles')
             .update({ expo_push_token: token })
             .eq('owner_id', session.user.id);
         }
@@ -150,7 +152,7 @@ function AppContent() {
           'postgres_changes' as any,
           {
             event: '*',
-            table: 'users_profiles',
+            table: 'profiles',
             filter: `owner_id=eq.${session.user.id}`,
           },
           () => setHasProfile(true)
@@ -179,8 +181,10 @@ function AppContent() {
       {!isConnected && <OfflineBanner />}
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {!session ? (
+          {!session && !isGuest ? (
             <Stack.Screen name="Auth" component={AuthScreen} />
+          ) : isGuest ? (
+            <Stack.Screen name="Main" component={MainTabs} />
           ) : !hasProfile && hasProfile !== null ? (
             <Stack.Screen name="Claim" component={ClaimProfileScreen} />
           ) : (

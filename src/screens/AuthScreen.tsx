@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Modal, FlatList } from 'react-native';
 import { supabase } from '../lib/supabase';
-import { ChevronDown, User, Lock, Search, X, Check, Crown } from 'lucide-react-native';
+import { useGuestStore } from '../store/useGuestStore';
+import { ChevronDown, User, Lock, Search, X, Check, Crown, Eye } from 'lucide-react-native';
 
 interface LadderPlayer {
     id: string;
-    display_name: string;
-    spot_rank: number;
+    full_name: string;
+    ladder_rank: number;
     fargo_rating: number;
     avatar_url?: string;
 }
@@ -27,7 +28,9 @@ export default function AuthScreen() {
     const [authMode, setAuthMode] = useState<AuthMode>('select');
     const [isExistingUser, setIsExistingUser] = useState(false);
 
-    // Fetch players from ladder_view on mount
+    const setGuest = useGuestStore((state) => state.setGuest);
+
+    // Fetch players from profiles on mount
     useEffect(() => {
         fetchPlayers();
     }, []);
@@ -36,28 +39,16 @@ export default function AuthScreen() {
         setLoadingPlayers(true);
         try {
             const { data, error } = await supabase
-                .from('ladder_view')
-                .select('id, display_name, spot_rank, fargo_rating, avatar_url')
-                .order('spot_rank', { ascending: true })
+                .from('profiles')
+                .select('id, full_name, ladder_rank, fargo_rating, avatar_url')
+                .order('ladder_rank', { ascending: true })
                 .limit(70);
 
             if (error) throw error;
             setPlayers(data || []);
         } catch (error: any) {
             console.error('Error fetching players:', error.message);
-            // Fallback to users_profiles if ladder_view fails
-            try {
-                const { data, error: fallbackError } = await supabase
-                    .from('users_profiles')
-                    .select('id, display_name, spot_rank, fargo_rating, avatar_url')
-                    .order('spot_rank', { ascending: true })
-                    .limit(70);
-
-                if (fallbackError) throw fallbackError;
-                setPlayers(data || []);
-            } catch (fallbackErr: any) {
-                Alert.alert('Error', 'Failed to load players. Please try again.');
-            }
+            Alert.alert('Error', 'Failed to load players. Please try again.');
         } finally {
             setLoadingPlayers(false);
         }
@@ -71,7 +62,7 @@ export default function AuthScreen() {
         // Check if this player already has an owner (existing user)
         try {
             const { data, error } = await supabase
-                .from('users_profiles')
+                .from('profiles')
                 .select('owner_id')
                 .eq('id', player.id)
                 .single();
@@ -124,7 +115,7 @@ export default function AuthScreen() {
                 password,
                 options: {
                     data: {
-                        display_name: selectedPlayer.display_name,
+                        full_name: selectedPlayer.full_name,
                         player_id: selectedPlayer.id,
                     },
                 },
@@ -135,7 +126,7 @@ export default function AuthScreen() {
             if (authData.user) {
                 // Link the player profile to the new user
                 const { error: linkError } = await supabase
-                    .from('users_profiles')
+                    .from('profiles')
                     .update({ owner_id: authData.user.id })
                     .eq('id', selectedPlayer.id);
 
@@ -147,7 +138,7 @@ export default function AuthScreen() {
 
             Alert.alert(
                 'Welcome!',
-                `Account created for ${selectedPlayer.display_name}!\n\nPlease check your email to confirm your account.`
+                `Account created for ${selectedPlayer.full_name}!\n\nPlease check your email to confirm your account.`
             );
         } catch (error: any) {
             Alert.alert('Registration Failed', error.message);
@@ -186,9 +177,14 @@ export default function AuthScreen() {
         }
     }
 
+    // Continue as guest (view-only mode)
+    function handleContinueAsGuest() {
+        setGuest('guest@local', '');
+    }
+
     // Filter players based on search query
     const filteredPlayers = players.filter(player =>
-        player.display_name.toLowerCase().includes(searchQuery.toLowerCase())
+        player.full_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const renderPlayerItem = ({ item }: { item: LadderPlayer }) => (
@@ -197,14 +193,14 @@ export default function AuthScreen() {
             onPress={() => handlePlayerSelect(item)}
         >
             <View style={styles.playerRankBadge}>
-                {item.spot_rank === 1 ? (
+                {item.ladder_rank === 1 ? (
                     <Crown size={14} color="#FFD700" />
                 ) : (
-                    <Text style={styles.playerRankText}>#{item.spot_rank}</Text>
+                    <Text style={styles.playerRankText}>#{item.ladder_rank}</Text>
                 )}
             </View>
             <View style={styles.playerInfo}>
-                <Text style={styles.playerName}>{item.display_name}</Text>
+                <Text style={styles.playerName}>{item.full_name}</Text>
                 <Text style={styles.playerFargo}>Fargo {item.fargo_rating}</Text>
             </View>
             {selectedPlayer?.id === item.id && (
@@ -236,13 +232,13 @@ export default function AuthScreen() {
                         ) : selectedPlayer ? (
                             <View style={styles.selectedPlayer}>
                                 <View style={styles.playerRankBadge}>
-                                    {selectedPlayer.spot_rank === 1 ? (
+                                    {selectedPlayer.ladder_rank === 1 ? (
                                         <Crown size={14} color="#FFD700" />
                                     ) : (
-                                        <Text style={styles.playerRankText}>#{selectedPlayer.spot_rank}</Text>
+                                        <Text style={styles.playerRankText}>#{selectedPlayer.ladder_rank}</Text>
                                     )}
                                 </View>
-                                <Text style={styles.selectedPlayerName}>{selectedPlayer.display_name}</Text>
+                                <Text style={styles.selectedPlayerName}>{selectedPlayer.full_name}</Text>
                             </View>
                         ) : (
                             <View style={styles.placeholderRow}>
@@ -337,6 +333,18 @@ export default function AuthScreen() {
                             )}
                         </>
                     )}
+
+                    {/* Continue as Guest */}
+                    <TouchableOpacity
+                        style={styles.guestButton}
+                        onPress={handleContinueAsGuest}
+                    >
+                        <Eye size={18} color="#666" />
+                        <Text style={styles.guestButtonText}>Continue as Guest</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.guestHelpText}>
+                        Browse the leaderboard without signing in
+                    </Text>
                 </View>
             </ScrollView>
 
@@ -541,6 +549,27 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 14,
         marginTop: 15,
+    },
+    guestButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 14,
+        marginTop: 20,
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        borderRadius: 12,
+    },
+    guestButtonText: {
+        color: '#888',
+        fontSize: 15,
+        marginLeft: 8,
+    },
+    guestHelpText: {
+        color: '#555',
+        fontSize: 11,
+        textAlign: 'center',
+        marginTop: 8,
     },
     // Modal styles
     modalContainer: {

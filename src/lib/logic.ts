@@ -1,4 +1,4 @@
-﻿export function checkChallengeEligibility(challengerRank: number, targetRank: number, cooldownUntil: string | null): { eligible: boolean; error?: string } {
+export function checkChallengeEligibility(challengerRank: number, targetRank: number, cooldownUntil: string | null): { eligible: boolean; error?: string } {
     // 1. Cooldown Check
     if (cooldownUntil && new Date(cooldownUntil) > new Date()) {
         return { eligible: false, error: 'You are on a 24-hour cooldown after your last loss.' };

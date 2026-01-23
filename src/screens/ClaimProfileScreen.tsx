@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Alert, Keyboard } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { Profile } from '../types';
@@ -16,9 +16,9 @@ export default function ClaimProfileScreen() {
         Keyboard.dismiss();
         setLoading(true);
         try {
-            const { data, error } = await supabase.from('users_profiles')
-                .select('*').ilike('display_name', `%${query}%`).is('owner_id', null)
-                .order('display_name', { ascending: true });
+            const { data, error } = await supabase.from('profiles')
+                .select('*').ilike('full_name', `%${query}%`).is('owner_id', null)
+                .order('full_name', { ascending: true });
             if (error) throw error;
             setProfiles(data || []);
             if ((data || []).length === 0) {
@@ -32,16 +32,16 @@ export default function ClaimProfileScreen() {
     }
 
     async function claimProfile(profile: Profile) {
-        Alert.alert('Claim Profile', `Are you ${profile.display_name}?\n\nRank #${profile.spot_rank} | Fargo ${profile.fargo_rating}`, [
+        Alert.alert('Claim Profile', `Are you ${profile.full_name}?\n\nRank #${profile.ladder_rank} | Fargo ${profile.fargo_rating}`, [
             { text: 'Cancel', style: 'cancel' },
             { text: 'Yes, Claim It', onPress: async () => {
                 setClaiming(profile.id);
                 try {
                     const { data: { user } } = await supabase.auth.getUser();
                     if (!user) throw new Error('Not authenticated');
-                    const { error } = await supabase.from('users_profiles').update({ owner_id: user.id }).eq('id', profile.id);
+                    const { error } = await supabase.from('profiles').update({ owner_id: user.id }).eq('id', profile.id);
                     if (error) throw error;
-                    Alert.alert('Welcome Back!', `${profile.display_name}, your profile has been linked.`);
+                    Alert.alert('Welcome Back!', `${profile.full_name}, your profile has been linked.`);
                 } catch (error: any) {
                     Alert.alert('Error', error.message);
                 } finally {
@@ -56,11 +56,11 @@ export default function ClaimProfileScreen() {
         try {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error('Not authenticated');
-            const { data: maxRank } = await supabase.from('users_profiles').select('spot_rank').order('spot_rank', { ascending: false }).limit(1);
-            const nextRank = (maxRank?.[0]?.spot_rank || 0) + 1;
-            const displayName = search.trim() || user.user_metadata?.display_name || 'New Player';
-            const { error } = await supabase.from('users_profiles').insert({
-                owner_id: user.id, display_name: displayName, spot_rank: nextRank, fargo_rating: 400, points: 0
+            const { data: maxRank } = await supabase.from('profiles').select('ladder_rank').order('ladder_rank', { ascending: false }).limit(1);
+            const nextRank = (maxRank?.[0]?.ladder_rank || 0) + 1;
+            const displayName = search.trim() || user.user_metadata?.full_name || 'New Player';
+            const { error } = await supabase.from('profiles').insert({
+                owner_id: user.id, full_name: displayName, ladder_rank: nextRank, fargo_rating: 400, points: 0
             });
             if (error) throw error;
             Alert.alert('Welcome!', `Your profile "${displayName}" has been created at Rank #${nextRank}.`);
@@ -88,10 +88,10 @@ export default function ClaimProfileScreen() {
             {loading ? <ActivityIndicator color="#87a96b" style={{ marginTop: 40 }} /> : (
                 <FlatList data={profiles} keyExtractor={(item) => item.id} contentContainerStyle={styles.list}
                     renderItem={({ item }) => (
-                        <TouchableOpacity style={styles.profileCard} onPress={() => claimProfile(item)} accessibilityLabel={`Claim ${item.display_name}`}>
+                        <TouchableOpacity style={styles.profileCard} onPress={() => claimProfile(item)} accessibilityLabel={`Claim ${item.full_name}`}>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.profileName}>{item.display_name}</Text>
-                                <Text style={styles.profileInfo}>Rank #{item.spot_rank} | Fargo {item.fargo_rating}</Text>
+                                <Text style={styles.profileName}>{item.full_name}</Text>
+                                <Text style={styles.profileInfo}>Rank #{item.ladder_rank} | Fargo {item.fargo_rating}</Text>
                             </View>
                             {claiming === item.id ? <ActivityIndicator color="#87a96b" size="small" /> : <ChevronRight color="#87a96b" size={20} />}
                         </TouchableOpacity>

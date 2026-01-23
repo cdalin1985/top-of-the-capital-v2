@@ -1,0 +1,121 @@
+﻿C:\Users\14062\top-of-the-capital-v2\App.tsx:105 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\App.tsx:139 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\CLAUDE.md:75 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+C:\Users\14062\top-of-the-capital-v2\CLAUDE.md:61 EXPO_PUBLIC_SUPABASE_URL=https://ankvjywsnydpkepdvuvm.supabase.co
+C:\Users\14062\top-of-the-capital-v2\CLAUDE.md:72 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
+C:\Users\14062\top-of-the-capital-v2\CLAUDE.md:62 EXPO_PUBLIC_SUPABASE_ANON_KEY=[anon key from Supabase dashboard]
+C:\Users\14062\top-of-the-capital-v2\CLAUDE.md:73 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
+C:\Users\14062\top-of-the-capital-v2\import_players.js:81 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\import_players.js:25 const { data, error } = await supabase.rpc('execute_sql', { sql_query: sql });
+C:\Users\14062\top-of-the-capital-v2\import_players.js:16 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+C:\Users\14062\top-of-the-capital-v2\import_players.js:7 const SUPABASE_URL = 'https://ankvjywsnydpkepdvuvm.supabase.co';
+C:\Users\14062\top-of-the-capital-v2\import_players.js:8 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+C:\Users\14062\top-of-the-capital-v2\import_players.js:10 if (!SUPABASE_SERVICE_ROLE_KEY) {
+C:\Users\14062\top-of-the-capital-v2\import_players.js:11 console.error('ERROR: SUPABASE_SERVICE_ROLE_KEY is not set.');
+C:\Users\14062\top-of-the-capital-v2\import_players.js:12 console.log('Please run: $env:SUPABASE_SERVICE_ROLE_KEY="your_service_role_key"; node import.js');
+C:\Users\14062\top-of-the-capital-v2\README.md:30 Create a `src/lib/config.ts` with your `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
+C:\Users\14062\top-of-the-capital-v2\legacy-web\scheduler.js:116 await supabase.from('matches').update({ [updateColumn]: true }).eq('id', match.id);
+C:\Users\14062\top-of-the-capital-v2\legacy-web\scheduler.js:32 .from('profiles')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\scheduler.js:38 .from('profiles')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\scheduler.js:126 .from('matches')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\scheduler.js:10 const supabase = createClient(supabaseUrl, supabaseKey);
+C:\Users\14062\top-of-the-capital-v2\legacy-web\scheduler.js:8 const supabaseUrl = process.env.SUPABASE_URL;
+C:\Users\14062\top-of-the-capital-v2\legacy-web\scheduler.js:9 const supabaseKey = process.env.SUPABASE_KEY;
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:391 const { data: match } = await supabase.from('matches').select('*').eq('id', id).single();
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:70 .from('profiles')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:89 .from('ladder_view')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:156 .from('profiles')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:204 .from('profiles')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:217 .from('profiles')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:243 .from('profiles')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:259 .from('matches')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:297 .from('profiles')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:319 .from('matches')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:351 .from('matches')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:375 .from('matches')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:401 .from('matches')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:433 .from('matches')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:451 .from('matches')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:517 .from('matches')
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:416 // await supabase.rpc('update_rankings', { match_id: id });
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:48 const { data: { user }, error } = await supabase.auth.getUser(token);
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:147 const { data, error } = await supabase.auth.signInWithPassword({
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:188 const { data, error } = await supabase.auth.signUp({
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:32 const supabase = createClient(supabaseUrl, supabaseKey);
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:24 const supabaseUrl = process.env.SUPABASE_URL;
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:28 console.error('Missing SUPABASE_URL or SUPABASE_KEY');
+C:\Users\14062\top-of-the-capital-v2\legacy-web\server.js:25 const supabaseKey = process.env.SUPABASE_KEY;
+C:\Users\14062\top-of-the-capital-v2\scripts\test-supabase-connection.ts:77 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\scripts\test-supabase-connection.ts:95 .from('ladder_view')
+C:\Users\14062\top-of-the-capital-v2\scripts\test-supabase-connection.ts:133 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\scripts\test-supabase-connection.ts:23 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+C:\Users\14062\top-of-the-capital-v2\scripts\test-supabase-connection.ts:19 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
+C:\Users\14062\top-of-the-capital-v2\scripts\test-supabase-connection.ts:56 if (!SUPABASE_URL) {
+C:\Users\14062\top-of-the-capital-v2\scripts\test-supabase-connection.ts:57 return { test, success: false, message: 'EXPO_PUBLIC_SUPABASE_URL is not set' };
+C:\Users\14062\top-of-the-capital-v2\scripts\test-supabase-connection.ts:67 message: `URL: ${SUPABASE_URL.substring(0, 30)}...`
+C:\Users\14062\top-of-the-capital-v2\scripts\test-supabase-connection.ts:20 const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
+C:\Users\14062\top-of-the-capital-v2\scripts\test-supabase-connection.ts:60 if (!SUPABASE_ANON_KEY) {
+C:\Users\14062\top-of-the-capital-v2\scripts\test-supabase-connection.ts:61 return { test, success: false, message: 'EXPO_PUBLIC_SUPABASE_ANON_KEY is not set' };
+C:\Users\14062\top-of-the-capital-v2\src\hooks\useAuth.ts:10 supabase.auth.getSession().then(({ data: { session } }) => {
+C:\Users\14062\top-of-the-capital-v2\src\hooks\useAuth.ts:15 const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+C:\Users\14062\top-of-the-capital-v2\src\lib\config.ts:2 SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL || '',
+C:\Users\14062\top-of-the-capital-v2\src\lib\config.ts:6 if (!ENV.SUPABASE_URL || !ENV.SUPABASE_ANON_KEY) {
+C:\Users\14062\top-of-the-capital-v2\src\lib\config.ts:3 SUPABASE_ANON_KEY: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '',
+C:\Users\14062\top-of-the-capital-v2\src\lib\supabase.ts:6 export const supabase = createClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY, {
+C:\Users\14062\top-of-the-capital-v2\src\screens\ActivityFeedScreen.tsx:20 const { data, error } = await supabase.from('activities')
+C:\Users\14062\top-of-the-capital-v2\src\screens\ActivityFeedScreen.tsx:49 await supabase.from('cheers').delete().eq('activity_id', activityId).eq('user_id', currentUserId);
+C:\Users\14062\top-of-the-capital-v2\src\screens\ActivityFeedScreen.tsx:51 await supabase.from('cheers').insert({ activity_id: activityId, user_id: currentUserId });
+C:\Users\14062\top-of-the-capital-v2\src\screens\ActivityFeedScreen.tsx:61 const { error } = await supabase.from('comments').insert({ activity_id: activityId, user_id: currentUserId, content: text });
+C:\Users\14062\top-of-the-capital-v2\src\screens\ActivityFeedScreen.tsx:18 const { data: { user } } = await supabase.auth.getUser();
+C:\Users\14062\top-of-the-capital-v2\src\screens\AuthScreen.tsx:39 .from('ladder_view')
+C:\Users\14062\top-of-the-capital-v2\src\screens\AuthScreen.tsx:51 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\src\screens\AuthScreen.tsx:74 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\src\screens\AuthScreen.tsx:138 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\src\screens\AuthScreen.tsx:122 const { data: authData, error: authError } = await supabase.auth.signUp({
+C:\Users\14062\top-of-the-capital-v2\src\screens\AuthScreen.tsx:175 const { error } = await supabase.auth.signInWithPassword({
+C:\Users\14062\top-of-the-capital-v2\src\screens\ChallengeScreen.tsx:47 const { error } = await supabase.from('challenges').insert({
+C:\Users\14062\top-of-the-capital-v2\src\screens\ChallengeScreen.tsx:26 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\src\screens\ChallengeScreen.tsx:23 const { data: { user } } = await supabase.auth.getUser();
+C:\Users\14062\top-of-the-capital-v2\src\screens\ClaimProfileScreen.tsx:19 const { data, error } = await supabase.from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\src\screens\ClaimProfileScreen.tsx:42 const { error } = await supabase.from('users_profiles').update({ owner_id: user.id }).eq('id', profile.id);
+C:\Users\14062\top-of-the-capital-v2\src\screens\ClaimProfileScreen.tsx:59 const { data: maxRank } = await supabase.from('users_profiles').select('spot_rank').order('spot_rank', { ascending: false }).limit(1);
+C:\Users\14062\top-of-the-capital-v2\src\screens\ClaimProfileScreen.tsx:62 const { error } = await supabase.from('users_profiles').insert({
+C:\Users\14062\top-of-the-capital-v2\src\screens\ClaimProfileScreen.tsx:40 const { data: { user } } = await supabase.auth.getUser();
+C:\Users\14062\top-of-the-capital-v2\src\screens\ClaimProfileScreen.tsx:57 const { data: { user } } = await supabase.auth.getUser();
+C:\Users\14062\top-of-the-capital-v2\src\screens\InboxScreen.tsx:26 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\src\screens\InboxScreen.tsx:35 .from('challenges')
+C:\Users\14062\top-of-the-capital-v2\src\screens\InboxScreen.tsx:76 .from('challenges')
+C:\Users\14062\top-of-the-capital-v2\src\screens\InboxScreen.tsx:22 const { data: { user } } = await supabase.auth.getUser();
+C:\Users\14062\top-of-the-capital-v2\src\screens\LeaderboardScreen.tsx:35 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\src\screens\LeaderboardScreen.tsx:46 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\src\screens\LeaderboardScreen.tsx:54 .from('challenges')
+C:\Users\14062\top-of-the-capital-v2\src\screens\LeaderboardScreen.tsx:83 .from('challenges')
+C:\Users\14062\top-of-the-capital-v2\src\screens\LeaderboardScreen.tsx:32 const { data: { user } } = await supabase.auth.getUser();
+C:\Users\14062\top-of-the-capital-v2\src\screens\ProfileScreen.tsx:20 const { data, error } = await supabase.from('users_profiles').select('*').eq('owner_id', user.id).single();
+C:\Users\14062\top-of-the-capital-v2\src\screens\ProfileScreen.tsx:25 const { data: challenges } = await supabase.from('challenges')
+C:\Users\14062\top-of-the-capital-v2\src\screens\ProfileScreen.tsx:18 const { data: { user } } = await supabase.auth.getUser();
+C:\Users\14062\top-of-the-capital-v2\src\screens\ProfileScreen.tsx:47 { text: 'Sign Out', style: 'destructive', onPress: async () => { await supabase.auth.signOut(); }}
+C:\Users\14062\top-of-the-capital-v2\src\screens\RankingScreen.tsx:25 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\src\screens\RankingScreen.tsx:40 .from('challenges')
+C:\Users\14062\top-of-the-capital-v2\src\screens\ScoreboardScreen.tsx:65 const { error: challengeError } = await supabase.from('challenges')
+C:\Users\14062\top-of-the-capital-v2\src\screens\ScoreboardScreen.tsx:76 await supabase.from('activities').insert({
+C:\Users\14062\top-of-the-capital-v2\src\screens\ScoreboardScreen.tsx:84 await supabase.from('users_profiles').update({ cooldown_until: cooldownTime }).eq('id', loserId);
+C:\Users\14062\top-of-the-capital-v2\src\screens\ScoreboardScreen.tsx:99 await supabase.from('challenges').update({ status: 'live' }).eq('id', challenge.id);
+C:\Users\14062\top-of-the-capital-v2\src\screens\ScoreboardScreen.tsx:100 const { data: profiles } = await supabase.from('users_profiles').select('expo_push_token').not('expo_push_token', 'is', null);
+C:\Users\14062\top-of-the-capital-v2\src\screens\ScoreboardScreen.tsx:72 await supabase.rpc('update_rankings_on_win', { match_winner_id: winnerId, match_loser_id: loserId });
+C:\Users\14062\top-of-the-capital-v2\src\screens\StreamingScreen.tsx:16 const { data, error } = await supabase.from('challenges')
+C:\Users\14062\top-of-the-capital-v2\src\store\useNotificationStore.ts:15 .from('challenges')
+C:\Users\14062\top-of-the-capital-v2\__tests__\supabase-connection.test.ts:38 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\__tests__\supabase-connection.test.ts:57 .from('ladder_view')
+C:\Users\14062\top-of-the-capital-v2\__tests__\supabase-connection.test.ts:87 .from('ladder_view')
+C:\Users\14062\top-of-the-capital-v2\__tests__\supabase-connection.test.ts:112 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\__tests__\supabase-connection.test.ts:144 .from('users_profiles')
+C:\Users\14062\top-of-the-capital-v2\__tests__\supabase-connection.test.ts:19 supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+C:\Users\14062\top-of-the-capital-v2\__tests__\supabase-connection.test.ts:13 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://yayflbtwngvatftbiymw.supabase.co';
+C:\Users\14062\top-of-the-capital-v2\__tests__\supabase-connection.test.ts:24 test('SUPABASE_URL is configured', () => {
+C:\Users\14062\top-of-the-capital-v2\__tests__\supabase-connection.test.ts:25 expect(SUPABASE_URL).toBeTruthy();
+C:\Users\14062\top-of-the-capital-v2\__tests__\supabase-connection.test.ts:26 expect(SUPABASE_URL).toMatch(/^https:\/\/.+\.supabase\.co$/);
+C:\Users\14062\top-of-the-capital-v2\__tests__\supabase-connection.test.ts:14 const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_yhcQSXDbRzLLqDiOSZYKTw_NIW8pqeZ';
+C:\Users\14062\top-of-the-capital-v2\__tests__\supabase-connection.test.ts:29 test('SUPABASE_ANON_KEY is configured', () => {
+C:\Users\14062\top-of-the-capital-v2\__tests__\supabase-connection.test.ts:30 expect(SUPABASE_ANON_KEY).toBeTruthy();
+C:\Users\14062\top-of-the-capital-v2\__tests__\supabase-connection.test.ts:31 expect(SUPABASE_ANON_KEY.length).toBeGreaterThan(10);

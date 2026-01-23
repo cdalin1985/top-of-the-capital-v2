@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Format relative time (e.g., "2 hours ago")
  */
 export function formatRelativeTime(date: string | Date): string {

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Platform, ActivityIndicator } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { Profile, GameType } from '../types';
@@ -23,13 +23,13 @@ export default function ChallengeScreen({ route, navigation }: any) {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) return;
             const { data: profile } = await supabase
-                .from('users_profiles')
+                .from('profiles')
                 .select('*')
                 .eq('owner_id', user.id)
                 .single();
             if (profile) {
                 setCurrentProfile(profile);
-                const result = checkChallengeEligibility(profile.spot_rank, target.spot_rank, profile.cooldown_until);
+                const result = checkChallengeEligibility(profile.ladder_rank, target.ladder_rank, profile.cooldown_until);
                 setEligibility(result);
             }
         } catch (error: any) {
@@ -57,10 +57,10 @@ export default function ChallengeScreen({ route, navigation }: any) {
             if (error) throw error;
             if (target.expo_push_token) {
                 await sendPushNotification(target.expo_push_token, 'New Challenge!',
-                    `${currentProfile.display_name} challenged you to race to ${gamesToWin} in ${gameType}!`,
+                    `${currentProfile.full_name} challenged you to race to ${gamesToWin} in ${gameType}!`,
                     { type: 'CHALLENGE_RECEIVED' });
             }
-            Alert.alert('Challenge Sent!', `${target.display_name} has 2 weeks to respond.`,
+            Alert.alert('Challenge Sent!', `${target.full_name} has 2 weeks to respond.`,
                 [{ text: 'OK', onPress: () => navigation.goBack() }]);
         } catch (error: any) {
             Alert.alert('Error', error.message);
@@ -76,8 +76,8 @@ export default function ChallengeScreen({ route, navigation }: any) {
             </TouchableOpacity>
             <View style={styles.header}>
                 <Text style={styles.headerLabel}>CHALLENGE</Text>
-                <Text style={styles.targetName}>{target.display_name}</Text>
-                <Text style={styles.targetInfo}>Rank #{target.spot_rank} | Fargo {target.fargo_rating}</Text>
+                <Text style={styles.targetName}>{target.full_name}</Text>
+                <Text style={styles.targetInfo}>Rank #{target.ladder_rank} | Fargo {target.fargo_rating}</Text>
             </View>
             {eligibility && !eligibility.eligible && (
                 <View style={styles.warning}>
@@ -116,7 +116,7 @@ export default function ChallengeScreen({ route, navigation }: any) {
             </View>
             <View style={styles.info}>
                 <Calendar size={14} color="#87a96b" />
-                <Text style={styles.infoText}>{target.display_name} picks venue/time. 2 weeks to respond.</Text>
+                <Text style={styles.infoText}>{target.full_name} picks venue/time. 2 weeks to respond.</Text>
             </View>
             <TouchableOpacity style={[styles.submitBtn, (loading || !eligibility?.eligible) && styles.disabledBtn]}
                 onPress={submitChallenge} disabled={loading || !eligibility?.eligible}>

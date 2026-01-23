@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, RefreshControl, Alert } from 'react-native';
 import { supabase } from '../lib/supabase';
+import { useGuestStore } from '../store/useGuestStore';
 import { Profile, GameType } from '../types';
-import { Trophy, Swords, TrendingUp } from 'lucide-react-native';
+import { Trophy, Swords, TrendingUp, AlertCircle } from 'lucide-react-native';
 import { SkeletonRankingItem } from '../components/SkeletonLoader';
 import { checkChallengeEligibility } from '../lib/logic';
 
@@ -19,6 +20,9 @@ export default function LeaderboardScreen({ navigation }: any) {
     const [gameType, setGameType] = useState<GameType>('8-ball');
     const [activeMatches, setActiveMatches] = useState<string[]>([]);
     const [currentUserProfile, setCurrentUserProfile] = useState<Profile | null>(null);
+    const [fetchError, setFetchError] = useState<string | null>(null);
+
+    const isGuest = useGuestStore((state) => state.isGuest);
 
     async function fetchLeaderboard(isRefresh = false) {
         if (isRefresh) {
@@ -32,7 +36,7 @@ export default function LeaderboardScreen({ navigation }: any) {
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
                 const { data: profileData } = await supabase
-                    .from('users_profiles')
+                    .from('profiles')
                     .select('*')
                     .eq('owner_id', user.id)
                     .single();
@@ -43,9 +47,9 @@ export default function LeaderboardScreen({ navigation }: any) {
 
             // Fetch all players ordered by rank
             const { data: profilesData, error: profilesError } = await supabase
-                .from('users_profiles')
+                .from('profiles')
                 .select('*')
-                .order('spot_rank', { ascending: true });
+                .order('ladder_rank', { ascending: true });
 
             if (profilesError) throw profilesError;
 
@@ -89,7 +93,12 @@ export default function LeaderboardScreen({ navigation }: any) {
 
         } catch (error: any) {
             console.error('Error fetching leaderboard:', error.message);
-            Alert.alert('Error', 'Failed to load leaderboard. Pull down to refresh.');
+            // Check if this is an RLS error
+            if (error.code === '42501' || error.message?.includes('permission denied')) {
+                setFetchError('Unable to load leaderboard. Please sign in to view player rankings.');
+            } else {
+                setFetchError('Failed to load leaderboard. Pull down to refresh.');
+            }
         } finally {
             setLoading(false);
             setRefreshing(false);
@@ -104,7 +113,7 @@ export default function LeaderboardScreen({ navigation }: any) {
             .channel('leaderboard-changes')
             .on(
                 'postgres_changes' as any,
-                { event: '*', table: 'users_profiles' },
+                { event: '*', table: 'profiles' },
                 () => fetchLeaderboard()
             )
             .on(
@@ -123,7 +132,7 @@ export default function LeaderboardScreen({ navigation }: any) {
         if (!currentUserProfile) return false;
 
         const eligibility = checkChallengeEligibility(
-            currentUserProfile.spot_rank,
+            currentUserProfile.ladder_rank,
             targetRank,
             currentUserProfile.cooldown_until || null
         );
@@ -152,7 +161,7 @@ export default function LeaderboardScreen({ navigation }: any) {
                     <>
                         <View style={styles.statDivider} />
                         <View style={styles.statItem}>
-                            <Text style={styles.statValueHighlight}>#{currentUserProfile.spot_rank}</Text>
+                            <Text style={styles.statValueHighlight}>#{currentUserProfile.ladder_rank}</Text>
                             <Text style={styles.statLabel}>Your Rank</Text>
                         </View>
                     </>
@@ -194,7 +203,7 @@ export default function LeaderboardScreen({ navigation }: any) {
     const renderItem = ({ item }: { item: PlayerWithStats }) => {
         const isPlaying = activeMatches.includes(item.id);
         const isCurrentUser = currentUserProfile?.id === item.id;
-        const challengeEnabled = !isPlaying && !isCurrentUser && canChallenge(item.spot_rank);
+        const challengeEnabled = !isPlaying && !isCurrentUser && canChallenge(item.ladder_rank);
 
         // Determine win rate color based on percentage
         const getWinRateColor = (rate: number) => {
@@ -213,19 +222,19 @@ export default function LeaderboardScreen({ navigation }: any) {
             >
                 <View style={[
                     styles.rankContainer,
-                    item.spot_rank <= 3 && styles.topThreeRank
+                    item.ladder_rank <= 3 && styles.topThreeRank
                 ]}>
-                    {item.spot_rank <= 3 ? (
+                    {item.ladder_rank <= 3 ? (
                         <Trophy size={18} color="#ffd700" />
                     ) : (
-                        <Text style={styles.rankText}>#{item.spot_rank}</Text>
+                        <Text style={styles.rankText}>#{item.ladder_rank}</Text>
                     )}
                 </View>
 
                 <View style={styles.nameContainer}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={[styles.nameText, isCurrentUser && styles.currentUserText]}>
-                            {item.display_name}
+                            {item.full_name}
                         </Text>
                         {isCurrentUser && (
                             <View style={styles.youBadge}>
@@ -257,7 +266,7 @@ export default function LeaderboardScreen({ navigation }: any) {
                     ]}
                     onPress={() => challengeEnabled && navigation.navigate('Challenge', { target: item })}
                     disabled={!challengeEnabled}
-                    accessibilityLabel={`Challenge ${item.display_name}`}
+                    accessibilityLabel={`Challenge ${item.full_name}`}
                 >
                     {isPlaying ? (
                         <Trophy size={18} color="#666" />
@@ -275,7 +284,15 @@ export default function LeaderboardScreen({ navigation }: any) {
                 data={loading ? [] : players}
                 renderItem={renderItem}
                 ListHeaderComponent={renderHeader}
-                ListEmptyComponent={loading ? renderSkeletons : null}
+                ListEmptyComponent={loading ? renderSkeletons : fetchError ? (
+                    <View style={styles.errorContainer}>
+                        <AlertCircle size={48} color="#ff9800" />
+                        <Text style={styles.errorText}>{fetchError}</Text>
+                        {isGuest && (
+                            <Text style={styles.errorSubtext}>Sign in to access the full leaderboard</Text>
+                        )}
+                    </View>
+                ) : null}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.listContent}
                 refreshControl={
@@ -487,5 +504,26 @@ const styles = StyleSheet.create({
         color: '#f44336',
         fontSize: 9,
         fontWeight: 'bold',
+    },
+    // Error state styles
+    errorContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 60,
+        paddingHorizontal: 30,
+    },
+    errorText: {
+        color: '#888',
+        fontSize: 16,
+        textAlign: 'center',
+        marginTop: 20,
+        lineHeight: 24,
+    },
+    errorSubtext: {
+        color: '#555',
+        fontSize: 13,
+        textAlign: 'center',
+        marginTop: 10,
     },
 });

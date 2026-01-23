@@ -1,23 +1,31 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator, RefreshControl } from 'react-native';
 import { supabase } from '../lib/supabase';
+import { useGuestStore } from '../store/useGuestStore';
 import { Profile } from '../types';
 import { formatCooldownRemaining, getInitials } from '../lib/utils';
-import { LogOut, Settings, Award, Phone, Clock, Trophy, Target } from 'lucide-react-native';
+import { LogOut, Settings, Award, Phone, Clock, Trophy, Target, Eye, UserPlus } from 'lucide-react-native';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }: any) {
     const [profile, setProfile] = useState<Profile | null>(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [stats, setStats] = useState({ wins: 0, losses: 0, challenges: 0 });
 
+    const isGuest = useGuestStore((state) => state.isGuest);
+    const clearGuest = useGuestStore((state) => state.clearGuest);
+
     async function fetchProfile(isRefresh = false) {
+        if (isGuest) {
+            setLoading(false);
+            return;
+        }
         if (isRefresh) setRefreshing(true);
         else setLoading(true);
         try {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error('Not logged in');
-            const { data, error } = await supabase.from('users_profiles').select('*').eq('owner_id', user.id).single();
+            const { data, error } = await supabase.from('profiles').select('*').eq('owner_id', user.id).single();
             if (error) throw error;
             setProfile(data);
             // Fetch match stats
@@ -32,16 +40,19 @@ export default function ProfileScreen() {
             }
         } catch (error: any) {
             console.error('Error:', error.message);
-            Alert.alert('Error', 'Failed to load profile');
         } finally {
             setLoading(false);
             setRefreshing(false);
         }
     }
 
-    useEffect(() => { fetchProfile(); }, []);
+    useEffect(() => { fetchProfile(); }, [isGuest]);
 
     const handleLogout = () => {
+        if (isGuest) {
+            clearGuest();
+            return;
+        }
         Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
             { text: 'Cancel', style: 'cancel' },
             { text: 'Sign Out', style: 'destructive', onPress: async () => { await supabase.auth.signOut(); }}
@@ -51,6 +62,32 @@ export default function ProfileScreen() {
     if (loading) {
         return <View style={styles.loadingContainer}><ActivityIndicator size="large" color="#87a96b" /></View>;
     }
+
+    // Guest mode UI
+    if (isGuest) {
+        return (
+            <View style={styles.container}>
+                <View style={styles.guestHeader}>
+                    <View style={styles.guestIconWrap}>
+                        <Eye size={40} color="#666" />
+                    </View>
+                    <Text style={styles.guestTitle}>Guest Mode</Text>
+                    <Text style={styles.guestSubtitle}>You're browsing as a guest</Text>
+                </View>
+                <View style={styles.guestCard}>
+                    <Text style={styles.guestCardTitle}>Want to join the league?</Text>
+                    <Text style={styles.guestCardText}>
+                        Sign up to claim your spot on the ladder, challenge other players, and track your stats.
+                    </Text>
+                    <TouchableOpacity style={styles.guestSignUpBtn} onPress={handleLogout}>
+                        <UserPlus size={18} color="#000" />
+                        <Text style={styles.guestSignUpText}>Sign Up / Sign In</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        );
+    }
+
     if (!profile) {
         return <View style={styles.loadingContainer}><Text style={styles.errorText}>Profile not found</Text></View>;
     }
@@ -62,12 +99,12 @@ export default function ProfileScreen() {
                 <View style={styles.avatarWrap}>
                     {profile.avatar_url ? <Image source={{ uri: profile.avatar_url }} style={styles.avatar} /> : (
                         <View style={[styles.avatar, styles.placeholderAvatar]}>
-                            <Text style={styles.avatarInitial}>{getInitials(profile.display_name)}</Text>
+                            <Text style={styles.avatarInitial}>{getInitials(profile.full_name)}</Text>
                         </View>
                     )}
                 </View>
-                <Text style={styles.name}>{profile.display_name}</Text>
-                <Text style={styles.rank}>RANK #{profile.spot_rank}</Text>
+                <Text style={styles.name}>{profile.full_name}</Text>
+                <Text style={styles.rank}>RANK #{profile.ladder_rank}</Text>
                 {hasCooldown && (
                     <View style={styles.cooldownBadge}>
                         <Clock size={12} color="#ff9800" />
@@ -141,4 +178,14 @@ const styles = StyleSheet.create({
     menuText: { color: '#fff', fontSize: 15, marginLeft: 14 },
     logoutBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 20, marginTop: 20, marginBottom: 50 },
     logoutText: { color: '#ff5252', fontSize: 15, fontWeight: 'bold', marginLeft: 8 },
+    // Guest mode styles
+    guestHeader: { paddingTop: 100, paddingBottom: 40, alignItems: 'center' },
+    guestIconWrap: { width: 80, height: 80, borderRadius: 40, backgroundColor: 'rgba(255,255,255,0.05)', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
+    guestTitle: { color: '#fff', fontSize: 24, fontWeight: 'bold' },
+    guestSubtitle: { color: '#666', fontSize: 14, marginTop: 6 },
+    guestCard: { margin: 20, backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 16, padding: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
+    guestCardTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
+    guestCardText: { color: '#888', fontSize: 14, lineHeight: 22, marginBottom: 20 },
+    guestSignUpBtn: { backgroundColor: '#87a96b', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 14, borderRadius: 12 },
+    guestSignUpText: { color: '#000', fontSize: 15, fontWeight: 'bold', marginLeft: 8 },
 });

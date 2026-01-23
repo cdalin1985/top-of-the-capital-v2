@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, Platform, Alert, RefreshControl, Image } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { MessageSquare, Send, Heart, Award, Zap } from 'lucide-react-native';
@@ -18,7 +18,7 @@ export default function ActivityFeedScreen() {
             const { data: { user } } = await supabase.auth.getUser();
             setCurrentUserId(user?.id || null);
             const { data, error } = await supabase.from('activities')
-                .select(`*, user:user_id (display_name, avatar_url), comments (*, user:user_id (display_name)), cheers:cheers(user_id)`)
+                .select(`*, user:user_id (full_name, avatar_url), comments (*, user:user_id (full_name)), cheers:cheers(user_id)`)
                 .order('created_at', { ascending: false }).limit(50);
             if (error) throw error;
             setActivities(data || []);
@@ -89,7 +89,7 @@ export default function ActivityFeedScreen() {
             <View style={styles.card}>
                 <View style={styles.cardHeader}>
                     {item.user?.avatar_url ? <Image source={{ uri: item.user.avatar_url }} style={styles.avatar} /> : <Zap size={16} color="#87a96b" />}
-                    <Text style={styles.userName}>{item.user?.display_name || 'System'}</Text>
+                    <Text style={styles.userName}>{item.user?.full_name || 'System'}</Text>
                     <Text style={styles.timeText}>{new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
                 </View>
                 {renderContent(item)}
@@ -107,7 +107,7 @@ export default function ActivityFeedScreen() {
                     <View style={styles.comments}>
                         {item.comments.slice(0, 3).map((c: any) => (
                             <View key={c.id} style={styles.comment}>
-                                <Text style={styles.commentUser}>{c.user?.display_name}: </Text>
+                                <Text style={styles.commentUser}>{c.user?.full_name}: </Text>
                                 <Text style={styles.commentContent}>{c.content}</Text>
                             </View>
                         ))}

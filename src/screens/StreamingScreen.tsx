@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Linking, Alert, RefreshControl } from 'react-native';
 import { Video, Play, ExternalLink, Radio } from 'lucide-react-native';
 import { supabase } from '../lib/supabase';
@@ -14,7 +14,7 @@ export default function StreamingScreen() {
         else setLoading(true);
         try {
             const { data, error } = await supabase.from('challenges')
-                .select('*, challenger:challenger_id(display_name), challenged:challenged_id(display_name)')
+                .select('*, challenger:challenger_id(full_name), challenged:challenged_id(full_name)')
                 .eq('status', 'live');
             if (error) throw error;
             setStreams(data || []);
@@ -47,9 +47,9 @@ export default function StreamingScreen() {
                 <Text style={styles.gameInfo}>{item.game_type?.toUpperCase()} | Race to {item.games_to_win}</Text>
             </View>
             <View style={styles.matchup}>
-                <Text style={styles.player}>{item.challenger?.display_name || 'Player 1'}</Text>
+                <Text style={styles.player}>{item.challenger?.full_name || 'Player 1'}</Text>
                 <Text style={styles.vs}>VS</Text>
-                <Text style={styles.player}>{item.challenged?.display_name || 'Player 2'}</Text>
+                <Text style={styles.player}>{item.challenged?.full_name || 'Player 2'}</Text>
             </View>
             {item.stream_url && (
                 <TouchableOpacity style={styles.watchBtn} onPress={() => openStream(item.stream_url)} accessibilityLabel="Watch stream">

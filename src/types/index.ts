@@ -1,17 +1,17 @@
-﻿// Game Types
+// Game Types
 export type GameType = '8-ball' | '9-ball' | '10-ball';
 export type ChallengeStatus = 'pending' | 'negotiating' | 'scheduled' | 'live' | 'completed' | 'forfeited';
 
 // User Profile
 export interface Profile {
   id: string;
-  display_name: string;
+  full_name: string;
   phone?: string;
   avatar_url?: string;
   fargo_rating: number;
   points: number;
   cooldown_until?: string | null;
-  spot_rank: number;
+  ladder_rank: number;
   owner_id?: string;
   expo_push_token?: string;
   created_at: string;
