@@ -127,8 +127,7 @@ function AppContent() {
         .eq('owner_id', userId)
         .single();
       setHasProfile(!!data);
-    } catch (error) {
-      console.error('Error checking profile:', error);
+    } catch {
       setHasProfile(false);
     }
   };
