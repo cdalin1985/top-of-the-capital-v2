@@ -72,4 +72,6 @@ export type RootStackParamList = {
   Leaderboard: undefined;
   Challenge: { target: Profile };
   Scoreboard: { challenge: Challenge };
+  ProfileMain: undefined;
+  MatchHistory: undefined;
 };

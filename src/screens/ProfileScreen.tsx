@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import { useGuestStore } from '../store/useGuestStore';
 import { Profile } from '../types';
 import { formatCooldownRemaining, getInitials } from '../lib/utils';
-import { LogOut, Settings, Award, Phone, Clock, Trophy, Target, Eye, UserPlus } from 'lucide-react-native';
+import { LogOut, Settings, Award, Phone, Clock, Trophy, Target, Eye, UserPlus, History, ChevronRight } from 'lucide-react-native';
 
 export default function ProfileScreen({ navigation }: any) {
     const [profile, setProfile] = useState<Profile | null>(null);
@@ -135,6 +135,17 @@ export default function ProfileScreen({ navigation }: any) {
                 <Text style={styles.pointsSub}>+2 Challenge | +1 Play | +3 Win</Text>
             </View>
             <View style={styles.section}>
+                <TouchableOpacity
+                    style={styles.menuItem}
+                    onPress={() => navigation.navigate('MatchHistory')}
+                >
+                    <History size={18} color="#87a96b" />
+                    <Text style={styles.menuText}>Match History</Text>
+                    <View style={styles.menuChevron}>
+                        <Text style={styles.menuBadge}>{stats.challenges}</Text>
+                        <ChevronRight size={18} color="#444" />
+                    </View>
+                </TouchableOpacity>
                 <View style={styles.menuItem}>
                     <Phone size={18} color="#87a96b" />
                     <Text style={styles.menuText}>{profile.phone || 'No phone linked'}</Text>
@@ -175,7 +186,9 @@ const styles = StyleSheet.create({
     pointsSub: { color: '#666', fontSize: 10, marginTop: 6 },
     section: { paddingHorizontal: 20 },
     menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
-    menuText: { color: '#fff', fontSize: 15, marginLeft: 14 },
+    menuText: { color: '#fff', fontSize: 15, marginLeft: 14, flex: 1 },
+    menuChevron: { flexDirection: 'row', alignItems: 'center' },
+    menuBadge: { color: '#87a96b', fontSize: 13, fontWeight: '600', marginRight: 8 },
     logoutBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 20, marginTop: 20, marginBottom: 50 },
     logoutText: { color: '#ff5252', fontSize: 15, fontWeight: 'bold', marginLeft: 8 },
     // Guest mode styles

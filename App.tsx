@@ -22,6 +22,7 @@ import StreamingScreen from './src/screens/StreamingScreen';
 import ClaimProfileScreen from './src/screens/ClaimProfileScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import HomeScreen from './src/screens/HomeScreen';
+import MatchHistoryScreen from './src/screens/MatchHistoryScreen';
 import { Home, List, Bell, User, MessageSquare, Video } from 'lucide-react-native';
 
 const Stack = createStackNavigator();
@@ -83,7 +84,7 @@ function MainTabs() {
       />
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={ProfileStack}
         options={{
           tabBarIcon: ({ color }) => <User color={color} size={24} />,
         }}
@@ -98,6 +99,15 @@ function RankingStack() {
       <Stack.Screen name="TheList" component={LeaderboardScreen} />
       <Stack.Screen name="Challenge" component={ChallengeScreen} />
       <Stack.Screen name="Scoreboard" component={ScoreboardScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function ProfileStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="ProfileMain" component={ProfileScreen} />
+      <Stack.Screen name="MatchHistory" component={MatchHistoryScreen} />
     </Stack.Navigator>
   );
 }
