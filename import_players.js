@@ -2,15 +2,23 @@ const { createClient } = require('@supabase/supabase-js');
 const fs = require('fs');
 const path = require('path');
 
+// Simple logging utility for CLI scripts
+const log = {
+    info: (msg) => process.stdout.write(`${msg}\n`),
+    error: (msg) => process.stderr.write(`ERROR: ${msg}\n`),
+    progress: (current, total, msg) => process.stdout.write(`[${current}/${total}] ${msg}\n`),
+};
+
 // These will be pulled from your ENV or I'll ask for them if needed
 // But since I'm running this locally, I can use the ones I found in your config
 const SUPABASE_URL = 'https://ankvjywsnydpkepdvuvm.supabase.co';
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!SUPABASE_SERVICE_ROLE_KEY) {
-    console.error('ERROR: SUPABASE_SERVICE_ROLE_KEY is not set.');
-    console.log('Please run: $env:SUPABASE_SERVICE_ROLE_KEY="your_service_role_key"; node import.js');
-    process.exit(1);
+    throw new Error(
+        'SUPABASE_SERVICE_ROLE_KEY is not set.\n' +
+        'Please run: $env:SUPABASE_SERVICE_ROLE_KEY="your_service_role_key"; node import.js'
+    );
 }
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -20,14 +28,14 @@ async function importPlayers() {
     
     // We wrap the SQL in a RPC call or use the REST API to execute it
     // However, the best way for a data import is to use the supabase client directly
-    console.log('Starting player import...');
-    
+    log.info('Starting player import...');
+
     const { data, error } = await supabase.rpc('execute_sql', { sql_query: sql });
-    
+
     if (error) {
-        console.error('Error executing SQL:', error);
+        log.error(`Error executing SQL: ${JSON.stringify(error)}`);
     } else {
-        console.log('Successfully imported all 70 players!');
+        log.info('Successfully imported all 70 players!');
     }
 }
 
@@ -74,8 +82,8 @@ async function directImport() {
     // Sorting by rating
     players.sort((a, b) => b.rating - a.rating);
 
-    console.log(`Inserting ${players.length} players...`);
-    
+    log.info(`Inserting ${players.length} players...`);
+
     for (let i = 0; i < players.length; i++) {
         const { error } = await supabase
             .from('profiles')
@@ -84,9 +92,12 @@ async function directImport() {
                 fargo_rating: players[i].rating,
                 spot_rank: i + 1
             });
-        
-        if (error) console.error(`Error inserting ${players[i].name}:`, error.message);
-        else console.log(`[${i+1}/70] Imported ${players[i].name}`);
+
+        if (error) {
+            log.error(`Inserting ${players[i].name}: ${error.message}`);
+        } else {
+            log.progress(i + 1, players.length, `Imported ${players[i].name}`);
+        }
     }
 }
 
