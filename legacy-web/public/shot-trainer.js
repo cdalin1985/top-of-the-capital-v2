@@ -326,6 +326,6 @@ function loadShotFromURL() {
         englishDot.style.top = shotData.english.top;
 
     } catch (e) {
-        console.error("Failed to load shot from URL", e);
+        // Silently ignore invalid URL data - the app will simply start with default state
     }
 }
