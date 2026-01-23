@@ -41,7 +41,6 @@ async function sendReminder(match, reminderType) {
         .single();
 
     if (challengerError || targetError) {
-        console.error('Error fetching player profiles for reminders:', challengerError || targetError);
         return;
     }
 
