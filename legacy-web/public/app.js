@@ -31,11 +31,11 @@ function initializeSocket() {
     socket = io();
 
     socket.on('connect', () => {
-        console.log('Connected to server');
+        // Connection established - could add UI indicator if needed
     });
 
     socket.on('disconnect', () => {
-        console.log('Disconnected from server');
+        // Connection lost - could add UI indicator or reconnect logic if needed
     });
 
     socket.on('challengeSent', (data) => {
