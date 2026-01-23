@@ -9,6 +9,9 @@
  * Run with: npx ts-node scripts/test-supabase-connection.ts
  */
 
+/* eslint-disable no-console */
+// Console statements are intentionally used in this CLI test script for output
+
 import { createClient } from '@supabase/supabase-js';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
