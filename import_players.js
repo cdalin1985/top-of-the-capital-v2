@@ -78,7 +78,7 @@ async function directImport() {
     
     for (let i = 0; i < players.length; i++) {
         const { error } = await supabase
-            .from('users_profiles')
+            .from('profiles')
             .insert({
                 display_name: players[i].name,
                 fargo_rating: players[i].rating,

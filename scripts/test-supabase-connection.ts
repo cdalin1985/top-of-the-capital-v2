@@ -3,7 +3,7 @@
  *
  * This script verifies:
  * 1. Supabase connection is working
- * 2. Can fetch from ladder_view (or users_profiles as fallback)
+ * 2. Can fetch from ladder_view (or profiles as fallback)
  * 3. Data structure is correct
  *
  * Run with: npx ts-node scripts/test-supabase-connection.ts
@@ -74,7 +74,7 @@ async function testSupabaseConnection(): Promise<TestResult> {
     try {
         // Simple query to verify connection
         const { data, error } = await supabase
-            .from('users_profiles')
+            .from('profiles')
             .select('count', { count: 'exact', head: true });
 
         if (error) {
@@ -126,11 +126,11 @@ async function testLadderView(): Promise<TestResult> {
 }
 
 async function testUsersProfiles(): Promise<TestResult> {
-    const test = 'Fetch from users_profiles (fallback)';
+    const test = 'Fetch from profiles (fallback)';
 
     try {
         const { data, error } = await supabase
-            .from('users_profiles')
+            .from('profiles')
             .select('id, display_name, spot_rank, fargo_rating, points, cooldown_until')
             .order('spot_rank', { ascending: true })
             .limit(10);
@@ -140,7 +140,7 @@ async function testUsersProfiles(): Promise<TestResult> {
         }
 
         if (!data || data.length === 0) {
-            return { test, success: true, message: 'users_profiles table is empty', data: [] };
+            return { test, success: true, message: 'profiles table is empty', data: [] };
         }
 
         // Validate data structure
@@ -162,7 +162,7 @@ async function testUsersProfiles(): Promise<TestResult> {
         return {
             test,
             success: true,
-            message: `Successfully fetched ${data.length} players from users_profiles`,
+            message: `Successfully fetched ${data.length} players from profiles`,
             data: data.slice(0, 3).map((p: Player) => ({
                 display_name: p.display_name,
                 spot_rank: p.spot_rank
@@ -181,7 +181,7 @@ async function testRealTimeCapability(): Promise<TestResult> {
             const channel = supabase
                 .channel('test-connection')
                 .on('postgres_changes',
-                    { event: '*', schema: 'public', table: 'users_profiles' },
+                    { event: '*', schema: 'public', table: 'profiles' },
                     (payload) => {
                         console.log('   Received change:', payload);
                     }
@@ -233,7 +233,7 @@ async function runAllTests() {
     // Test 3: ladder_view
     logResult(await testLadderView());
 
-    // Test 4: users_profiles (fallback/verification)
+    // Test 4: profiles (fallback/verification)
     logResult(await testUsersProfiles());
 
     // Test 5: Real-time
@@ -265,7 +265,7 @@ async function runAllTests() {
        avatar_url,
        created_at,
        updated_at
-   FROM users_profiles
+   FROM profiles
    ORDER BY spot_rank ASC;
             `);
         }

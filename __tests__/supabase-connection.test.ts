@@ -3,7 +3,7 @@
  *
  * These tests verify:
  * 1. Supabase connection is working
- * 2. Can fetch from ladder_view (or users_profiles as fallback)
+ * 2. Can fetch from ladder_view (or profiles as fallback)
  * 3. Data structure is correct
  */
 
@@ -35,7 +35,7 @@ describe('Supabase Connection', () => {
     describe('Database Connection', () => {
         test('can connect to Supabase', async () => {
             const { data, error } = await supabase
-                .from('users_profiles')
+                .from('profiles')
                 .select('id')
                 .limit(1);
 
@@ -106,10 +106,10 @@ describe('Supabase Connection', () => {
         }, 10000);
     });
 
-    describe('users_profiles Table (Fallback)', () => {
-        test('can query users_profiles', async () => {
+    describe('profiles Table (Fallback)', () => {
+        test('can query profiles', async () => {
             const { data, error } = await supabase
-                .from('users_profiles')
+                .from('profiles')
                 .select('id, display_name, spot_rank, fargo_rating, points, cooldown_until')
                 .order('spot_rank', { ascending: true })
                 .limit(10);
@@ -119,7 +119,7 @@ describe('Supabase Connection', () => {
             }
 
             expect(Array.isArray(data)).toBe(true);
-            console.log(`Found ${data?.length || 0} players in users_profiles`);
+            console.log(`Found ${data?.length || 0} players in profiles`);
 
             if (data && data.length > 0) {
                 const player = data[0];
@@ -141,7 +141,7 @@ describe('Supabase Connection', () => {
 
         test('player data structure is valid', async () => {
             const { data, error } = await supabase
-                .from('users_profiles')
+                .from('profiles')
                 .select('*')
                 .limit(1)
                 .single();
