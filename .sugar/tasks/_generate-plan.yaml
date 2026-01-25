@@ -1,0 +1,70 @@
+tasks:
+  - id: assess_state
+    run: |
+      tmp=".sugar/artifacts"; inv="$tmp/state.json"; mkdir -p "$tmp"
+      echo '{}' | jq '.' > "$inv"
+      node_list=$(fd -H --type f package.json 2>/dev/null | sort)
+      jq --argjson arr "$(printf '%s\n' "$node_list" | jq -R . | jq -s .)" \
+         '.node.package_jsons = $arr' "$inv" > "$inv.tmp" && mv "$inv.tmp" "$inv"
+      dk_list=$(fd -H --type f "(Dockerfile|docker-compose.yml|compose.yaml)" 2>/dev/null | sort)
+      jq --argjson arr "$(printf '%s\n' "$dk_list" | jq -R . | jq -s .)" \
+         '.containers.files = $arr' "$inv" > "$inv.tmp" && mv "$inv.tmp" "$inv"
+
+  - id: plan_tasks
+    needs: [assess_state]
+    run: |
+      inv=".sugar/artifacts/state.json"
+      out=".sugar/generated/tasks.generated.yaml"
+      mkdir -p "$(dirname "$out")"
+      : > "$out"; echo "tasks:" >> "$out"
+
+      # JS quality scan if JS detected
+      if [ "$(jq '.node.package_jsons | length' "$inv")" -gt 0 ]; then
+        cat >> "$out" <<'EOF'
+  - id: js_quality_scan
+    run: |
+      if [ -f package.json ]; then
+        npm ci || npm install
+        npx eslint . || true
+        npm test --silent || true
+      fi
+EOF
+      fi
+
+      # Scaffold Docker if none present
+      if [ "$(jq '.containers.files | length' "$inv")" -eq 0 ]; then
+        cat >> "$out" <<'EOF'
+  - id: scaffold_docker
+    run: |
+      if [ -f package.json ]; then
+        cat > Dockerfile <<'DOK'
+FROM node:20 AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci || npm install
+COPY . .
+RUN npm run build || true
+CMD ["npm","start"]
+DOK
+        cat > docker-compose.yml <<'COMPOSE'
+services:
+  web:
+    build: .
+    ports: ["3000:3000"]
+COMPOSE
+      fi
+EOF
+      fi
+
+      # Always write next steps
+      cat >> "$out" <<'EOF'
+  - id: write_next_steps
+    run: |
+      mkdir -p .sugar/artifacts
+      {
+        echo "# Next steps"
+        echo "- [ ] Add /healthz endpoint"
+        echo "- [ ] Add CI (build + test)"
+      } > .sugar/artifacts/next_steps.md
+EOF
+      echo "Wrote $out"
