@@ -55,9 +55,9 @@ async function sendReminder(match, reminderType) {
                     from: twilioPhoneNumber,
                     to: challengerProfile.phone_number
                 });
-                console.log(`SMS ${reminderType} sent to ${challengerProfile.email}`);
+                // SMS sent successfully
             } catch (e) {
-                console.error(`Error sending SMS ${reminderType} to challenger ${challengerProfile.email}:`, e);
+                // Error sending SMS to challenger - silent failure in production
             }
         }
         */
@@ -70,9 +70,9 @@ async function sendReminder(match, reminderType) {
                     subject: emailSubject,
                     html: `<p>${reminderText}</p><p>Good luck!</p>`
                 });
-                console.log(`Email ${reminderType} sent to ${challengerProfile.email}`);
+                // Email sent successfully to challenger
             } catch (e) {
-                console.error(`Error sending Email ${reminderType} to challenger ${challengerProfile.email}:`, e);
+                // Error sending email to challenger - silent failure in production
             }
         }
     }
@@ -88,9 +88,9 @@ async function sendReminder(match, reminderType) {
                     from: twilioPhoneNumber,
                     to: targetProfile.phone_number
                 });
-                console.log(`SMS ${reminderType} sent to ${targetProfile.email}`);
+                // SMS sent successfully to target
             } catch (e) {
-                console.error(`Error sending SMS ${reminderType} to target ${targetProfile.email}:`, e);
+                // Error sending SMS to target - silent failure in production
             }
         }
         */
@@ -103,9 +103,9 @@ async function sendReminder(match, reminderType) {
                     subject: emailSubject,
                     html: `<p>${reminderText}</p><p>Good luck!</p>`
                 });
-                console.log(`Email ${reminderType} sent to ${targetProfile.email}`);
+                // Email sent successfully to target
             } catch (e) {
-                console.error(`Error sending Email ${reminderType} to target ${targetProfile.email}:`, e);
+                // Error sending email to target - silent failure in production
             }
         }
     }
@@ -117,7 +117,7 @@ async function sendReminder(match, reminderType) {
 
 // Schedule the cron job to run every 5 minutes
 cron.schedule('*/5 * * * *', async () => {
-    console.log('Running match reminder scheduler...');
+    // Scheduler cron job running
     const now = new Date();
 
     // Fetch scheduled matches that haven't started and reminders haven't been sent
@@ -127,7 +127,7 @@ cron.schedule('*/5 * * * *', async () => {
         .eq('status', 'scheduled');
 
     if (error) {
-        console.error('Error fetching upcoming matches:', error);
+        // Error fetching upcoming matches - silent failure in production
         return;
     }
 
@@ -148,7 +148,7 @@ cron.schedule('*/5 * * * *', async () => {
     }
 });
 
-console.log('Match reminder scheduler initialized.');
+// Match reminder scheduler initialized
 
 // Export to be imported and started by server.js
 module.exports = cron;
