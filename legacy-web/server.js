@@ -5,6 +5,7 @@ const path = require('path');
 const cors = require('cors');
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
+const logger = require('./utils/logger');
 
 const app = express();
 const server = http.createServer(app);
@@ -99,7 +100,7 @@ app.get('/api/leaderboard', async (req, res) => {
                 fargoData = JSON.parse(fs.readFileSync(path.join(__dirname, 'fargo_ratings.json'), 'utf8'));
             }
         } catch (e) {
-            console.error('Error reading fargo_ratings.json:', e);
+            logger.error('Error reading fargo_ratings.json', e);
         }
 
         // Map to expected format
@@ -119,7 +120,7 @@ app.get('/api/leaderboard', async (req, res) => {
 
         res.json(leaderboard);
     } catch (error) {
-        console.error('Error fetching leaderboard:', error);
+        logger.error('Error fetching leaderboard', error);
         res.status(500).json({ error: 'Failed to fetch leaderboard' });
     }
 });
@@ -244,7 +245,7 @@ app.put('/api/me/phone', authenticateToken, async (req, res) => {
         .eq('id', req.user.id);
 
     if (error) {
-        console.error('Error updating phone number:', error);
+        logger.error('Error updating phone number', error);
         return res.status(500).json({ error: 'Failed to update phone number' });
     }
 
@@ -321,7 +322,7 @@ app.post('/api/challenges', authenticateToken, async (req, res) => {
         .single();
 
     if (insertError) {
-        console.error("Match insert error", insertError);
+        logger.error('Match insert error', insertError);
         return res.status(500).json({ error: 'Failed to create challenge' });
     }
 
@@ -518,7 +519,7 @@ app.post('/api/matches/:id/go-live', authenticateToken, async (req, res) => {
         .eq('id', id);
 
     if (error) {
-        console.error('Error setting match to live:', error);
+        logger.error('Error setting match to live', error);
         return res.status(500).json({ error: 'Failed to update match status' });
     }
 
@@ -548,6 +549,6 @@ app.get('/', (req, res) => {
 // START SERVER
 // Check if server is already listening (unlikely in this script structure but safe to keep one)
 server.listen(PORT, () => {
-    console.log(`🌐 Supabase-integrated Server running on port ${PORT}`);
-    console.log(`🌐 Access the application at: http://localhost:${PORT}`);
+    logger.info(`Supabase-integrated Server running on port ${PORT}`);
+    logger.info(`Access the application at: http://localhost:${PORT}`);
 });
