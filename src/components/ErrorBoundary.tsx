@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { createLogger } from '../lib/logger';
 
 interface Props {
   children: React.ReactNode;
@@ -9,6 +10,8 @@ interface State {
   hasError: boolean;
   error: Error | null;
 }
+
+const errorLogger = createLogger({ context: 'ErrorBoundary' });
 
 export class ErrorBoundary extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -21,13 +24,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log errors only in development mode
-    if (__DEV__) {
-      // eslint-disable-next-line no-console
-      console.error('ErrorBoundary caught:', error, errorInfo);
-    }
-    // TODO: In production, consider sending errors to a crash reporting service
-    // (e.g., Sentry, Crashlytics, etc.)
+    errorLogger.error('Caught error:', error, errorInfo);
   }
 
   handleRetry = () => {
