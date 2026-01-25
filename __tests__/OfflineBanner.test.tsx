@@ -564,6 +564,53 @@ describe('OfflineBanner Components', () => {
     });
   });
 
+  describe('StatusIcon (via SyncStatusBanner)', () => {
+    test('renders CheckCircle for synced status', () => {
+      mockUseSyncStatus.mockReturnValue({
+        ...defaultSyncStatus,
+        isOnline: true,
+        statusType: 'synced',
+        statusText: 'All changes synced',
+      });
+
+      const result = SyncStatusBanner();
+      const expandedHeader = result.props.children[0];
+      const expandedLeft = expandedHeader.props.children[0];
+      const statusIcon = expandedLeft.props.children[0];
+      expect(statusIcon.type).toBe('CheckCircle');
+    });
+
+    test('renders null for unknown status type', () => {
+      mockUseSyncStatus.mockReturnValue({
+        ...defaultSyncStatus,
+        isOnline: false,
+        statusType: 'unknown' as any,
+        statusText: 'Unknown status',
+      });
+
+      const result = SyncStatusBanner();
+      const expandedHeader = result.props.children[0];
+      const expandedLeft = expandedHeader.props.children[0];
+      const statusIcon = expandedLeft.props.children[0];
+      expect(statusIcon).toBeNull();
+    });
+
+    test('renders Cloud for pending status in expanded banner', () => {
+      mockUseSyncStatus.mockReturnValue({
+        ...defaultSyncStatus,
+        statusType: 'pending',
+        pendingCount: 3,
+        statusText: '3 changes pending',
+      });
+
+      const result = SyncStatusBanner();
+      const expandedHeader = result.props.children[0];
+      const expandedLeft = expandedHeader.props.children[0];
+      const statusIcon = expandedLeft.props.children[0];
+      expect(statusIcon.type).toBe('Cloud');
+    });
+  });
+
   describe('RetryButton (via OfflineBanner)', () => {
     test('calls retry action when pressed', () => {
       const mockRetry = jest.fn();
@@ -656,6 +703,153 @@ describe('OfflineBanner Components', () => {
       // Should have only failed stat item (pending one is conditional)
       const statsChildren = statsRow.props.children.filter(Boolean);
       expect(statsChildren.length).toBe(1);
+    });
+
+    test('SyncStatusBanner shows sync button when both pending and failed exist', () => {
+      mockUseSyncStatus.mockReturnValue({
+        ...defaultSyncStatus,
+        isOnline: true,
+        isSyncing: false,
+        pendingCount: 2,
+        failedCount: 3,
+        statusType: 'error',
+      });
+
+      const result = SyncStatusBanner();
+      const expandedHeader = result.props.children[0];
+      // Sync button should render
+      expect(expandedHeader.props.children[1]).toBeTruthy();
+    });
+
+    test('OfflineBanner renders when online but with pending status', () => {
+      mockUseSyncStatus.mockReturnValue({
+        ...defaultSyncStatus,
+        isOnline: true,
+        statusType: 'pending',
+        statusText: '5 changes pending',
+        pendingCount: 5,
+      });
+
+      const result = OfflineBanner();
+      expect(result).not.toBeNull();
+      expect(result.type).toBe('View');
+    });
+
+    test('OfflineBanner renders when online but with error status', () => {
+      mockUseSyncStatus.mockReturnValue({
+        ...defaultSyncStatus,
+        isOnline: true,
+        statusType: 'error',
+        statusText: '2 operations failed',
+        failedCount: 2,
+      });
+
+      const result = OfflineBanner();
+      expect(result).not.toBeNull();
+      expect(result.type).toBe('View');
+    });
+
+    test('SyncIndicator with syncing takes precedence over offline', () => {
+      mockUseSyncStatus.mockReturnValue({
+        ...defaultSyncStatus,
+        statusType: 'offline',
+        isSyncing: true,
+        pendingCount: 3,
+      });
+
+      const result = SyncIndicator();
+      expect(result).not.toBeNull();
+      // isSyncing is checked first, so ActivityIndicator should render
+      expect(result.props.children.type).toBe('ActivityIndicator');
+    });
+
+    test('SyncStatusBanner displays correct status text when syncing', () => {
+      mockUseSyncStatus.mockReturnValue({
+        ...defaultSyncStatus,
+        statusType: 'syncing',
+        isSyncing: true,
+        statusText: 'Syncing...',
+      });
+
+      const result = SyncStatusBanner();
+      const expandedHeader = result.props.children[0];
+      const expandedLeft = expandedHeader.props.children[0];
+      const textContainer = expandedLeft.props.children[1];
+      const title = textContainer.props.children[0];
+      expect(title.props.children).toBe('Syncing...');
+    });
+
+    test('SyncStatusBanner does not show sync button when no pending or failed', () => {
+      mockUseSyncStatus.mockReturnValue({
+        ...defaultSyncStatus,
+        isOnline: true,
+        isSyncing: false,
+        pendingCount: 0,
+        failedCount: 0,
+        statusType: 'synced',
+      });
+
+      const result = SyncStatusBanner();
+      const expandedHeader = result.props.children[0];
+      // Sync button should not render when no pending or failed
+      expect(expandedHeader.props.children[1]).toBeFalsy();
+    });
+  });
+
+  describe('Style application', () => {
+    test('OfflineBanner applies offline style class', () => {
+      mockUseSyncStatus.mockReturnValue({
+        ...defaultSyncStatus,
+        isOnline: false,
+        statusType: 'offline',
+      });
+
+      const result = OfflineBanner();
+      // The style prop should include the statusType style
+      expect(result.props.style).toContainEqual(expect.objectContaining({ backgroundColor: '#dc3545' }));
+    });
+
+    test('OfflineBanner applies syncing style class', () => {
+      mockUseSyncStatus.mockReturnValue({
+        ...defaultSyncStatus,
+        statusType: 'syncing',
+        isSyncing: true,
+      });
+
+      const result = OfflineBanner();
+      expect(result.props.style).toContainEqual(expect.objectContaining({ backgroundColor: '#0d6efd' }));
+    });
+
+    test('OfflineBanner applies error style class', () => {
+      mockUseSyncStatus.mockReturnValue({
+        ...defaultSyncStatus,
+        statusType: 'error',
+        failedCount: 1,
+      });
+
+      const result = OfflineBanner();
+      expect(result.props.style).toContainEqual(expect.objectContaining({ backgroundColor: '#dc3545' }));
+    });
+
+    test('OfflineBanner applies pending style class', () => {
+      mockUseSyncStatus.mockReturnValue({
+        ...defaultSyncStatus,
+        statusType: 'pending',
+        pendingCount: 1,
+      });
+
+      const result = OfflineBanner();
+      expect(result.props.style).toContainEqual(expect.objectContaining({ backgroundColor: '#ffc107' }));
+    });
+
+    test('SyncStatusBanner applies correct style based on statusType', () => {
+      mockUseSyncStatus.mockReturnValue({
+        ...defaultSyncStatus,
+        statusType: 'synced',
+      });
+
+      const result = SyncStatusBanner();
+      expect(result.props.style).toContainEqual(expect.objectContaining({ backgroundColor: '#198754' }));
     });
   });
 });
