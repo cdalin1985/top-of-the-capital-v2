@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top of the Capital - Pool League</title>
+    <link rel="stylesheet" href="green-gray-styles.css?v=3">
+    <link rel="stylesheet" href="shot-trainer.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client@2.0/dist/livekit-client.umd.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <div class="background-pattern"></div>
+
+    <div class="container">
+        <header class="main-header">
+            <div class="header-content">
+                <div id="userControlsLeft" class="user-controls hidden" style="width: 150px;">
+                    <!-- Spacer for balance or left-side controls -->
+                </div>
+
+                <div class="title-section" style="flex-grow: 1; text-align: center;">
+                    <h1 class="main-title">TOP OF THE CAPITAL</h1>
+                </div>
+
+                <div id="userControls" class="user-controls hidden" style="width: 150px; justify-content: flex-end;">
+                    <button id="notifBtn" class="header-btn" onclick="toggleNotifications()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <span id="notifBadge" class="badge hidden">0</span>
+                    </button>
+                    <button id="profileBtn" class="header-btn" onclick="toggleProfileModal()">Profile</button>
+                    <button id="showMyShotBtn" class="header-btn">Show My Shot</button>
+                    <button id="logoutBtn" class="header-btn logout-btn">Log Out</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Notifications/Challenge Modal -->
+        <div id="notifModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>NOTIFICATIONS & CHALLENGES</h2>
+                    <button class="close-btn" onclick="toggleNotifications()">×</button>
+                </div>
+                <div id="modalBody" class="modal-body">
+                    <!-- Dynamic Content -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Modal (NEW) -->
+        <div id="profileModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>MY PROFILE</h2>
+                    <button class="close-btn" onclick="toggleProfileModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="profileDisplayName">Display Name:</label>
+                        <input type="text" id="profileDisplayName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="profileEmail">Email:</label>
+                        <input type="email" id="profileEmail" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="profilePhoneNumber">Phone Number (for SMS reminders):</label>
+                        <input type="tel" id="profilePhoneNumber" placeholder="e.g., +15551234567">
+                    </div>
+                    <button id="saveProfileBtn" class="auth-btn">Save Profile</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Match Modal -->
+        <div id="liveMatchModal" class="modal hidden">
+            <div class="modal-content large-modal">
+                <div class="modal-header">
+                    <h2>LIVE ARENA</h2>
+                    <button class="close-btn" onclick="closeLiveMatch()">×</button>
+                </div>
+                <div class="modal-body live-grid">
+                    <div class="video-section">
+                        <div class="video-container">
+                            <video id="liveVideo" autoplay playsinline muted></video>
+                            <div class="live-badge">LIVE</div>
+                        </div>
+                        <div class="stream-controls">
+                            <button class="control-btn" onclick="toggleCamera()">Toggle Camera</button>
+                        </div>
+                    </div>
+                    <div class="scoreboard-section">
+                        <div class="score-card">
+                            <h3 id="liveP1Name">Player A</h3>
+                            <div class="score-display">
+                                <span id="liveP1Score">0</span>
+                            </div>
+                            <button class="score-btn" onclick="updateLiveScore('p1', 1)">+1 Game</button>
+                            <button class="score-btn minus" onclick="updateLiveScore('p1', -1)">-1</button>
+                        </div>
+                        <div class="vs-divider">VS</div>
+                        <div class="score-card">
+                            <h3 id="liveP2Name">Player B</h3>
+                            <div class="score-display">
+                                <span id="liveP2Score">0</span>
+                            </div>
+                            <button class="score-btn" onclick="updateLiveScore('p2', 1)">+1 Game</button>
+                            <button class="score-btn minus" onclick="updateLiveScore('p2', -1)">-1</button>
+                        </div>
+                    </div>
+                    <div class="match-actions">
+                        <div class="race-info">Race to <span id="liveRaceTo">7</span></div>
+                        <div class="social-share">
+                            <button class="share-btn facebook" onclick="shareLiveMatch('facebook')">Share on Facebook</button>
+                            <button class="share-btn twitter" onclick="shareLiveMatch('twitter')">Share on Twitter</button>
+                            <button class="share-btn copy" onclick="shareLiveMatch('copy')">Copy Link</button>
+                        </div>
+                        <button class="confirm-btn end-match-btn" onclick="endLiveMatch()">FINISH & SUBMIT
+                            RESULT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Authentication Section -->
+        <div id="authSection" class="auth-section">
+            <div class="auth-container">
+                <h2 class="auth-title">MEMBER AUTHENTICATION</h2>
+
+                <div class="form-group">
+                    <label for="playerSelect">Enter or Select Your Name:</label>
+                    <input type="text" id="playerSelect" list="playerOptions" class="player-dropdown" placeholder="Start typing your name...">
+                    <datalist id="playerOptions"></datalist>
+                </div>
+
+                <div id="authForm" class="auth-form hidden">
+                    <div id="welcomeMessage" class="welcome-message"></div>
+
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
+
+                    <div id="avatarSection" class="form-group hidden">
+                        <label for="avatar">Avatar (Optional):</label>
+                        <input type="file" id="avatar" accept="image/*">
+                        <div id="avatarPreview" class="avatar-preview"></div>
+                    </div>
+
+                    <div class="auth-buttons">
+                        <button id="authButton" class="auth-btn">Login</button>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <button id="adminSeed" class="admin-btn">Admin Seed</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="dashboard hidden">
+            <div class="dashboard-grid">
+                <!-- Upcoming Matches Panel (NEW) -->
+                <div class="panel upcoming-panel">
+                    <h3 class="panel-title">📅 Upcoming Matches</h3>
+                    <div id="upcomingContent" class="panel-content">
+                        <!-- Dynamic Content -->
+                    </div>
+                </div>
+
+                <!-- Rankings Panel -->
+                <div class="panel rankings-panel">
+                    <h3 class="panel-title">🏆 League Rankings</h3>
+                    <div id="rankingsContent" class="panel-content">
+                        <div class="skeleton-row">
+                            <div class="skeleton skeleton-text" style="width: 60%;"></div>
+                            <div class="skeleton skeleton-text" style="width: 30%;"></div>
+                        </div>
+                        <div class="skeleton-row">
+                            <div class="skeleton skeleton-text" style="width: 50%;"></div>
+                            <div class="skeleton skeleton-text" style="width: 30%;"></div>
+                        </div>
+                        <div class="skeleton-row">
+                            <div class="skeleton skeleton-text" style="width: 70%;"></div>
+                            <div class="skeleton skeleton-text" style="width: 20%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Challenge System Panel -->
+                <div class="panel challenge-panel">
+                    <h3 class="panel-title">⚔️ Challenge System</h3>
+                    <div id="challengeContent" class="panel-content">
+                        <div id="userStatus" class="user-status">
+                            <div class="status-info">
+                                <span class="status-label">OPERATOR STATUS:</span>
+                                <span id="currentUser" class="current-user">Not authenticated</span>
+                                <span id="userRating" class="user-rating"></span>
+                            </div>
+                        </div>
+
+                        <div id="challengeForm" class="challenge-form hidden">
+                            <div class="form-group">
+                                <label for="targetPlayer">Select Target:</label>
+                                <select id="targetPlayer" class="target-dropdown">
+                                    <option value="">Choose opponent...</option>
+                                </select>
+                                <div id="targetInfo" class="target-info"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="discipline">Discipline:</label>
+                                <select id="discipline">
+                                    <option value="8-Ball">8-Ball</option>
+                                    <option value="9-Ball">9-Ball</option>
+                                    <option value="10-Ball">10-Ball</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="gamesToWin">Games to Win:</label>
+                                <select id="gamesToWin">
+                                    <option value="5">5 Games</option>
+                                    <option value="6">6 Games</option>
+                                    <option value="7" selected>7 Games</option>
+                                    <option value="8">8 Games</option>
+                                    <option value="9">9 Games</option>
+                                    <option value="10">10 Games</option>
+                                    <option value="11">11 Games</option>
+                                    <option value="12">12 Games</option>
+                                    <option value="13">13 Games</option>
+                                    <option value="14">14 Games</option>
+                                    <option value="15">15 Games</option>
+                                </select>
+                            </div>
+
+                            <button id="sendChallenge" class="challenge-btn">INITIATE COMBAT</button>
+                        </div>
+
+                        <div class="challenge-instructions">
+                            <p>Select opponents within ±5 rank positions for fair competition.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div id="paymentModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Complete Your Payment</h2>
+                <p>Pay the $5.00 match fee to proceed.</p>
+            </div>
+            <div class="modal-body">
+                <form id="payment-form">
+                    <div id="payment-element">
+                        <!-- Stripe.js injects the Payment Element here -->
+                    </div>
+                    <button id="submit" class="auth-btn">Pay Now</button>
+                    <button id="markPaidManually" class="auth-btn alternate-btn" style="margin-top: 10px;">Mark as Paid (Cash/Other)</button>
+                    <div id="error-message" class="hidden"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show My Shot Page -->
+    <div id="shotTrainerPage" class="dashboard hidden">
+        <div class="shot-trainer-grid">
+            <div class="panel pool-table-panel">
+                <h3 class="panel-title">Layout Your Shot</h3>
+                <div id="poolTable" class="pool-table">
+                    <canvas id="shotCanvas"></canvas>
+                    <!-- Balls will be dynamically inserted here -->
+                </div>
+                <div class="shot-tools">
+                    <button id="resetBallsBtn" class="tool-btn">Reset Balls</button>
+                    <button id="saveShotBtn" class="tool-btn">Save/Share Shot</button>
+                    <button id="loadShotBtn" class="tool-btn">Load Shot</button>
+                </div>
+            </div>
+            <div class="panel shot-controls-panel">
+                <h3 class="panel-title">Shot Controls</h3>
+                <div id="arrowSelector" class="control-section">
+                    <h4>Aim / Path Arrows</h4>
+                    <div class="arrow-selector">
+                        <button class="arrow-btn" data-tool="line" title="Straight Line">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="19" x2="19" y2="5"></line></svg>
+                        </button>
+                        <button class="arrow-btn" data-tool="curve" title="Curved Line">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 19s4-8 14-8"></path></svg>
+                        </button>
+                        <button class="arrow-btn" data-tool="bank" title="Bank Shot">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="5 19 12 12 19 19"></polyline></svg>
+                        </button>
+                        <button id="clearLinesBtn" class="tool-btn">Clear</button>
+                    </div>
+                </div>
+                <div id="englishSelector" class="control-section">
+                    <h4>Cue Ball English</h4>
+                    <div id="cueBallView" class="cue-ball-view">
+                        <div id="englishDot" class="english-dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="shot-trainer.js"></script>
+</body>
+
+</html>

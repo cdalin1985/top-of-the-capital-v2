@@ -1,0 +1,250 @@
+﻿Folder PATH listing for volume Windows
+Volume serial number is 3E6E-DB03
+C:.
+|   .env
+|   .gitignore
+|   .gitmcp.json
+|   .gitmcp.json1
+|   ADMIN_DEMO.md
+|   app.json
+|   App.tsx
+|   CLAUDE.md
+|   CLEAN_IMPORT.sql
+|   eas.json
+|   final_import.sql
+|   folder-tree.txt
+|   import_players.js
+|   IMPORT_THIS.sql
+|   index.ts
+|   jest.config.js
+|   package-lock.json
+|   package.json
+|   README.md
+|   supabase_schema.sql
+|   toc_inventory.ps1
+|   top-of-the-capital-v2-files.zip
+|   tsconfig.json
+|   update_trigger.sql
+|   
++---.expo
+|   |   devices.json
+|   |   README.md
+|   |   
+|   \---web
+|       \---cache
+|           \---production
+|               \---images
+|                   \---favicon
+|                       \---favicon-24272cdaeff82cc5facdaccd982a6f05b60c4504704bbf94c19a6388659880bb-contain-transparent
+|                               favicon-48.png
+|                               
++---.sugar
+|   |   config.yaml
+|   |   memory.db
+|   |   sugar.db
+|   |   sugar.log
+|   |   
+|   +---backups
+|   +---logs
+|   \---thinking
+|           0068dfe6-da75-4216-b35d-59838073c631.md
+|           7f37eb74-53ad-4156-96e5-d6752702e417.md
+|           dda16b1b-81b7-4895-b1bc-99b537dd3c24.md
+|           
++---.vscode
+|   |   launch.json
+|   |   settings.json
+|   |   
+|   \---gemini-mcp
+|           status.json
+|           
++---assets
+|       adaptive-icon.png
+|       favicon.png
+|       icon.png
+|       splash-icon.png
+|       
++---legacy-web
+|   |   .env
+|   |   db.json
+|   |   fargo_ratings.json
+|   |   package-lock.json
+|   |   package.json
+|   |   README.md
+|   |   scheduler.js
+|   |   server.js
+|   |   setup_payments.sql
+|   |   
+|   +---node_modules
+|   |   |   .package-lock.json
+|   |   |   
+|   |   +---.bin
+|   |   |       mime
+|   |   |       mime.cmd
+|   |   |       mime.ps1
+|   |   |       nodemon
+|   |   |       nodemon.cmd
+|   |   |       nodemon.ps1
+|   |   |       nodetouch
+|   |   |       nodetouch.cmd
+|   |   |       nodetouch.ps1
+|   |   |       semver
+|   |   |       semver.cmd
+|   |   |       semver.ps1
+|   |   |       
+|   |   +---@bufbuild
+|   |   |   \---protobuf
+|   |   |       |   package.json
+|   |   |       |   README.md
+|   |   |       |   
+|   |   |       \---dist
+|   |   |           +---cjs
+|   |   |           |   |   binary-encoding.d.ts
+|   |   |           |   |   binary-encoding.js
+|   |   |           |   |   binary-format.d.ts
+|   |   |           |   |   binary-format.js
+|   |   |           |   |   codegen-info.d.ts
+|   |   |           |   |   codegen-info.js
+|   |   |           |   |   create-descriptor-set.d.ts
+|   |   |           |   |   create-descriptor-set.js
+|   |   |           |   |   create-registry-from-desc.d.ts
+|   |   |           |   |   create-registry-from-desc.js
+|   |   |           |   |   create-registry.d.ts
+|   |   |           |   |   create-registry.js
+|   |   |           |   |   descriptor-set.d.ts
+|   |   |           |   |   descriptor-set.js
+|   |   |           |   |   enum.d.ts
+|   |   |           |   |   enum.js
+|   |   |           |   |   extension-accessor.d.ts
+|   |   |           |   |   extension-accessor.js
+|   |   |           |   |   extension.d.ts
+|   |   |           |   |   extension.js
+|   |   |           |   |   field-list.d.ts
+|   |   |           |   |   field-list.js
+|   |   |           |   |   field.d.ts
+|   |   |           |   |   field.js
+|   |   |           |   |   index.d.ts
+|   |   |           |   |   index.js
+|   |   |           |   |   is-message.d.ts
+|   |   |           |   |   is-message.js
+|   |   |           |   |   json-format.d.ts
+|   |   |           |   |   json-format.js
+|   |   |           |   |   message-type.d.ts
+|   |   |           |   |   message-type.js
+|   |   |           |   |   message.d.ts
+|   |   |           |   |   message.js
+|   |   |           |   |   package.json
+|   |   |           |   |   proto-base64.d.ts
+|   |   |           |   |   proto-base64.js
+|   |   |           |   |   proto-delimited.d.ts
+|   |   |           |   |   proto-delimited.js
+|   |   |           |   |   proto-double.d.ts
+|   |   |           |   |   proto-double.js
+|   |   |           |   |   proto-int64.d.ts
+|   |   |           |   |   proto-int64.js
+|   |   |           |   |   proto2.d.ts
+|   |   |           |   |   proto2.js
+|   |   |           |   |   proto3.d.ts
+|   |   |           |   |   proto3.js
+|   |   |           |   |   scalar.d.ts
+|   |   |           |   |   scalar.js
+|   |   |           |   |   service-type.d.ts
+|   |   |           |   |   service-type.js
+|   |   |           |   |   to-plain-message.d.ts
+|   |   |           |   |   to-plain-message.js
+|   |   |           |   |   type-registry.d.ts
+|   |   |           |   |   type-registry.js
+|   |   |           |   |   
+|   |   |           |   +---google
+|   |   |           |   |   |   varint.d.ts
+|   |   |           |   |   |   varint.js
+|   |   |           |   |   |   
+|   |   |           |   |   \---protobuf
+|   |   |           |   |       |   any_pb.d.ts
+|   |   |           |   |       |   any_pb.js
+|   |   |           |   |       |   api_pb.d.ts
+|   |   |           |   |       |   api_pb.js
+|   |   |           |   |       |   descriptor_pb.d.ts
+|   |   |           |   |       |   descriptor_pb.js
+|   |   |           |   |       |   duration_pb.d.ts
+|   |   |           |   |       |   duration_pb.js
+|   |   |           |   |       |   empty_pb.d.ts
+|   |   |           |   |       |   empty_pb.js
+|   |   |           |   |       |   field_mask_pb.d.ts
+|   |   |           |   |       |   field_mask_pb.js
+|   |   |           |   |       |   source_context_pb.d.ts
+|   |   |           |   |       |   source_context_pb.js
+|   |   |           |   |       |   struct_pb.d.ts
+|   |   |           |   |       |   struct_pb.js
+|   |   |           |   |       |   timestamp_pb.d.ts
+|   |   |           |   |       |   timestamp_pb.js
+|   |   |           |   |       |   type_pb.d.ts
+|   |   |           |   |       |   type_pb.js
+|   |   |           |   |       |   wrappers_pb.d.ts
+|   |   |           |   |       |   wrappers_pb.js
+|   |   |           |   |       |   
+|   |   |           |   |       \---compiler
+|   |   |           |   |               plugin_pb.d.ts
+|   |   |           |   |               plugin_pb.js
+|   |   |           |   |               
+|   |   |           |   \---private
+|   |   |           |           assert.d.ts
+|   |   |           |           assert.js
+|   |   |           |           binary-format.d.ts
+|   |   |           |           binary-format.js
+|   |   |           |           enum.d.ts
+|   |   |           |           enum.js
+|   |   |           |           extensions.d.ts
+|   |   |           |           extensions.js
+|   |   |           |           feature-set.d.ts
+|   |   |           |           feature-set.js
+|   |   |           |           field-list.d.ts
+|   |   |           |           field-list.js
+|   |   |           |           field-normalize.d.ts
+|   |   |           |           field-normalize.js
+|   |   |           |           field-wrapper.d.ts
+|   |   |           |           field-wrapper.js
+|   |   |           |           field.d.ts
+|   |   |           |           field.js
+|   |   |           |           json-format.d.ts
+|   |   |           |           json-format.js
+|   |   |           |           message-type.d.ts
+|   |   |           |           message-type.js
+|   |   |           |           names.d.ts
+|   |   |           |           names.js
+|   |   |           |           options-map.d.ts
+|   |   |           |           options-map.js
+|   |   |           |           proto-runtime.d.ts
+|   |   |           |           proto-runtime.js
+|   |   |           |           reflect.d.ts
+|   |   |           |           reflect.js
+|   |   |           |           reify-wkt.d.ts
+|   |   |           |           reify-wkt.js
+|   |   |           |           scalars.d.ts
+|   |   |           |           scalars.js
+|   |   |           |           text-format.d.ts
+|   |   |           |           text-format.js
+|   |   |           |           util-common.d.ts
+|   |   |           |           util-common.js
+|   |   |           |           util.d.ts
+|   |   |           |           util.js
+|   |   |           |           
+|   |   |           \---esm
+|   |   |               |   binary-encoding.d.ts
+|   |   |               |   binary-encoding.js
+|   |   |               |   binary-format.d.ts
+|   |   |               |   binary-format.js
+|   |   |               |   codegen-info.d.ts
+|   |   |               |   codegen-info.js
+|   |   |               |   create-descriptor-set.d.ts
+|   |   |               |   create-descriptor-set.js
+|   |   |               |   create-registry-from-desc.d.ts
+|   |   |               |   create-registry-from-desc.js
+|   |   |               |   create-registry.d.ts
+|   |   |               |   create-registry.js
+|   |   |               |   descriptor-set.d.ts
+|   |   |               |   descriptor-set.js
+|   |   |               |   enum.d.ts
+|   |   |               |   enum.js
+|   |   |               |   extension-accessor.d.ts
+|   |   |               |   extension-accessor.js

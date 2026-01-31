@@ -1,0 +1,138 @@
+/* shot-trainer.css */
+
+.shot-trainer-grid {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+.pool-table-panel {
+    background: rgba(30, 30, 30, 0.85);
+    border: 1px solid #87a96b;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.pool-table {
+    position: relative;
+    width: 100%;
+    padding-top: 50%; /* 2:1 aspect ratio */
+    background-color: #006a4e; /* Pool table green */
+    border: 10px solid #5d4037; /* Wood grain-like border */
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4) inset;
+}
+
+#shotCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Allows clicks to go through to the balls */
+}
+
+.pool-ball {
+    position: absolute;
+    width: 2.25%;
+    height: 4.5%;
+    border-radius: 50%;
+    cursor: grab;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: white;
+    font-size: 0.7vw;
+    text-shadow: 0 0 2px black;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    border: 1px solid rgba(0,0,0,0.6);
+    background-image: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 40%);
+}
+
+.shot-controls-panel {
+    background: rgba(30, 30, 30, 0.85);
+    border: 1px solid #87a96b;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.control-section {
+    margin-bottom: 20px;
+}
+
+.control-section h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #a8c090;
+    border-bottom: 1px solid #87a96b;
+    padding-bottom: 5px;
+}
+
+.shot-tools {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.tool-btn {
+    padding: 8px 12px;
+    background: #4a5d45;
+    border: 1px solid #87a96b;
+    color: #f5f5dc;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.tool-btn:hover, .tool-btn.active {
+    background: #87a96b;
+    color: #1e1e1e;
+}
+
+.arrow-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.arrow-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: #4a5d45;
+    border: 1px solid #87a96b;
+    color: #f5f5dc;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.arrow-btn:hover, .arrow-btn.active {
+    background: #87a96b;
+    color: #1e1e1e;
+}
+
+.cue-ball-view {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    background-color: #fff;
+    border-radius: 50%;
+    margin: 10px auto;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3) inset;
+}
+
+.english-dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* Allows clicks to go through to the parent */
+}

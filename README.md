@@ -1,61 +1,49 @@
-# Top of the Capital - Pool Challenge Application
+# Top of the Capital 🎱
+### A Premium Mobile-First Pool League Management Ecosystem
 
-A sophisticated pool league management system with real-time challenges, rankings, and player authentication.
+The **Top of the Capital** application is a professional league management platform for the Helena Pool League. It has been upgraded to a "Fortune 500" mobile-first tech stack designed for high engagement, real-time match execution, and a stunning "Liquid Glass" aesthetic.
 
-## 🎯 Overview
+## 🚀 Tech Stack
+- **Frontend**: React Native / Expo with TypeScript
+- **Backend**: Supabase (Postgres, Auth, Real-time Channels)
+- **AI**: Gemini-powered AI Avatar Generation
+- **Communication**: Expo-Push-Notifications for real-time challenge alerts
+- **Testing**: Jest suite for league business logic verification
 
-Top of the Capital is a professional pool challenge application designed for the Valley Hub Eagles 4040 league. It features a beautiful green and gray UI, real-time player interactions, and a comprehensive ranking system with 70 real players.
+## 🏆 Core League Rules (Scorecard Compliant)
+- **The List**: A real-time ladder for 8, 9, and 10-ball.
+- **±5 Rule**: Players can only challenge others within ±5 spots of their rank (unless ranked #1).
+- **Match Cooldown**: A 24-hour lock is enforced on players after a loss to ensure fair play.
+- **Negotiation**: Automated venue and time proposal system.
+- **Deadlines**: 2-week response requirement for all challenges.
 
-## ✨ Features
+## 🎥 The Streaming Arena
+Matches can be broadcast live to the entire league. When a player goes live via YouTube or Facebook, the app sends a push notification to all members, providing a one-tap link to the "Live Arena" viewer.
 
-### 🏆 Core Functionality
-- **70 Real Players**: Complete rankings from Dan Hamper (#1) to Kelly Smail (#70)
-- **Smart Authentication**: Auto-detects existing vs new users
-- **Real-time Challenges**: Live challenge system with Socket.IO
-- **Professional Dashboard**: 4-panel layout with rankings, notifications, activity feed, and challenge system
-- **Avatar System**: Profile photo upload and management
+## 🛠️ Getting Started
+1. **Prerequisites**: [Node.js](https://nodejs.org/) and a Supabase Project.
+2. **Installation**:
+   ```bash
+   npm install
+   ```
+3. **Environment Setup**:
+   Create a `src/lib/config.ts` with your `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
+4. **Running Locally**:
+   ```bash
+   npx expo start
+   ```
+5. **Running Tests**:
+   ```bash
+   npm test
+   ```
 
-### 🎨 Design
-- **Elegant UI**: Sophisticated green and gray color scheme
-- **Professional Typography**: Cinzel Decorative and Cormorant Garamond fonts
-- **Responsive Design**: Works on desktop and mobile devices
-- **Clean Interface**: No distracting animations, professional appearance
+## 📂 Project Structure
+- `src/screens`: All premium mobile interfaces (Rankings, Scoreboard, Feed, etc.)
+- `src/lib`: Logic for rankings, notifications, and Supabase client.
+- `src/store`: Zustand state management for notifications.
+- `supabase`: Edge functions for AI generation and database migrations.
+- `__tests__`: Business logic verification suite.
+- `legacy-web`: The original vanilla JS web implementation.
 
-### 🔐 Authentication
-- **Dropdown Selection**: Choose from 70 real player names
-- **Smart Detection**: Automatically shows login or signup form
-- **Secure Passwords**: bcrypt hashing with JWT tokens
-- **Avatar Upload**: Optional profile photo during registration
-
-## 🚀 Live Demo
-
-**Website**: [https://19hninc8n585.manus.space](https://19hninc8n585.manus.space )
-
-## 🛠️ Technology Stack
-
-- **Backend**: Node.js with Express
-- **Frontend**: Vanilla JavaScript with Socket.IO
-- **Database**: JSON file-based storage
-- **Authentication**: JWT with bcrypt
-- **Styling**: Custom CSS with Google Fonts
-- **Real-time**: Socket.IO for live updates
-
-## 📦 Installation
-
-### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
-
-### Setup
-```bash
-# Clone the repository
-git clone https://github.com/cdalin1985/top-of-the-capital-v2.git
-cd top-of-the-capital-v2
-
-# Install dependencies
-npm install
-
-# Start the server
-npm start
-# or
-PORT=3000 node server.js
+---
+*Built with precision for the Helena Pool League.*

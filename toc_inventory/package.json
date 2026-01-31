@@ -1,0 +1,53 @@
+{
+  "name": "mobile",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "test": "jest",
+    "test:supabase": "npx ts-node scripts/test-supabase-connection.ts",
+    "supabase:set-keys": "supabase secrets set GEMINI_API_KEY=$npm_config_key",
+    "supabase:deploy": "supabase functions deploy generate-avatar"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "~6.1.2",
+    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-community/netinfo": "^11.4.1",
+    "@react-navigation/bottom-tabs": "^7.9.0",
+    "@react-navigation/native": "^7.1.26",
+    "@react-navigation/stack": "^7.6.13",
+    "@supabase/supabase-js": "^2.89.0",
+    "expo": "~54.0.30",
+    "expo-auth-session": "^7.0.10",
+    "expo-constants": "^18.0.12",
+    "expo-crypto": "^15.0.8",
+    "expo-device": "^8.0.10",
+    "expo-haptics": "^15.0.8",
+    "expo-image-picker": "~17.0.10",
+    "expo-notifications": "^0.32.15",
+    "expo-status-bar": "~3.0.9",
+    "lucide-react-native": "^0.562.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-native": "0.81.5",
+    "react-native-safe-area-context": "^5.6.2",
+    "react-native-screens": "^4.19.0",
+    "react-native-url-polyfill": "^3.0.0",
+    "react-native-web": "^0.21.2",
+    "zustand": "^5.0.9"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/react": "~19.1.0",
+    "jest": "^30.2.0",
+    "jest-expo": "^54.0.16",
+    "react-test-renderer": "^19.2.3",
+    "supabase": "^2.70.5",
+    "ts-jest": "^29.4.6",
+    "typescript": "~5.9.2"
+  },
+  "private": true
+}

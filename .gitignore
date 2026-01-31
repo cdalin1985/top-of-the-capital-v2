@@ -1,31 +1,8 @@
-# Dependencies
 node_modules/
-
-# Environment variables
 .env
 .env.local
-
-# Database files
-db.json
-
-# Logs
 *.log
-npm-debug.log*
-
-# OS files
 .DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Build artifacts
-dist/
-build/
-
-# Temporary files
-*.tmp
-*.temp
+# Local tooling / runtime state
+.sugar/
+.vscode/gemini-mcp/
